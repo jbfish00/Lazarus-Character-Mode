@@ -44,28 +44,22 @@ H.KEY = {
 
 -- ---------------------------------------------------------------- RAM anchors
 --
--- CONFIRMED (this session, empirically, on rom/seaglass v3.0.gba @ rom.sha1):
---   The three most-referenced consecutive IWRAM words in the whole ROM are
---   0x030051B8 / 0x030051BC / 0x030051C0. All three read 0x00000000 at boot
---   and hold EWRAM pointers (0x0200C960 / 0x0200B9B0 / 0x0200FF74) by frame
---   240 — i.e. runtime-initialized pointers into EWRAM. This is exactly the
---   shape of pokeemerald-expansion's gSaveBlock2Ptr / gSaveBlock1Ptr /
---   gPokemonStoragePtr trio.
---
---   DISAMBIGUATED (this session, via probe_saveblock.lua on the truck state):
---     0x030051B8 -> gSaveBlock1Ptr    (header read as pos.x/y + WarpData
---                                       location: in the truck it read
---                                       x=2 y=2 map=25.40 — the truck map)
---     0x030051BC -> gSaveBlock2Ptr    (starts with the 8-byte playerName field)
---     0x030051C0 -> gPokemonStoragePtr (all zero at new game = empty PC)
---   SaveBlock1 layout confirmed vanilla: +0x00 s16 pos.x, +0x02 s16 pos.y,
---   +0x04 u8 mapGroup, +0x05 u8 mapNum, +0x06 u8 warpId. These give live
---   player coords + current map — the robust nav/scene-detection signal used
---   by nav_coords.lua (truck exit detected as map 25.40 -> 0.9 Littleroot).
-H.SAVEBLOCK_PTRS = { 0x030051B8, 0x030051BC, 0x030051C0 }
-H.gSaveBlock1Ptr = 0x030051B8
-H.gSaveBlock2Ptr = 0x030051BC
-H.gPokemonStoragePtr = 0x030051C0
+-- CONFIRMED 2026-07-15 on rom/lazarus-v2.gba @ rom.sha1 (Seaglass's trio
+-- 0x030051B8/BC/C0 does NOT transfer — reads zero here):
+--   Static literal-pool histogram (find_saveblock_trio method): the three
+--   most-referenced consecutive IWRAM words are 0x03003664 (905 refs) /
+--   0x03003668 (719) / 0x0300366C (91). Live (verify_trio.lua): all three
+--   hold EWRAM pointers by the title screen (0x0200E580 / 0x0200D59C /
+--   0x0201213C), and after mashing A through new-game naming, [2]'s target
+--   begins BB E1 D5 E0 DD FF = "Amali" + terminator = SaveBlock2.playerName.
+--     0x03003664 -> gSaveBlock1Ptr     (coords/WarpData fill on overworld spawn)
+--     0x03003668 -> gSaveBlock2Ptr     (playerName verified live)
+--     0x0300366C -> gPokemonStoragePtr (all zero at new game = empty PC)
+--   Same consecutive SB1/SB2/Storage ordering as Seaglass, relocated address.
+H.SAVEBLOCK_PTRS = { 0x03003664, 0x03003668, 0x0300366C }
+H.gSaveBlock1Ptr = 0x03003664
+H.gSaveBlock2Ptr = 0x03003668
+H.gPokemonStoragePtr = 0x0300366C
 -- SaveBlock1 field offsets (vanilla pokeemerald struct SaveBlock1):
 H.SB1_POS_X   = 0x00  -- s16
 H.SB1_POS_Y   = 0x02  -- s16

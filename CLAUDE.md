@@ -67,6 +67,7 @@ Full plan: `/home/jbfish00/.claude/plans/plan-how-to-make-dazzling-hammock.md`.
 
 ## Status
 
+- **2026-07-15 (c)**: **Phase 1c complete — headless bring-up + SaveBlock trio.** Seaglass's `mgba-headless` runs Lazarus. Trio found by static literal-pool histogram + live verification (playerName "Amali" decoded in SB2 after A-mash through naming): **gSaveBlock1Ptr `0x03003664`, gSaveBlock2Ptr `0x03003668`, gPokemonStoragePtr `0x0300366C`** (Seaglass's addresses do NOT transfer; the *method* does). harness.lua updated; docs/ROUTINE_MAP.md started. New scripts: `find_saveblock_trio.lua`, `verify_trio.lua`. Gotcha: harness input takes `H.KEY.*` constants, not strings. Next: 1d flags-array offset (static, via script cmd table → FlagGet) + Seaglass feedback checkpoint #1; then 1e intro nav (A-mash already reaches naming ~f3600), 1f catch trace.
 - **2026-07-15 (b)**: **Phases 1a, 1b, and ALL of Phase 2 complete.**
   - 1a: one 10.06 MiB 0xFF free block at `0x015F0EA4`→EOF (docs/FREE_SPACE.md); BL-unreachable from low ROM → trampolines needed for hooks; data unconstrained.
   - 1b: charmap intact ("Ilios" 200 hits). Species table at name-base `0x00C7A364`, **stride 212**, dex-indexed, Gen9 at 1289+, last index 1560 → **NUM_SPECIES=1561**; XREFs at `0x0810243C`/`0x08104948` (docs/SPECIES_CAP.md). Curated dex = blanked names in-table (666 named). Dumper: `tools/dump_species_table.py` (handles é; emits Stage-B schema).
