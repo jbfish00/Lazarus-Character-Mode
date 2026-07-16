@@ -1,0 +1,17 @@
+# Never commit ROMs, saves, or savestates
+rom/
+*.gba
+*.sav
+*.ss[0-9]
+*.State
+
+# Build outputs (patched ROMs live here; the .bps is committed deliberately when shipped)
+build/*.gba
+
+# Emulator/analysis workspaces
+ghidra_project/
+tools/savestates/
+
+# Python
+__pycache__/
+*.pyc
