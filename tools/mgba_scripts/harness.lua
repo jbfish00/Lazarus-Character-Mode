@@ -75,11 +75,38 @@ H.SB1_MAPNUM  = 0x05  -- u8
 -- every helper below that needs one will fail loudly rather than poke a
 -- guessed address (poking the wrong EWRAM address is exactly how you get a
 -- "bug" that isn't real).
-H.gPlayerParty = nil       -- EWRAM base of the 6x100-byte party array
-H.gPlayerPartyCount = nil  -- u8 party count
-H.gSaveBlock1 = nil        -- resolved (deref'd) save block 1 base
-H.VAR_BLOCK = nil          -- base of the vars array (for VAR_CHARACTER_ID-alike)
-H.FLAG_BLOCK = nil         -- base of the flags bitfield (for catching toggle)
+-- CONFIRMED 2026-07-16 (Phase 1e): starter located in EWRAM by its distinctive
+-- typed nickname ("Aaaa..." = BB D5 D5 D5 at struct+8), then the global (vs
+-- transient copies) pinned by ROM literal-ref count: 587 refs. gEnemyParty =
+-- +600 (233 refs) => stride 100 (vanilla size kept). Count byte 3 before the
+-- array (51 refs), live-verified reading 1 with a 1-mon party.
+H.gPlayerParty = 0x0201B960      -- EWRAM base of the 6x100-byte party array
+H.PARTY_STRIDE = 100
+H.gEnemyParty = 0x0201BBB8       -- gPlayerParty + 600
+H.gPlayerPartyCount = 0x0201B95D -- u8 party count
+
+-- CONFIRMED 2026-07-16 (Phase 1d, docs/ROUTINE_MAP.md): flags/vars live inside
+-- SaveBlock1 at these offsets (static disasm of FlagSet/GetFlagPointer/
+-- GetVarPointer + live verification of 195 distinct flags via breakpoints).
+-- SB1 base RELOCATES on new game — always deref H.gSaveBlock1Ptr fresh.
+H.SB1_FLAGS_OFF = 0x12E8   -- u8 flags[0x12C] (2400 flags; ids < 0x4000)
+H.SB1_VARS_OFF  = 0x1414   -- u16 vars[]      (ids 0x4000..0x7FFF)
+
+function H.flagAddr(id)
+    return emu:read32(H.gSaveBlock1Ptr) + H.SB1_FLAGS_OFF + math.floor(id / 8)
+end
+function H.flagGet(id)
+    return math.floor(emu:read8(H.flagAddr(id)) / 2 ^ (id % 8)) % 2 == 1
+end
+function H.flagSet(id)
+    local a = H.flagAddr(id)
+    emu:write8(a, emu:read8(a) | (2 ^ (id % 8)))
+end
+function H.varAddr(id)
+    return emu:read32(H.gSaveBlock1Ptr) + H.SB1_VARS_OFF + 2 * (id - 0x4000)
+end
+function H.varGet(id) return emu:read16(H.varAddr(id)) end
+function H.varSet(id, v) emu:write16(H.varAddr(id), v) end
 
 -- ------------------------------------------------------------------- plumbing
 
@@ -216,15 +243,26 @@ end
 -- Something ROWE's in-game debug menu could not do at all: halt on an
 -- arbitrary ROM address and inspect CPU state. This is the core tool for
 -- the Phase 1 routine-mapping work (see docs/ROUTINE_MAP.md).
+--
+-- REQUIRES MGBA_HEADLESS_DEBUGGER=1 in the environment (2026-07-16): stock
+-- headless never creates core->debugger, so emu:setBreakpoint returns -1 and
+-- silently never fires. Our patched headless-main.c attaches a module-less
+-- debugger when the env var is set. Emulation single-steps while breakpoints
+-- are armed — only set the env var for trace runs.
 
 function H.breakpoint(name, addr, fn)
-    emu:setBreakpoint(function()
+    local id = emu:setBreakpoint(function()
         local pc = emu:readRegister("pc")
         H.log(string.format("BP %-16s frame=%-5d pc=%s r0=%s r1=%s r2=%s",
             name, frame, H.hex(pc), H.hex(emu:readRegister("r0")),
             H.hex(emu:readRegister("r1")), H.hex(emu:readRegister("r2"))))
         if fn then fn(frame) end
     end, addr)
+    if not id or id < 0 then
+        error("H.breakpoint('" .. name .. "') failed to register (id=" ..
+            tostring(id) .. ") — run with MGBA_HEADLESS_DEBUGGER=1")
+    end
+    return id
 end
 
 -- ---------------------------------------------------------------------- driver
