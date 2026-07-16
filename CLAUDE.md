@@ -67,4 +67,10 @@ Full plan: `/home/jbfish00/.claude/plans/plan-how-to-make-dazzling-hammock.md`.
 
 ## Status
 
-- **2026-07-15**: Project scaffolded (Phase 0). Tools copied from Seaglass (scanners, Lua harness, ghidra scripts, roster pipeline, armips/flips) and RadicalRed (characters.txt 184-seed, emit_bitmaps.py, CreateAndDecompile.java, shim/injector/test templates, README template). ROM extracted, pinned, read-only; provenance chain recorded. Next: Phase 1a free-space audit + 1b species-table dump; Phase 2 Stage A in parallel.
+- **2026-07-15 (b)**: **Phases 1a, 1b, and ALL of Phase 2 complete.**
+  - 1a: one 10.06 MiB 0xFF free block at `0x015F0EA4`→EOF (docs/FREE_SPACE.md); BL-unreachable from low ROM → trampolines needed for hooks; data unconstrained.
+  - 1b: charmap intact ("Ilios" 200 hits). Species table at name-base `0x00C7A364`, **stride 212**, dex-indexed, Gen9 at 1289+, last index 1560 → **NUM_SPECIES=1561**; XREFs at `0x0810243C`/`0x08104948` (docs/SPECIES_CAP.md). Curated dex = blanked names in-table (666 named). Dumper: `tools/dump_species_table.py` (handles é; emits Stage-B schema).
+  - Phase 2: Stage A 184 chars → Stage B 207 consts resolved → **obtainability validation** (new, docs/OBTAINABILITY.md): 284 wild + gifts = 186 obtainable bases → user-approved trim of 5 (Gloria/Hop/Victor 0, Hilbert/Olympia 1) → **179 characters final**, all binaries emitted incl. `rosters_expanded.bin` (179×196B bitmaps, sanity-checked). Note: `scrape_rosters.py` MERGES into existing rosters_raw.json — delete it when changing characters.txt.
+  - **Phase 4 lead**: Lazarus has a native 10-char cheat-code system ("ILOVEALOLA" etc., see docs/OBTAINABILITY.md) — likely the character-select mechanism; find its string table/handler first.
+  - Next: 1c headless bring-up + SaveBlock trio (try `0x030051B8/BC/C0`), 1d flags offset (then Seaglass feedback checkpoint #1), 1e intro nav, 1f catch trace. Phase 3 sprite survey pending.
+- **2026-07-15 (a)**: Project scaffolded (Phase 0). Tools copied from Seaglass (scanners, Lua harness, ghidra scripts, roster pipeline, armips/flips) and RadicalRed (characters.txt 184-seed, emit_bitmaps.py, CreateAndDecompile.java, shim/injector/test templates, README template). ROM extracted, pinned, read-only; provenance chain recorded.

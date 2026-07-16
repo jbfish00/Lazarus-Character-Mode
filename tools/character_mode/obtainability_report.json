@@ -1,0 +1,3206 @@
+{
+ "obtainable_bases": [
+  "SPECIES_AERODACTYL",
+  "SPECIES_AIPOM",
+  "SPECIES_AMAURA",
+  "SPECIES_ANORITH",
+  "SPECIES_APPLIN",
+  "SPECIES_ARCHEN",
+  "SPECIES_ARON",
+  "SPECIES_BALTOY",
+  "SPECIES_BARBOACH",
+  "SPECIES_BASCULIN_RED_STRIPED",
+  "SPECIES_BELLSPROUT",
+  "SPECIES_BLITZLE",
+  "SPECIES_BOUNSWEET",
+  "SPECIES_BRONZOR",
+  "SPECIES_BRUXISH",
+  "SPECIES_BUIZEL",
+  "SPECIES_CHARCADET",
+  "SPECIES_CHATOT",
+  "SPECIES_CHERUBI",
+  "SPECIES_CHESPIN",
+  "SPECIES_CHIKORITA",
+  "SPECIES_CHINCHOU",
+  "SPECIES_CLAMPERL",
+  "SPECIES_CLAUNCHER",
+  "SPECIES_COMFEY",
+  "SPECIES_CORPHISH",
+  "SPECIES_CORSOLA",
+  "SPECIES_CRABRAWLER",
+  "SPECIES_CUBCHOO",
+  "SPECIES_CUBONE",
+  "SPECIES_CUFANT",
+  "SPECIES_CUTIEFLY",
+  "SPECIES_CYCLIZAR",
+  "SPECIES_CYNDAQUIL",
+  "SPECIES_DEDENNE",
+  "SPECIES_DHELMISE",
+  "SPECIES_DODUO",
+  "SPECIES_DRATINI",
+  "SPECIES_DREEPY",
+  "SPECIES_DROWZEE",
+  "SPECIES_DUCKLETT",
+  "SPECIES_DUSKULL",
+  "SPECIES_DWEBBLE",
+  "SPECIES_EEVEE",
+  "SPECIES_EKANS",
+  "SPECIES_FALINKS",
+  "SPECIES_FENNEKIN",
+  "SPECIES_FINIZEN",
+  "SPECIES_FINNEON",
+  "SPECIES_FLABEBE",
+  "SPECIES_FLABEBE_WHITE",
+  "SPECIES_FLITTLE",
+  "SPECIES_FLOETTE_ETERNAL",
+  "SPECIES_FOMANTIS",
+  "SPECIES_FROAKIE",
+  "SPECIES_FUECOCO",
+  "SPECIES_GASTLY",
+  "SPECIES_GIRAFARIG",
+  "SPECIES_GLIGAR",
+  "SPECIES_GOOMY",
+  "SPECIES_GOTHITA",
+  "SPECIES_GRIMER",
+  "SPECIES_GROWLITHE",
+  "SPECIES_GRUBBIN",
+  "SPECIES_HAWLUCHA",
+  "SPECIES_HELIOPTILE",
+  "SPECIES_HERACROSS",
+  "SPECIES_HONEDGE",
+  "SPECIES_HOOTHOOT",
+  "SPECIES_HOPPIP",
+  "SPECIES_HOUNDOUR",
+  "SPECIES_IGGLYBUFF",
+  "SPECIES_IMPIDIMP",
+  "SPECIES_JANGMO_O",
+  "SPECIES_KABUTO",
+  "SPECIES_KECLEON",
+  "SPECIES_KLAWF",
+  "SPECIES_KOMALA",
+  "SPECIES_LAPRAS",
+  "SPECIES_LARVITAR",
+  "SPECIES_LILEEP",
+  "SPECIES_LILLIPUP",
+  "SPECIES_LITLEO",
+  "SPECIES_LITTEN",
+  "SPECIES_LITWICK",
+  "SPECIES_MAGIKARP",
+  "SPECIES_MAGNEMITE",
+  "SPECIES_MANKEY",
+  "SPECIES_MAREEP",
+  "SPECIES_MAWILE",
+  "SPECIES_MEDITITE",
+  "SPECIES_MEOWTH",
+  "SPECIES_MEOWTH_GALAR",
+  "SPECIES_MIENFOO",
+  "SPECIES_MIMIKYU_DISGUISED",
+  "SPECIES_MINIOR",
+  "SPECIES_MUDBRAY",
+  "SPECIES_MUNNA",
+  "SPECIES_MURKROW",
+  "SPECIES_NATU",
+  "SPECIES_NINCADA",
+  "SPECIES_NOSEPASS",
+  "SPECIES_NUMEL",
+  "SPECIES_OMANYTE",
+  "SPECIES_ONIX",
+  "SPECIES_ORANGURU",
+  "SPECIES_ORICORIO_BAILE",
+  "SPECIES_PACHIRISU",
+  "SPECIES_PANCHAM",
+  "SPECIES_PANPOUR",
+  "SPECIES_PANSAGE",
+  "SPECIES_PANSEAR",
+  "SPECIES_PARAS",
+  "SPECIES_PASSIMIAN",
+  "SPECIES_PAWMI",
+  "SPECIES_PHANPY",
+  "SPECIES_PICHU",
+  "SPECIES_PIKIPEK",
+  "SPECIES_POLIWAG",
+  "SPECIES_PONYTA",
+  "SPECIES_POPPLIO",
+  "SPECIES_PSYDUCK",
+  "SPECIES_PUMPKABOO_AVERAGE",
+  "SPECIES_QUAXLY",
+  "SPECIES_RALTS",
+  "SPECIES_RELICANTH",
+  "SPECIES_REMORAID",
+  "SPECIES_ROCKRUFF",
+  "SPECIES_ROWLET",
+  "SPECIES_RUFFLET",
+  "SPECIES_SALANDIT",
+  "SPECIES_SANDILE",
+  "SPECIES_SANDSHREW",
+  "SPECIES_SCRAGGY",
+  "SPECIES_SCYTHER",
+  "SPECIES_SEEL",
+  "SPECIES_SHELLDER",
+  "SPECIES_SHROODLE",
+  "SPECIES_SHROOMISH",
+  "SPECIES_SHUPPET",
+  "SPECIES_SIZZLIPEDE",
+  "SPECIES_SKIDDO",
+  "SPECIES_SKORUPI",
+  "SPECIES_SKRELP",
+  "SPECIES_SNEASEL",
+  "SPECIES_SNOM",
+  "SPECIES_SNORUNT",
+  "SPECIES_SNOVER",
+  "SPECIES_SOLOSIS",
+  "SPECIES_SPHEAL",
+  "SPECIES_SPINARAK",
+  "SPECIES_SPRIGATITO",
+  "SPECIES_STANTLER",
+  "SPECIES_STUFFUL",
+  "SPECIES_STUNKY",
+  "SPECIES_SWABLU",
+  "SPECIES_SWINUB",
+  "SPECIES_TAUROS",
+  "SPECIES_TENTACOOL",
+  "SPECIES_TIMBURR",
+  "SPECIES_TINKATINK",
+  "SPECIES_TIRTOUGA",
+  "SPECIES_TOEDSCOOL",
+  "SPECIES_TOGEDEMARU",
+  "SPECIES_TOGEPI",
+  "SPECIES_TORKOAL",
+  "SPECIES_TOTODILE",
+  "SPECIES_TRAPINCH",
+  "SPECIES_TROPIUS",
+  "SPECIES_TYRUNT",
+  "SPECIES_VOLTORB",
+  "SPECIES_VULLABY",
+  "SPECIES_VULPIX",
+  "SPECIES_WAILMER",
+  "SPECIES_WATTREL",
+  "SPECIES_WIMPOD",
+  "SPECIES_WINGULL",
+  "SPECIES_WOOBAT",
+  "SPECIES_WOOPER",
+  "SPECIES_WOOPER_PALDEA",
+  "SPECIES_WURMPLE",
+  "SPECIES_YAMPER",
+  "SPECIES_YANMA",
+  "SPECIES_ZIGZAGOON",
+  "SPECIES_ZIGZAGOON_GALAR",
+  "SPECIES_ZORUA"
+ ],
+ "characters": {
+  "Aaron": {
+   "category": "elite4",
+   "gen": 4,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_HERACROSS",
+    "SPECIES_SCYTHER",
+    "SPECIES_SKORUPI",
+    "SPECIES_STUNKY",
+    "SPECIES_TRAPINCH",
+    "SPECIES_WURMPLE",
+    "SPECIES_YANMA"
+   ]
+  },
+  "Acerola": {
+   "category": "elite4",
+   "gen": 7,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_DHELMISE",
+    "SPECIES_GASTLY",
+    "SPECIES_MEOWTH",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_MUDBRAY",
+    "SPECIES_SANDILE",
+    "SPECIES_SHUPPET",
+    "SPECIES_SNORUNT"
+   ]
+  },
+  "Agatha": {
+   "category": "elite4",
+   "gen": 1,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_DODUO",
+    "SPECIES_EKANS",
+    "SPECIES_GASTLY",
+    "SPECIES_GRIMER",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PICHU",
+    "SPECIES_SCYTHER"
+   ]
+  },
+  "Alain": {
+   "category": "anime",
+   "gen": 6,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_FROAKIE",
+    "SPECIES_GOOMY",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PICHU",
+    "SPECIES_SNEASEL"
+   ]
+  },
+  "Alder": {
+   "category": "champion",
+   "gen": 5,
+   "roster_in_rom": 10,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_ARCHEN",
+    "SPECIES_LILLIPUP",
+    "SPECIES_LITWICK",
+    "SPECIES_MIENFOO",
+    "SPECIES_PICHU",
+    "SPECIES_RUFFLET",
+    "SPECIES_SANDILE",
+    "SPECIES_SOLOSIS",
+    "SPECIES_TIMBURR",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Allister": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 9,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_DREEPY",
+    "SPECIES_DUSKULL",
+    "SPECIES_GASTLY",
+    "SPECIES_LITWICK",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_ORANGURU",
+    "SPECIES_PUMPKABOO_AVERAGE"
+   ]
+  },
+  "Archer": {
+   "category": "villain",
+   "gen": 2,
+   "roster_in_rom": 11,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_DRATINI",
+    "SPECIES_DROWZEE",
+    "SPECIES_GRIMER",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_LARVITAR",
+    "SPECIES_MEOWTH",
+    "SPECIES_PARAS",
+    "SPECIES_REMORAID",
+    "SPECIES_TOTODILE",
+    "SPECIES_VOLTORB"
+   ]
+  },
+  "Archie": {
+   "category": "villain",
+   "gen": 3,
+   "roster_in_rom": 10,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_GRIMER",
+    "SPECIES_MAGIKARP",
+    "SPECIES_NUMEL",
+    "SPECIES_PICHU",
+    "SPECIES_SPHEAL",
+    "SPECIES_TENTACOOL",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Ariana": {
+   "category": "villain",
+   "gen": 2,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_DROWZEE",
+    "SPECIES_EKANS",
+    "SPECIES_GRIMER",
+    "SPECIES_KABUTO",
+    "SPECIES_MURKROW",
+    "SPECIES_SNEASEL"
+   ]
+  },
+  "Arven": {
+   "category": "rival",
+   "gen": 9,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_KLAWF",
+    "SPECIES_SHELLDER",
+    "SPECIES_TOEDSCOOL"
+   ]
+  },
+  "Ash": {
+   "category": "anime",
+   "gen": 1,
+   "roster_in_rom": 16,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_FROAKIE",
+    "SPECIES_GASTLY",
+    "SPECIES_GOOMY",
+    "SPECIES_HOPPIP",
+    "SPECIES_LITTEN",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_MURKROW",
+    "SPECIES_PICHU",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SCRAGGY"
+   ]
+  },
+  "Barry": {
+   "category": "rival",
+   "gen": 4,
+   "roster_in_rom": 10,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_BUIZEL",
+    "SPECIES_DRATINI",
+    "SPECIES_HERACROSS",
+    "SPECIES_NATU",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_STUNKY"
+   ]
+  },
+  "Bea": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 7,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_FALINKS",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_PANCHAM",
+    "SPECIES_POLIWAG",
+    "SPECIES_SCRAGGY"
+   ]
+  },
+  "Bede": {
+   "category": "rival",
+   "gen": 8,
+   "roster_in_rom": 9,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CUFANT",
+    "SPECIES_EEVEE",
+    "SPECIES_GOTHITA",
+    "SPECIES_MAWILE",
+    "SPECIES_PONYTA",
+    "SPECIES_RALTS",
+    "SPECIES_SOLOSIS",
+    "SPECIES_TIMBURR"
+   ]
+  },
+  "Bertha": {
+   "category": "elite4",
+   "gen": 4,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_BARBOACH",
+    "SPECIES_GLIGAR",
+    "SPECIES_SWINUB",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Bianca": {
+   "category": "rival",
+   "gen": 5,
+   "roster_in_rom": 11,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_BLITZLE",
+    "SPECIES_DWEBBLE",
+    "SPECIES_LILLIPUP",
+    "SPECIES_LITWICK",
+    "SPECIES_MIENFOO",
+    "SPECIES_MUNNA",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR",
+    "SPECIES_TIMBURR",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Blaine": {
+   "category": "gymleader",
+   "gen": 1,
+   "roster_in_rom": 15,
+   "obtainable": 15,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_GROWLITHE",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_MANKEY",
+    "SPECIES_MEOWTH",
+    "SPECIES_NUMEL",
+    "SPECIES_PARAS",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_REMORAID",
+    "SPECIES_TOGEPI",
+    "SPECIES_TORKOAL",
+    "SPECIES_VOLTORB",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Blue": {
+   "category": "champion",
+   "gen": 1,
+   "roster_in_rom": 20,
+   "obtainable": 20,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_GASTLY",
+    "SPECIES_GROWLITHE",
+    "SPECIES_HERACROSS",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_LAPRAS",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_PICHU",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SCYTHER",
+    "SPECIES_SHELLDER",
+    "SPECIES_SWINUB",
+    "SPECIES_TAUROS",
+    "SPECIES_TOTODILE",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Brassius": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_APPLIN",
+    "SPECIES_BOUNSWEET",
+    "SPECIES_CHARCADET",
+    "SPECIES_FINIZEN",
+    "SPECIES_FUECOCO",
+    "SPECIES_SHROOMISH"
+   ]
+  },
+  "Brawly": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 8,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_HERACROSS",
+    "SPECIES_MEDITITE",
+    "SPECIES_MIENFOO",
+    "SPECIES_SCRAGGY",
+    "SPECIES_SHROOMISH",
+    "SPECIES_WAILMER",
+    "SPECIES_WINGULL"
+   ]
+  },
+  "Brendan": {
+   "category": "protagonist",
+   "gen": 3,
+   "roster_in_rom": 12,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_BALTOY",
+    "SPECIES_LARVITAR",
+    "SPECIES_NUMEL",
+    "SPECIES_PICHU",
+    "SPECIES_SHROOMISH",
+    "SPECIES_TROPIUS",
+    "SPECIES_WAILMER",
+    "SPECIES_WINGULL",
+    "SPECIES_ZIGZAGOON"
+   ]
+  },
+  "Brock": {
+   "category": "gymleader",
+   "gen": 1,
+   "roster_in_rom": 25,
+   "obtainable": 22,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_AIPOM",
+    "SPECIES_COMFEY",
+    "SPECIES_CUBONE",
+    "SPECIES_GASTLY",
+    "SPECIES_HERACROSS",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_KABUTO",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MAREEP",
+    "SPECIES_OMANYTE",
+    "SPECIES_ONIX",
+    "SPECIES_PANSAGE",
+    "SPECIES_PICHU",
+    "SPECIES_RELICANTH",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_TAUROS",
+    "SPECIES_TOTODILE",
+    "SPECIES_VULPIX",
+    "SPECIES_WAILMER"
+   ]
+  },
+  "Bruno": {
+   "category": "elite4",
+   "gen": 1,
+   "roster_in_rom": 15,
+   "obtainable": 15,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_GASTLY",
+    "SPECIES_GRIMER",
+    "SPECIES_HERACROSS",
+    "SPECIES_LAPRAS",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MANKEY",
+    "SPECIES_ONIX",
+    "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SCYTHER",
+    "SPECIES_SHELLDER",
+    "SPECIES_VOLTORB"
+   ]
+  },
+  "Brycen": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 11,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_CUBCHOO",
+    "SPECIES_HERACROSS",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_MURKROW",
+    "SPECIES_SCRAGGY",
+    "SPECIES_SEEL",
+    "SPECIES_SNEASEL",
+    "SPECIES_SPHEAL",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_VULLABY",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Bugsy": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 18,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_ANORITH",
+    "SPECIES_BELLSPROUT",
+    "SPECIES_CHIKORITA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_HERACROSS",
+    "SPECIES_LAPRAS",
+    "SPECIES_LARVITAR",
+    "SPECIES_NINCADA",
+    "SPECIES_PICHU",
+    "SPECIES_SCYTHER",
+    "SPECIES_SNEASEL",
+    "SPECIES_SPINARAK",
+    "SPECIES_WOOPER",
+    "SPECIES_YANMA"
+   ]
+  },
+  "Burgh": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_DWEBBLE",
+    "SPECIES_HERACROSS",
+    "SPECIES_LITWICK",
+    "SPECIES_TOGEPI"
+   ]
+  },
+  "Byron": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 12,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_ANORITH",
+    "SPECIES_ARON",
+    "SPECIES_BRONZOR",
+    "SPECIES_GLIGAR",
+    "SPECIES_KABUTO",
+    "SPECIES_LILEEP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_OMANYTE",
+    "SPECIES_ONIX"
+   ]
+  },
+  "Caitlin": {
+   "category": "elite4",
+   "gen": 5,
+   "roster_in_rom": 5,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_GOTHITA",
+    "SPECIES_MUNNA",
+    "SPECIES_RALTS",
+    "SPECIES_SOLOSIS"
+   ]
+  },
+  "Calem": {
+   "category": "protagonist",
+   "gen": 6,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_EEVEE",
+    "SPECIES_FENNEKIN",
+    "SPECIES_FROAKIE"
+   ]
+  },
+  "Candice": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_DODUO",
+    "SPECIES_EEVEE",
+    "SPECIES_GLIGAR",
+    "SPECIES_MEDITITE",
+    "SPECIES_PONYTA",
+    "SPECIES_SNEASEL",
+    "SPECIES_SNORUNT",
+    "SPECIES_SNOVER",
+    "SPECIES_SWINUB"
+   ]
+  },
+  "Cheren": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_BASCULIN_RED_STRIPED",
+    "SPECIES_CUBCHOO",
+    "SPECIES_DUCKLETT",
+    "SPECIES_GROWLITHE",
+    "SPECIES_LILLIPUP",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR",
+    "SPECIES_RUFFLET"
+   ]
+  },
+  "Chili": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_GROWLITHE",
+    "SPECIES_LILLIPUP",
+    "SPECIES_NUMEL",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR"
+   ]
+  },
+  "Chloe": {
+   "category": "anime",
+   "gen": 8,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CLAMPERL",
+    "SPECIES_EEVEE",
+    "SPECIES_IMPIDIMP",
+    "SPECIES_PONYTA",
+    "SPECIES_PSYDUCK",
+    "SPECIES_SEEL",
+    "SPECIES_WINGULL",
+    "SPECIES_YAMPER"
+   ]
+  },
+  "Chuck": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 12,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_CHIKORITA",
+    "SPECIES_DROWZEE",
+    "SPECIES_MANKEY",
+    "SPECIES_MAREEP",
+    "SPECIES_MEDITITE",
+    "SPECIES_POLIWAG",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SCYTHER",
+    "SPECIES_SHROOMISH",
+    "SPECIES_SNEASEL",
+    "SPECIES_TIMBURR"
+   ]
+  },
+  "Cilan": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 14,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_BASCULIN_RED_STRIPED",
+    "SPECIES_BUIZEL",
+    "SPECIES_CHESPIN",
+    "SPECIES_CORPHISH",
+    "SPECIES_DWEBBLE",
+    "SPECIES_HOPPIP",
+    "SPECIES_LILLIPUP",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR",
+    "SPECIES_SNOVER",
+    "SPECIES_TIMBURR"
+   ]
+  },
+  "Clair": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 10,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_DRATINI",
+    "SPECIES_GROWLITHE",
+    "SPECIES_LAPRAS",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAREEP",
+    "SPECIES_PICHU",
+    "SPECIES_SWABLU"
+   ]
+  },
+  "Clay": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 10,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_BALTOY",
+    "SPECIES_GOTHITA",
+    "SPECIES_MUNNA",
+    "SPECIES_ONIX",
+    "SPECIES_SANDILE",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SWINUB",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_TRAPINCH",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Clemont": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 20,
+   "obtainable": 16,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_CHESPIN",
+    "SPECIES_DEDENNE",
+    "SPECIES_FENNEKIN",
+    "SPECIES_GASTLY",
+    "SPECIES_HELIOPTILE",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MAREEP",
+    "SPECIES_PACHIRISU",
+    "SPECIES_PANCHAM",
+    "SPECIES_PANSAGE",
+    "SPECIES_PICHU",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_SKIDDO",
+    "SPECIES_SWINUB",
+    "SPECIES_VOLTORB"
+   ]
+  },
+  "Colress": {
+   "category": "villain",
+   "gen": 5,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_CUBCHOO",
+    "SPECIES_DRATINI",
+    "SPECIES_GOTHITA",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MIENFOO",
+    "SPECIES_PICHU",
+    "SPECIES_RALTS",
+    "SPECIES_TIMBURR",
+    "SPECIES_WOOBAT"
+   ]
+  },
+  "Crasher Wake": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_BUIZEL",
+    "SPECIES_CLAMPERL",
+    "SPECIES_FINNEON",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Cress": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_BASCULIN_RED_STRIPED",
+    "SPECIES_BUIZEL",
+    "SPECIES_CORPHISH",
+    "SPECIES_LILLIPUP",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR",
+    "SPECIES_PSYDUCK"
+   ]
+  },
+  "Cynthia": {
+   "category": "champion",
+   "gen": 4,
+   "roster_in_rom": 17,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_GOTHITA",
+    "SPECIES_JANGMO_O",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PICHU",
+    "SPECIES_PSYDUCK",
+    "SPECIES_ROWLET",
+    "SPECIES_RUFFLET",
+    "SPECIES_SKORUPI",
+    "SPECIES_SNEASEL",
+    "SPECIES_TOGEPI",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Cyrus": {
+   "category": "villain",
+   "gen": 4,
+   "roster_in_rom": 9,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MURKROW",
+    "SPECIES_NOSEPASS",
+    "SPECIES_SNEASEL"
+   ]
+  },
+  "Dawn": {
+   "category": "protagonist",
+   "gen": 4,
+   "roster_in_rom": 18,
+   "obtainable": 18,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_CLAMPERL",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_DODUO",
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_GRIMER",
+    "SPECIES_GROWLITHE",
+    "SPECIES_MURKROW",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_PACHIRISU",
+    "SPECIES_PANSAGE",
+    "SPECIES_PICHU",
+    "SPECIES_RALTS",
+    "SPECIES_SNORUNT",
+    "SPECIES_SPINARAK",
+    "SPECIES_SWINUB",
+    "SPECIES_TOGEPI"
+   ]
+  },
+  "Diantha": {
+   "category": "champion",
+   "gen": 6,
+   "roster_in_rom": 11,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_AMAURA",
+    "SPECIES_DRATINI",
+    "SPECIES_DREEPY",
+    "SPECIES_GOOMY",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_RALTS",
+    "SPECIES_TYRUNT"
+   ]
+  },
+  "Drake": {
+   "category": "elite4",
+   "gen": 3,
+   "roster_in_rom": 5,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_PICHU",
+    "SPECIES_SCYTHER",
+    "SPECIES_SKRELP",
+    "SPECIES_SWABLU",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Drasna": {
+   "category": "elite4",
+   "gen": 6,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_SKRELP",
+    "SPECIES_SWABLU"
+   ]
+  },
+  "Drayden": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_RUFFLET",
+    "SPECIES_SWABLU",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Drew": {
+   "category": "anime",
+   "gen": 3,
+   "roster_in_rom": 11,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_BALTOY",
+    "SPECIES_DUSKULL",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_GROWLITHE",
+    "SPECIES_MEDITITE",
+    "SPECIES_TRAPINCH",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Elesa": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_BLITZLE",
+    "SPECIES_GOTHITA",
+    "SPECIES_MAREEP",
+    "SPECIES_PICHU",
+    "SPECIES_TOGEPI",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Elio": {
+   "category": "protagonist",
+   "gen": 7,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_FROAKIE",
+    "SPECIES_JANGMO_O",
+    "SPECIES_LITTEN",
+    "SPECIES_PICHU",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_ROWLET"
+   ]
+  },
+  "Erika": {
+   "category": "gymleader",
+   "gen": 1,
+   "roster_in_rom": 17,
+   "obtainable": 16,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_COMFEY",
+    "SPECIES_CUBONE",
+    "SPECIES_DROWZEE",
+    "SPECIES_EEVEE",
+    "SPECIES_FOMANTIS",
+    "SPECIES_GRIMER",
+    "SPECIES_HOPPIP",
+    "SPECIES_LILEEP",
+    "SPECIES_PARAS",
+    "SPECIES_PICHU",
+    "SPECIES_SEEL",
+    "SPECIES_SHELLDER",
+    "SPECIES_SNOVER",
+    "SPECIES_SWINUB",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Ethan": {
+   "category": "protagonist",
+   "gen": 2,
+   "roster_in_rom": 10,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_PHANPY",
+    "SPECIES_PICHU",
+    "SPECIES_TAUROS"
+   ]
+  },
+  "Falkner": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 20,
+   "obtainable": 15,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_CHIKORITA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_DODUO",
+    "SPECIES_GLIGAR",
+    "SPECIES_GRIMER",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_MAREEP",
+    "SPECIES_MURKROW",
+    "SPECIES_NATU",
+    "SPECIES_PICHU",
+    "SPECIES_SPINARAK",
+    "SPECIES_TOGEPI",
+    "SPECIES_TOTODILE",
+    "SPECIES_WINGULL"
+   ]
+  },
+  "Fantina": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 7,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_DUSKULL",
+    "SPECIES_GASTLY",
+    "SPECIES_NOSEPASS",
+    "SPECIES_SHUPPET",
+    "SPECIES_SNORUNT"
+   ]
+  },
+  "Flannery": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 11,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_CORPHISH",
+    "SPECIES_GROWLITHE",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_LITWICK",
+    "SPECIES_NUMEL",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_TORKOAL",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Flint": {
+   "category": "elite4",
+   "gen": 4,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_BUIZEL",
+    "SPECIES_EEVEE",
+    "SPECIES_GROWLITHE",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_ONIX",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Gardenia": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 12,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_BELLSPROUT",
+    "SPECIES_CHERUBI",
+    "SPECIES_DHELMISE",
+    "SPECIES_EEVEE",
+    "SPECIES_HOPPIP",
+    "SPECIES_PACHIRISU",
+    "SPECIES_PONYTA",
+    "SPECIES_SHROOMISH",
+    "SPECIES_TROPIUS"
+   ]
+  },
+  "Gary": {
+   "category": "anime",
+   "gen": 1,
+   "roster_in_rom": 17,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_DODUO",
+    "SPECIES_EEVEE",
+    "SPECIES_GROWLITHE",
+    "SPECIES_HERACROSS",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_ONIX",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_SCYTHER",
+    "SPECIES_TAUROS",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Geeta": {
+   "category": "champion",
+   "gen": 9,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_DREEPY",
+    "SPECIES_FLITTLE",
+    "SPECIES_SKIDDO"
+   ]
+  },
+  "Ghetsis": {
+   "category": "villain",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_MUNNA",
+    "SPECIES_RUFFLET",
+    "SPECIES_SKORUPI",
+    "SPECIES_TIRTOUGA"
+   ]
+  },
+  "Giovanni": {
+   "category": "villain",
+   "gen": 1,
+   "roster_in_rom": 20,
+   "obtainable": 20,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_CUBONE",
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_GLIGAR",
+    "SPECIES_GROWLITHE",
+    "SPECIES_KABUTO",
+    "SPECIES_LAPRAS",
+    "SPECIES_MEOWTH",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_MURKROW",
+    "SPECIES_ONIX",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_SANDILE",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SHELLDER",
+    "SPECIES_TAUROS",
+    "SPECIES_TOGEPI",
+    "SPECIES_WOOBAT",
+    "SPECIES_YANMA"
+   ]
+  },
+  "Glacia": {
+   "category": "elite4",
+   "gen": 3,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_CUBCHOO",
+    "SPECIES_SNORUNT",
+    "SPECIES_SNOVER",
+    "SPECIES_SPHEAL"
+   ]
+  },
+  "Gladion": {
+   "category": "rival",
+   "gen": 7,
+   "roster_in_rom": 15,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_GRIMER",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_JANGMO_O",
+    "SPECIES_KOMALA",
+    "SPECIES_LILLIPUP",
+    "SPECIES_MEOWTH",
+    "SPECIES_MUDBRAY",
+    "SPECIES_PICHU",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SNEASEL",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Goh": {
+   "category": "anime",
+   "gen": 8,
+   "roster_in_rom": 12,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_FLABEBE_WHITE",
+    "SPECIES_HERACROSS",
+    "SPECIES_PICHU",
+    "SPECIES_SCYTHER",
+    "SPECIES_SHELLDER",
+    "SPECIES_VULPIX",
+    "SPECIES_ZIGZAGOON"
+   ]
+  },
+  "Gordie": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_LAPRAS",
+    "SPECIES_LARVITAR",
+    "SPECIES_SCRAGGY"
+   ]
+  },
+  "Grant": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_AMAURA",
+    "SPECIES_ONIX",
+    "SPECIES_TYRUNT"
+   ]
+  },
+  "Grimsley": {
+   "category": "elite4",
+   "gen": 5,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_HOUNDOUR",
+    "SPECIES_LARVITAR",
+    "SPECIES_MURKROW",
+    "SPECIES_SANDILE",
+    "SPECIES_SCRAGGY",
+    "SPECIES_SKORUPI"
+   ]
+  },
+  "Grusha": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CUBCHOO",
+    "SPECIES_PSYDUCK",
+    "SPECIES_SNEASEL",
+    "SPECIES_SNOM",
+    "SPECIES_SNORUNT",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_SWABLU",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Guzma": {
+   "category": "villain",
+   "gen": 7,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_GRUBBIN",
+    "SPECIES_JANGMO_O",
+    "SPECIES_LITTEN",
+    "SPECIES_PICHU",
+    "SPECIES_POPPLIO",
+    "SPECIES_SCYTHER",
+    "SPECIES_SPINARAK",
+    "SPECIES_WIMPOD"
+   ]
+  },
+  "Hala": {
+   "category": "gymleader",
+   "gen": 7,
+   "roster_in_rom": 12,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_CRABRAWLER",
+    "SPECIES_LITTEN",
+    "SPECIES_MANKEY",
+    "SPECIES_MEOWTH",
+    "SPECIES_POLIWAG",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_ROWLET",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SNEASEL",
+    "SPECIES_STUFFUL",
+    "SPECIES_WIMPOD"
+   ]
+  },
+  "Hapu": {
+   "category": "gymleader",
+   "gen": 7,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_CORSOLA",
+    "SPECIES_CRABRAWLER",
+    "SPECIES_GRUBBIN",
+    "SPECIES_MUDBRAY",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_PICHU",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SANDILE",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Hassel": {
+   "category": "elite4",
+   "gen": 9,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_APPLIN",
+    "SPECIES_DRATINI",
+    "SPECIES_FUECOCO",
+    "SPECIES_SKRELP"
+   ]
+  },
+  "Hau": {
+   "category": "champion",
+   "gen": 7,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_CRABRAWLER",
+    "SPECIES_EEVEE",
+    "SPECIES_KOMALA",
+    "SPECIES_LITTEN",
+    "SPECIES_MEOWTH",
+    "SPECIES_PICHU",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROWLET",
+    "SPECIES_TAUROS"
+   ]
+  },
+  "Hilda": {
+   "category": "protagonist",
+   "gen": 5,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_MIENFOO"
+   ]
+  },
+  "Hugh": {
+   "category": "rival",
+   "gen": 5,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_GRIMER",
+    "SPECIES_GROWLITHE",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Iono": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 10,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_CHARCADET",
+    "SPECIES_CUFANT",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_PAWMI",
+    "SPECIES_PICHU",
+    "SPECIES_QUAXLY",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_VOLTORB",
+    "SPECIES_WATTREL"
+   ]
+  },
+  "Iris": {
+   "category": "champion",
+   "gen": 5,
+   "roster_in_rom": 12,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_ARCHEN",
+    "SPECIES_ARON",
+    "SPECIES_CUBCHOO",
+    "SPECIES_DRATINI",
+    "SPECIES_LAPRAS",
+    "SPECIES_PANSAGE",
+    "SPECIES_PICHU",
+    "SPECIES_RUFFLET",
+    "SPECIES_SWABLU",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_WOOBAT"
+   ]
+  },
+  "James": {
+   "category": "anime",
+   "gen": 1,
+   "roster_in_rom": 25,
+   "obtainable": 22,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_EKANS",
+    "SPECIES_GASTLY",
+    "SPECIES_HOPPIP",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MEOWTH",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_NUMEL",
+    "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_RALTS",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SKORUPI",
+    "SPECIES_SNEASEL",
+    "SPECIES_STUFFUL",
+    "SPECIES_SWINUB",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_WURMPLE",
+    "SPECIES_YANMA"
+   ]
+  },
+  "Janine": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 14,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_CHIKORITA",
+    "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_GLIGAR",
+    "SPECIES_GRIMER",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_SKORUPI",
+    "SPECIES_SPINARAK",
+    "SPECIES_STANTLER",
+    "SPECIES_TENTACOOL"
+   ]
+  },
+  "Jasmine": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 14,
+   "obtainable": 13,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_CORSOLA",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MAREEP",
+    "SPECIES_MAWILE",
+    "SPECIES_ONIX",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_SCYTHER",
+    "SPECIES_STANTLER",
+    "SPECIES_TOGEPI",
+    "SPECIES_TOTODILE"
+   ]
+  },
+  "Jessie": {
+   "category": "anime",
+   "gen": 1,
+   "roster_in_rom": 25,
+   "obtainable": 23,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EKANS",
+    "SPECIES_GASTLY",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAWILE",
+    "SPECIES_MEOWTH",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_MURKROW",
+    "SPECIES_PACHIRISU",
+    "SPECIES_PICHU",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_RALTS",
+    "SPECIES_SKORUPI",
+    "SPECIES_SNEASEL",
+    "SPECIES_STUFFUL",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_TOGEPI",
+    "SPECIES_WOOBAT",
+    "SPECIES_WURMPLE",
+    "SPECIES_YANMA"
+   ]
+  },
+  "Juan": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 15,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_BARBOACH",
+    "SPECIES_CHINCHOU",
+    "SPECIES_CLAMPERL",
+    "SPECIES_CORPHISH",
+    "SPECIES_CORSOLA",
+    "SPECIES_LAPRAS",
+    "SPECIES_POLIWAG",
+    "SPECIES_RELICANTH",
+    "SPECIES_SPHEAL",
+    "SPECIES_TENTACOOL",
+    "SPECIES_WAILMER",
+    "SPECIES_WINGULL"
+   ]
+  },
+  "Jupiter": {
+   "category": "villain",
+   "gen": 4,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_STUNKY"
+   ]
+  },
+  "Kabu": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_FUECOCO",
+    "SPECIES_GROWLITHE",
+    "SPECIES_LITWICK",
+    "SPECIES_NUMEL",
+    "SPECIES_SALANDIT",
+    "SPECIES_SIZZLIPEDE",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_TORKOAL",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Kahili": {
+   "category": "elite4",
+   "gen": 7,
+   "roster_in_rom": 7,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_HAWLUCHA",
+    "SPECIES_LITTEN",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_PIKIPEK",
+    "SPECIES_RUFFLET",
+    "SPECIES_VULLABY"
+   ]
+  },
+  "Karen": {
+   "category": "elite4",
+   "gen": 2,
+   "roster_in_rom": 13,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_MEOWTH",
+    "SPECIES_MURKROW",
+    "SPECIES_SNEASEL",
+    "SPECIES_TOTODILE",
+    "SPECIES_VOLTORB"
+   ]
+  },
+  "Katy": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_HERACROSS",
+    "SPECIES_PICHU",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_WOOPER_PALDEA"
+   ]
+  },
+  "Kiawe (anime)": {
+   "category": "anime",
+   "gen": 7,
+   "roster_in_rom": 11,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_CORPHISH",
+    "SPECIES_CUBONE",
+    "SPECIES_GASTLY",
+    "SPECIES_GRUBBIN",
+    "SPECIES_LILLIPUP",
+    "SPECIES_ONIX",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SALANDIT",
+    "SPECIES_TAUROS",
+    "SPECIES_WAILMER"
+   ]
+  },
+  "Kofu": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_CLAUNCHER",
+    "SPECIES_CRABRAWLER",
+    "SPECIES_SHROOMISH",
+    "SPECIES_SNORUNT",
+    "SPECIES_TOTODILE",
+    "SPECIES_WINGULL"
+   ]
+  },
+  "Koga": {
+   "category": "elite4",
+   "gen": 1,
+   "roster_in_rom": 19,
+   "obtainable": 19,
+   "obtainable_consts": [
+    "SPECIES_CHINCHOU",
+    "SPECIES_CUBONE",
+    "SPECIES_DRATINI",
+    "SPECIES_DROWZEE",
+    "SPECIES_EKANS",
+    "SPECIES_GASTLY",
+    "SPECIES_GLIGAR",
+    "SPECIES_GRIMER",
+    "SPECIES_LAPRAS",
+    "SPECIES_PARAS",
+    "SPECIES_PICHU",
+    "SPECIES_PSYDUCK",
+    "SPECIES_SCYTHER",
+    "SPECIES_SPINARAK",
+    "SPECIES_STANTLER",
+    "SPECIES_STUNKY",
+    "SPECIES_TENTACOOL",
+    "SPECIES_VOLTORB",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Korrina": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 13,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_CRABRAWLER",
+    "SPECIES_FROAKIE",
+    "SPECIES_GASTLY",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_HONEDGE",
+    "SPECIES_MAWILE",
+    "SPECIES_MEDITITE",
+    "SPECIES_MIENFOO",
+    "SPECIES_PICHU",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_RALTS"
+   ]
+  },
+  "Kris": {
+   "category": "protagonist",
+   "gen": 2,
+   "roster_in_rom": 12,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CHIKORITA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAREEP",
+    "SPECIES_TOTODILE",
+    "SPECIES_VOLTORB"
+   ]
+  },
+  "Kukui": {
+   "category": "champion",
+   "gen": 7,
+   "roster_in_rom": 18,
+   "obtainable": 18,
+   "obtainable_consts": [
+    "SPECIES_BRUXISH",
+    "SPECIES_CORSOLA",
+    "SPECIES_CUBONE",
+    "SPECIES_DROWZEE",
+    "SPECIES_FOMANTIS",
+    "SPECIES_GRUBBIN",
+    "SPECIES_JANGMO_O",
+    "SPECIES_LITTEN",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_PICHU",
+    "SPECIES_PIKIPEK",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_ROWLET",
+    "SPECIES_RUFFLET",
+    "SPECIES_VULPIX",
+    "SPECIES_WAILMER",
+    "SPECIES_WIMPOD"
+   ]
+  },
+  "Lana (anime)": {
+   "category": "anime",
+   "gen": 7,
+   "roster_in_rom": 13,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_BOUNSWEET",
+    "SPECIES_DHELMISE",
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_LAPRAS",
+    "SPECIES_LILLIPUP",
+    "SPECIES_LITTEN",
+    "SPECIES_POPPLIO",
+    "SPECIES_TAUROS",
+    "SPECIES_TOGEDEMARU",
+    "SPECIES_WAILMER",
+    "SPECIES_WIMPOD"
+   ]
+  },
+  "Lance": {
+   "category": "champion",
+   "gen": 1,
+   "roster_in_rom": 18,
+   "obtainable": 13,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_DRATINI",
+    "SPECIES_GROWLITHE",
+    "SPECIES_LAPRAS",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_ONIX",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_RALTS",
+    "SPECIES_SNEASEL",
+    "SPECIES_SWABLU",
+    "SPECIES_TOTODILE",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Larry": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 12,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_KOMALA",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_PANSAGE",
+    "SPECIES_QUAXLY",
+    "SPECIES_RUFFLET",
+    "SPECIES_SNORUNT",
+    "SPECIES_SWABLU",
+    "SPECIES_TAUROS",
+    "SPECIES_TINKATINK",
+    "SPECIES_TROPIUS",
+    "SPECIES_WOOPER_PALDEA"
+   ]
+  },
+  "Leaf": {
+   "category": "protagonist",
+   "gen": 1,
+   "roster_in_rom": 3,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_PICHU"
+   ]
+  },
+  "Lenora": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_GOTHITA",
+    "SPECIES_LILLIPUP",
+    "SPECIES_RUFFLET",
+    "SPECIES_SANDILE"
+   ]
+  },
+  "Leon": {
+   "category": "champion",
+   "gen": 8,
+   "roster_in_rom": 16,
+   "obtainable": 16,
+   "obtainable_consts": [
+    "SPECIES_AMAURA",
+    "SPECIES_CHESPIN",
+    "SPECIES_DRATINI",
+    "SPECIES_DREEPY",
+    "SPECIES_GOOMY",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_HONEDGE",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PANCHAM",
+    "SPECIES_PICHU",
+    "SPECIES_PUMPKABOO_AVERAGE",
+    "SPECIES_RALTS",
+    "SPECIES_SIZZLIPEDE",
+    "SPECIES_TRAPINCH",
+    "SPECIES_TYRUNT",
+    "SPECIES_ZIGZAGOON_GALAR"
+   ]
+  },
+  "Lillie (anime)": {
+   "category": "anime",
+   "gen": 7,
+   "roster_in_rom": 18,
+   "obtainable": 17,
+   "obtainable_consts": [
+    "SPECIES_BOUNSWEET",
+    "SPECIES_EEVEE",
+    "SPECIES_GRUBBIN",
+    "SPECIES_JANGMO_O",
+    "SPECIES_LAPRAS",
+    "SPECIES_LARVITAR",
+    "SPECIES_LILLIPUP",
+    "SPECIES_MUDBRAY",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_PICHU",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SALANDIT",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SWABLU",
+    "SPECIES_TAUROS",
+    "SPECIES_VULPIX",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Liza": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 13,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_BALTOY",
+    "SPECIES_BRONZOR",
+    "SPECIES_CORPHISH",
+    "SPECIES_DROWZEE",
+    "SPECIES_GOTHITA",
+    "SPECIES_NATU",
+    "SPECIES_PICHU",
+    "SPECIES_RALTS",
+    "SPECIES_SOLOSIS"
+   ]
+  },
+  "Lorelei": {
+   "category": "elite4",
+   "gen": 1,
+   "roster_in_rom": 12,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_LAPRAS",
+    "SPECIES_OMANYTE",
+    "SPECIES_PICHU",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SEEL",
+    "SPECIES_SHELLDER",
+    "SPECIES_SWINUB",
+    "SPECIES_TOGEPI"
+   ]
+  },
+  "Lt. Surge": {
+   "category": "gymleader",
+   "gen": 1,
+   "roster_in_rom": 17,
+   "obtainable": 16,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_CHINCHOU",
+    "SPECIES_DODUO",
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MAREEP",
+    "SPECIES_ONIX",
+    "SPECIES_PACHIRISU",
+    "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_SEEL",
+    "SPECIES_VOLTORB",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Lucas": {
+   "category": "protagonist",
+   "gen": 4,
+   "roster_in_rom": 8,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_DUSKULL",
+    "SPECIES_EEVEE",
+    "SPECIES_GLIGAR",
+    "SPECIES_KABUTO",
+    "SPECIES_LILEEP",
+    "SPECIES_RALTS",
+    "SPECIES_TAUROS"
+   ]
+  },
+  "Lucian": {
+   "category": "elite4",
+   "gen": 4,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_BUIZEL",
+    "SPECIES_EEVEE",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_MEDITITE",
+    "SPECIES_RALTS",
+    "SPECIES_SCYTHER",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Lusamine": {
+   "category": "villain",
+   "gen": 7,
+   "roster_in_rom": 12,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_EEVEE",
+    "SPECIES_GRUBBIN",
+    "SPECIES_LAPRAS",
+    "SPECIES_LILLIPUP",
+    "SPECIES_MUDBRAY",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_SALANDIT",
+    "SPECIES_STUFFUL",
+    "SPECIES_TOGEDEMARU",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Lyra": {
+   "category": "protagonist",
+   "gen": 2,
+   "roster_in_rom": 9,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_CHIKORITA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_PHANPY",
+    "SPECIES_TOTODILE"
+   ]
+  },
+  "Lysandre": {
+   "category": "villain",
+   "gen": 6,
+   "roster_in_rom": 11,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_FLABEBE_WHITE",
+    "SPECIES_FLOETTE_ETERNAL",
+    "SPECIES_FROAKIE",
+    "SPECIES_LITLEO",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MIENFOO",
+    "SPECIES_MURKROW",
+    "SPECIES_RALTS",
+    "SPECIES_SHUPPET"
+   ]
+  },
+  "Mallow (anime)": {
+   "category": "anime",
+   "gen": 7,
+   "roster_in_rom": 11,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_BOUNSWEET",
+    "SPECIES_LAPRAS",
+    "SPECIES_LILLIPUP",
+    "SPECIES_LITTEN",
+    "SPECIES_ORANGURU",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_PICHU",
+    "SPECIES_POPPLIO",
+    "SPECIES_TAUROS",
+    "SPECIES_TOGEDEMARU",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Malva": {
+   "category": "elite4",
+   "gen": 6,
+   "roster_in_rom": 9,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_FENNEKIN",
+    "SPECIES_HONEDGE",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_LITLEO",
+    "SPECIES_LITWICK",
+    "SPECIES_MAGIKARP",
+    "SPECIES_RALTS",
+    "SPECIES_TORKOAL"
+   ]
+  },
+  "Marlon": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_SHELLDER",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_WAILMER",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Marnie": {
+   "category": "rival",
+   "gen": 8,
+   "roster_in_rom": 6,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_CUFANT",
+    "SPECIES_CYCLIZAR",
+    "SPECIES_IMPIDIMP",
+    "SPECIES_MAWILE",
+    "SPECIES_SCRAGGY"
+   ]
+  },
+  "Mars": {
+   "category": "villain",
+   "gen": 4,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_STUNKY",
+    "SPECIES_YANMA"
+   ]
+  },
+  "Marshal": {
+   "category": "elite4",
+   "gen": 5,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_GOTHITA",
+    "SPECIES_MEDITITE",
+    "SPECIES_MIENFOO",
+    "SPECIES_RUFFLET",
+    "SPECIES_SHROOMISH",
+    "SPECIES_TIMBURR",
+    "SPECIES_TIRTOUGA"
+   ]
+  },
+  "Maxie": {
+   "category": "villain",
+   "gen": 3,
+   "roster_in_rom": 5,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_HOUNDOUR",
+    "SPECIES_NUMEL",
+    "SPECIES_SPHEAL"
+   ]
+  },
+  "May": {
+   "category": "protagonist",
+   "gen": 3,
+   "roster_in_rom": 18,
+   "obtainable": 15,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_BALTOY",
+    "SPECIES_EEVEE",
+    "SPECIES_LARVITAR",
+    "SPECIES_NOSEPASS",
+    "SPECIES_NUMEL",
+    "SPECIES_PICHU",
+    "SPECIES_SHROOMISH",
+    "SPECIES_SWABLU",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TORKOAL",
+    "SPECIES_TROPIUS",
+    "SPECIES_WAILMER",
+    "SPECIES_WINGULL",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Maylene": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_CHERUBI",
+    "SPECIES_HERACROSS",
+    "SPECIES_MEDITITE",
+    "SPECIES_MURKROW",
+    "SPECIES_PACHIRISU",
+    "SPECIES_RALTS",
+    "SPECIES_SHROOMISH",
+    "SPECIES_SNORUNT"
+   ]
+  },
+  "Melony": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 4,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_LAPRAS",
+    "SPECIES_SALANDIT",
+    "SPECIES_SNOM"
+   ]
+  },
+  "Milo": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 5,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_APPLIN",
+    "SPECIES_BOUNSWEET",
+    "SPECIES_CHERUBI",
+    "SPECIES_SNORUNT",
+    "SPECIES_TIMBURR"
+   ]
+  },
+  "Misty": {
+   "category": "gymleader",
+   "gen": 1,
+   "roster_in_rom": 25,
+   "obtainable": 23,
+   "obtainable_consts": [
+    "SPECIES_BUIZEL",
+    "SPECIES_CHINCHOU",
+    "SPECIES_CLAUNCHER",
+    "SPECIES_DRATINI",
+    "SPECIES_DUCKLETT",
+    "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_LAPRAS",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAREEP",
+    "SPECIES_OMANYTE",
+    "SPECIES_POLIWAG",
+    "SPECIES_PSYDUCK",
+    "SPECIES_SEEL",
+    "SPECIES_SHELLDER",
+    "SPECIES_SHUPPET",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_TOGEPI",
+    "SPECIES_WAILMER",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Molayne": {
+   "category": "elite4",
+   "gen": 7,
+   "roster_in_rom": 8,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_GRUBBIN",
+    "SPECIES_LITTEN",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MAREEP",
+    "SPECIES_PICHU",
+    "SPECIES_SANDSHREW",
+    "SPECIES_TOGEDEMARU"
+   ]
+  },
+  "Morty": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 17,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_CUBONE",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_DUSKULL",
+    "SPECIES_GASTLY",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_LAPRAS",
+    "SPECIES_LITWICK",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_SHUPPET",
+    "SPECIES_SNORUNT",
+    "SPECIES_SPINARAK",
+    "SPECIES_TOGEPI",
+    "SPECIES_TOTODILE"
+   ]
+  },
+  "N": {
+   "category": "rival",
+   "gen": 5,
+   "roster_in_rom": 26,
+   "obtainable": 26,
+   "obtainable_consts": [
+    "SPECIES_ANORITH",
+    "SPECIES_ARCHEN",
+    "SPECIES_CHINCHOU",
+    "SPECIES_EEVEE",
+    "SPECIES_GROWLITHE",
+    "SPECIES_KABUTO",
+    "SPECIES_LILEEP",
+    "SPECIES_NINCADA",
+    "SPECIES_OMANYTE",
+    "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_PONYTA",
+    "SPECIES_RUFFLET",
+    "SPECIES_SANDILE",
+    "SPECIES_SCRAGGY",
+    "SPECIES_SCYTHER",
+    "SPECIES_SHELLDER",
+    "SPECIES_SNORUNT",
+    "SPECIES_SNOVER",
+    "SPECIES_SWINUB",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TIMBURR",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_VULPIX",
+    "SPECIES_WOOBAT",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Nando": {
+   "category": "anime",
+   "gen": 4,
+   "roster_in_rom": 6,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_ANORITH",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_HERACROSS",
+    "SPECIES_SWABLU"
+   ]
+  },
+  "Nanu": {
+   "category": "gymleader",
+   "gen": 7,
+   "roster_in_rom": 7,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_GASTLY",
+    "SPECIES_MEOWTH",
+    "SPECIES_MURKROW",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_ROWLET",
+    "SPECIES_SANDILE"
+   ]
+  },
+  "Nate": {
+   "category": "protagonist",
+   "gen": 5,
+   "roster_in_rom": 5,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_GROWLITHE",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR",
+    "SPECIES_RUFFLET"
+   ]
+  },
+  "Nemona": {
+   "category": "champion",
+   "gen": 9,
+   "roster_in_rom": 21,
+   "obtainable": 18,
+   "obtainable_consts": [
+    "SPECIES_CUTIEFLY",
+    "SPECIES_CYCLIZAR",
+    "SPECIES_DUSKULL",
+    "SPECIES_EEVEE",
+    "SPECIES_FROAKIE",
+    "SPECIES_FUECOCO",
+    "SPECIES_GASTLY",
+    "SPECIES_GOOMY",
+    "SPECIES_HOPPIP",
+    "SPECIES_JANGMO_O",
+    "SPECIES_PAWMI",
+    "SPECIES_QUAXLY",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_ROWLET",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_TAUROS",
+    "SPECIES_TINKATINK",
+    "SPECIES_WATTREL"
+   ]
+  },
+  "Nessa": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_MAGIKARP",
+    "SPECIES_WIMPOD",
+    "SPECIES_WINGULL",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Norman": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 9,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_KECLEON",
+    "SPECIES_LILLIPUP",
+    "SPECIES_PICHU",
+    "SPECIES_TAUROS",
+    "SPECIES_TORKOAL",
+    "SPECIES_WURMPLE",
+    "SPECIES_ZIGZAGOON"
+   ]
+  },
+  "Olivia": {
+   "category": "gymleader",
+   "gen": 7,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_ANORITH",
+    "SPECIES_FOMANTIS",
+    "SPECIES_LILEEP",
+    "SPECIES_LITTEN",
+    "SPECIES_NOSEPASS",
+    "SPECIES_RELICANTH",
+    "SPECIES_ROCKRUFF",
+    "SPECIES_TAUROS"
+   ]
+  },
+  "Opal": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_MAWILE",
+    "SPECIES_PICHU",
+    "SPECIES_TIMBURR",
+    "SPECIES_TOGEPI"
+   ]
+  },
+  "Paul": {
+   "category": "anime",
+   "gen": 4,
+   "roster_in_rom": 10,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_GLIGAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MURKROW",
+    "SPECIES_NINCADA",
+    "SPECIES_PICHU",
+    "SPECIES_SKORUPI",
+    "SPECIES_SNEASEL",
+    "SPECIES_SNORUNT",
+    "SPECIES_STANTLER"
+   ]
+  },
+  "Penny": {
+   "category": "rival",
+   "gen": 9,
+   "roster_in_rom": 9,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_QUAXLY",
+    "SPECIES_SHELLDER",
+    "SPECIES_SKORUPI",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_TINKATINK",
+    "SPECIES_VOLTORB"
+   ]
+  },
+  "Phoebe": {
+   "category": "elite4",
+   "gen": 3,
+   "roster_in_rom": 4,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_DUSKULL",
+    "SPECIES_LITWICK",
+    "SPECIES_SHUPPET"
+   ]
+  },
+  "Piers": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_HONEDGE",
+    "SPECIES_SCRAGGY",
+    "SPECIES_STUNKY",
+    "SPECIES_ZIGZAGOON_GALAR"
+   ]
+  },
+  "Plumeria": {
+   "category": "villain",
+   "gen": 7,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_DROWZEE",
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_GRIMER",
+    "SPECIES_ORICORIO_BAILE",
+    "SPECIES_SALANDIT",
+    "SPECIES_WIMPOD"
+   ]
+  },
+  "Poppy": {
+   "category": "elite4",
+   "gen": 9,
+   "roster_in_rom": 7,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_CUFANT",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_ONIX",
+    "SPECIES_QUAXLY",
+    "SPECIES_TINKATINK"
+   ]
+  },
+  "Pryce": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 18,
+   "obtainable": 15,
+   "obtainable_consts": [
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_LAPRAS",
+    "SPECIES_PHANPY",
+    "SPECIES_PICHU",
+    "SPECIES_SEEL",
+    "SPECIES_SHELLDER",
+    "SPECIES_SNEASEL",
+    "SPECIES_SNORUNT",
+    "SPECIES_SNOVER",
+    "SPECIES_SPHEAL",
+    "SPECIES_SWINUB",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TOTODILE",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Raihan": {
+   "category": "gymleader",
+   "gen": 8,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_DREEPY",
+    "SPECIES_GOOMY",
+    "SPECIES_HONEDGE",
+    "SPECIES_JANGMO_O",
+    "SPECIES_ORANGURU",
+    "SPECIES_TORKOAL",
+    "SPECIES_TRAPINCH"
+   ]
+  },
+  "Ramos": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 5,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_FENNEKIN",
+    "SPECIES_FROAKIE",
+    "SPECIES_HOPPIP",
+    "SPECIES_SKIDDO"
+   ]
+  },
+  "Red": {
+   "category": "protagonist",
+   "gen": 1,
+   "roster_in_rom": 17,
+   "obtainable": 13,
+   "obtainable_consts": [
+    "SPECIES_CHIKORITA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_GROWLITHE",
+    "SPECIES_LAPRAS",
+    "SPECIES_NOSEPASS",
+    "SPECIES_PICHU",
+    "SPECIES_SCYTHER",
+    "SPECIES_TAUROS",
+    "SPECIES_TOTODILE",
+    "SPECIES_WAILMER",
+    "SPECIES_WOOPER"
+   ]
+  },
+  "Rika": {
+   "category": "elite4",
+   "gen": 9,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_BARBOACH",
+    "SPECIES_NUMEL",
+    "SPECIES_PHANPY",
+    "SPECIES_SPRIGATITO",
+    "SPECIES_WOOPER",
+    "SPECIES_WOOPER_PALDEA"
+   ]
+  },
+  "Ritchie": {
+   "category": "anime",
+   "gen": 1,
+   "roster_in_rom": 10,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_LARVITAR",
+    "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_PONYTA",
+    "SPECIES_SCYTHER",
+    "SPECIES_TENTACOOL"
+   ]
+  },
+  "Roark": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 13,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_ANORITH",
+    "SPECIES_ARCHEN",
+    "SPECIES_DWEBBLE",
+    "SPECIES_LARVITAR",
+    "SPECIES_NOSEPASS",
+    "SPECIES_ONIX",
+    "SPECIES_PONYTA",
+    "SPECIES_RELICANTH",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Rosa": {
+   "category": "protagonist",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_LILLIPUP",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSAGE",
+    "SPECIES_PANSEAR"
+   ]
+  },
+  "Rose": {
+   "category": "villain",
+   "gen": 8,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_CUFANT",
+    "SPECIES_MEOWTH_GALAR"
+   ]
+  },
+  "Roxanne": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 13,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_ANORITH",
+    "SPECIES_ARON",
+    "SPECIES_KABUTO",
+    "SPECIES_LILEEP",
+    "SPECIES_NOSEPASS",
+    "SPECIES_OMANYTE",
+    "SPECIES_ONIX",
+    "SPECIES_POLIWAG",
+    "SPECIES_RELICANTH",
+    "SPECIES_TIRTOUGA",
+    "SPECIES_VULPIX"
+   ]
+  },
+  "Roxie": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_GRIMER",
+    "SPECIES_SKORUPI"
+   ]
+  },
+  "Ryme": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 6,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_FUECOCO",
+    "SPECIES_MANKEY",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_SHUPPET",
+    "SPECIES_WATTREL"
+   ]
+  },
+  "Sabrina": {
+   "category": "gymleader",
+   "gen": 1,
+   "roster_in_rom": 14,
+   "obtainable": 13,
+   "obtainable_consts": [
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_DROWZEE",
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_HERACROSS",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_LAPRAS",
+    "SPECIES_PSYDUCK",
+    "SPECIES_RALTS",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SCYTHER",
+    "SPECIES_SHELLDER",
+    "SPECIES_WOOBAT"
+   ]
+  },
+  "Saturn": {
+   "category": "villain",
+   "gen": 4,
+   "roster_in_rom": 6,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_ONIX",
+    "SPECIES_RALTS",
+    "SPECIES_REMORAID"
+   ]
+  },
+  "Sawyer": {
+   "category": "anime",
+   "gen": 6,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_CLAUNCHER",
+    "SPECIES_FROAKIE",
+    "SPECIES_GOOMY",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_HONEDGE",
+    "SPECIES_MEDITITE",
+    "SPECIES_PICHU"
+   ]
+  },
+  "Selene": {
+   "category": "protagonist",
+   "gen": 7,
+   "roster_in_rom": 5,
+   "obtainable": 5,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_LITTEN",
+    "SPECIES_POPPLIO",
+    "SPECIES_ROWLET",
+    "SPECIES_SCYTHER"
+   ]
+  },
+  "Serena": {
+   "category": "protagonist",
+   "gen": 6,
+   "roster_in_rom": 13,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_EEVEE",
+    "SPECIES_FENNEKIN",
+    "SPECIES_FROAKIE",
+    "SPECIES_GASTLY",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_PANCHAM",
+    "SPECIES_PICHU",
+    "SPECIES_SKIDDO",
+    "SPECIES_SNEASEL",
+    "SPECIES_SWABLU",
+    "SPECIES_SWINUB"
+   ]
+  },
+  "Shauna": {
+   "category": "rival",
+   "gen": 6,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_EEVEE",
+    "SPECIES_FENNEKIN",
+    "SPECIES_FROAKIE",
+    "SPECIES_GOOMY",
+    "SPECIES_GOTHITA",
+    "SPECIES_PANCHAM",
+    "SPECIES_PICHU"
+   ]
+  },
+  "Shauntal": {
+   "category": "elite4",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_GASTLY",
+    "SPECIES_LITWICK",
+    "SPECIES_SHUPPET",
+    "SPECIES_SNORUNT"
+   ]
+  },
+  "Sidney": {
+   "category": "elite4",
+   "gen": 3,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_CORPHISH",
+    "SPECIES_SCRAGGY",
+    "SPECIES_VULLABY",
+    "SPECIES_ZORUA"
+   ]
+  },
+  "Siebold": {
+   "category": "elite4",
+   "gen": 6,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_CLAUNCHER",
+    "SPECIES_MAGIKARP",
+    "SPECIES_REMORAID"
+   ]
+  },
+  "Silver": {
+   "category": "rival",
+   "gen": 2,
+   "roster_in_rom": 11,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_CHIKORITA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_GASTLY",
+    "SPECIES_LARVITAR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
+    "SPECIES_SNEASEL",
+    "SPECIES_TOTODILE"
+   ]
+  },
+  "Skyla": {
+   "category": "gymleader",
+   "gen": 5,
+   "roster_in_rom": 13,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_ARCHEN",
+    "SPECIES_DUCKLETT",
+    "SPECIES_DWEBBLE",
+    "SPECIES_GOTHITA",
+    "SPECIES_HOPPIP",
+    "SPECIES_PANSAGE",
+    "SPECIES_PICHU",
+    "SPECIES_RUFFLET",
+    "SPECIES_SANDILE",
+    "SPECIES_TOGEPI",
+    "SPECIES_VULLABY",
+    "SPECIES_WOOBAT"
+   ]
+  },
+  "Sophocles": {
+   "category": "anime",
+   "gen": 7,
+   "roster_in_rom": 11,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_BOUNSWEET",
+    "SPECIES_CORPHISH",
+    "SPECIES_CUTIEFLY",
+    "SPECIES_GRUBBIN",
+    "SPECIES_LILLIPUP",
+    "SPECIES_LITTEN",
+    "SPECIES_MAREEP",
+    "SPECIES_PICHU",
+    "SPECIES_TAUROS",
+    "SPECIES_TOGEDEMARU",
+    "SPECIES_WAILMER"
+   ]
+  },
+  "Steven": {
+   "category": "champion",
+   "gen": 3,
+   "roster_in_rom": 15,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_ANORITH",
+    "SPECIES_ARCHEN",
+    "SPECIES_ARON",
+    "SPECIES_BALTOY",
+    "SPECIES_LILEEP",
+    "SPECIES_LILLIPUP",
+    "SPECIES_MAWILE",
+    "SPECIES_PICHU",
+    "SPECIES_RELICANTH",
+    "SPECIES_SANDSHREW",
+    "SPECIES_WAILMER"
+   ]
+  },
+  "Tate": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 13,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_BALTOY",
+    "SPECIES_BRONZOR",
+    "SPECIES_CORPHISH",
+    "SPECIES_DROWZEE",
+    "SPECIES_GOTHITA",
+    "SPECIES_NATU",
+    "SPECIES_PICHU",
+    "SPECIES_RALTS",
+    "SPECIES_SOLOSIS"
+   ]
+  },
+  "Tracey": {
+   "category": "anime",
+   "gen": 1,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_DODUO",
+    "SPECIES_MAGIKARP",
+    "SPECIES_PICHU",
+    "SPECIES_SCYTHER"
+   ]
+  },
+  "Trip": {
+   "category": "anime",
+   "gen": 5,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_DWEBBLE",
+    "SPECIES_LITWICK",
+    "SPECIES_TIMBURR"
+   ]
+  },
+  "Tulip": {
+   "category": "gymleader",
+   "gen": 9,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_CHARCADET",
+    "SPECIES_FENNEKIN",
+    "SPECIES_FLITTLE",
+    "SPECIES_FLOETTE_ETERNAL",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_RALTS",
+    "SPECIES_WOOPER_PALDEA"
+   ]
+  },
+  "Valerie": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_MAWILE"
+   ]
+  },
+  "Viola": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_HONEDGE",
+    "SPECIES_ONIX",
+    "SPECIES_PICHU"
+   ]
+  },
+  "Volkner": {
+   "category": "gymleader",
+   "gen": 4,
+   "roster_in_rom": 12,
+   "obtainable": 12,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_BLITZLE",
+    "SPECIES_CHINCHOU",
+    "SPECIES_EEVEE",
+    "SPECIES_HOUNDOUR",
+    "SPECIES_PACHIRISU",
+    "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_REMORAID",
+    "SPECIES_SNEASEL",
+    "SPECIES_VOLTORB",
+    "SPECIES_WINGULL"
+   ]
+  },
+  "Wallace": {
+   "category": "champion",
+   "gen": 3,
+   "roster_in_rom": 14,
+   "obtainable": 10,
+   "obtainable_consts": [
+    "SPECIES_BARBOACH",
+    "SPECIES_CLAMPERL",
+    "SPECIES_DRATINI",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MEDITITE",
+    "SPECIES_RELICANTH",
+    "SPECIES_SPHEAL",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TORKOAL",
+    "SPECIES_WAILMER"
+   ]
+  },
+  "Wally": {
+   "category": "rival",
+   "gen": 3,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_MAGNEMITE",
+    "SPECIES_RALTS",
+    "SPECIES_SWABLU",
+    "SPECIES_ZIGZAGOON"
+   ]
+  },
+  "Wattson": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 9,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_MAGNEMITE",
+    "SPECIES_MAREEP",
+    "SPECIES_NINCADA",
+    "SPECIES_PHANPY",
+    "SPECIES_PICHU",
+    "SPECIES_TORKOAL",
+    "SPECIES_VOLTORB",
+    "SPECIES_WAILMER"
+   ]
+  },
+  "Whitney": {
+   "category": "gymleader",
+   "gen": 2,
+   "roster_in_rom": 13,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_DODUO",
+    "SPECIES_DRATINI",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_IGGLYBUFF",
+    "SPECIES_MEOWTH",
+    "SPECIES_PHANPY",
+    "SPECIES_PICHU",
+    "SPECIES_PSYDUCK",
+    "SPECIES_STANTLER",
+    "SPECIES_TAUROS"
+   ]
+  },
+  "Wikstrom": {
+   "category": "elite4",
+   "gen": 6,
+   "roster_in_rom": 7,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_DEDENNE",
+    "SPECIES_HONEDGE",
+    "SPECIES_LITWICK",
+    "SPECIES_NOSEPASS",
+    "SPECIES_RALTS",
+    "SPECIES_SCYTHER",
+    "SPECIES_SWABLU"
+   ]
+  },
+  "Will": {
+   "category": "elite4",
+   "gen": 2,
+   "roster_in_rom": 10,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_DROWZEE",
+    "SPECIES_EEVEE",
+    "SPECIES_GIRAFARIG",
+    "SPECIES_NATU",
+    "SPECIES_RALTS",
+    "SPECIES_TOTODILE"
+   ]
+  },
+  "Winona": {
+   "category": "gymleader",
+   "gen": 3,
+   "roster_in_rom": 16,
+   "obtainable": 11,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_DRATINI",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MURKROW",
+    "SPECIES_PHANPY",
+    "SPECIES_RELICANTH",
+    "SPECIES_SWABLU",
+    "SPECIES_TROPIUS",
+    "SPECIES_WINGULL",
+    "SPECIES_WURMPLE"
+   ]
+  },
+  "Wulfric": {
+   "category": "gymleader",
+   "gen": 6,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_PICHU",
+    "SPECIES_SNOVER"
+   ]
+  },
+  "Zoey": {
+   "category": "anime",
+   "gen": 4,
+   "roster_in_rom": 8,
+   "obtainable": 8,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_BUIZEL",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EEVEE",
+    "SPECIES_FINNEON",
+    "SPECIES_RALTS",
+    "SPECIES_SWINUB",
+    "SPECIES_TOGEPI"
+   ]
+  }
+ }
+}

@@ -94,7 +94,7 @@ Zoey | Zoey | anime | 4
 Nando | Nando | anime | 4
 
 # --- Generation 5 ---
-Hilbert | Hilbert (game) | protagonist | 5
+# TRIMMED (Lazarus obtainability 2026-07-15, <=1 obtainable species): Hilbert | Hilbert (game) | protagonist | 5
 Hilda | Hilda (game) | protagonist | 5
 Nate | Nate (game) | protagonist | 5
 Rosa | Rosa (game) | protagonist | 5
@@ -138,7 +138,7 @@ Korrina | Korrina (game) | gymleader | 6
 Ramos | Ramos (game) | gymleader | 6
 Clemont | Clemont (game) + Clemont (anime) | gymleader | 6
 Valerie | Valerie (game) | gymleader | 6
-Olympia | Olympia (game) | gymleader | 6
+# TRIMMED (Lazarus obtainability 2026-07-15, <=1 obtainable species): Olympia | Olympia (game) | gymleader | 6
 Wulfric | Wulfric (game) | gymleader | 6
 Shauna | Shauna (game) | rival | 6
 Lysandre | Lysandre (game) | villain | 6
@@ -168,8 +168,8 @@ Mallow (anime) | Mallow (anime) | anime | 7
 Sophocles | Sophocles (anime) | anime | 7
 
 # --- Generation 8 ---
-Victor | Victor (game) | protagonist | 8
-Gloria | Gloria (game) | protagonist | 8
+# TRIMMED (Lazarus obtainability 2026-07-15, <=1 obtainable species): Victor | Victor (game) | protagonist | 8
+# TRIMMED (Lazarus obtainability 2026-07-15, <=1 obtainable species): Gloria | Gloria (game) | protagonist | 8
 Leon | Leon (game) | champion | 8
 Milo | Milo (game) | gymleader | 8
 Nessa | Nessa (game) | gymleader | 8
@@ -181,7 +181,7 @@ Gordie | Gordie (game) | gymleader | 8
 Melony | Melony (game) | gymleader | 8
 Piers | Piers (game) | gymleader | 8
 Raihan | Raihan (game) | gymleader | 8
-Hop | Hop (game) | rival | 8
+# TRIMMED (Lazarus obtainability 2026-07-15, <=1 obtainable species): Hop | Hop (game) | rival | 8
 Bede | Bede (game) | rival | 8
 Marnie | Marnie (game) | rival | 8
 Rose | Rose (game) | villain | 8

@@ -1,0 +1,1235 @@
+{
+ "wild": [
+  "Abomasnow",
+  "Aerodactyl",
+  "Aipom",
+  "Altaria",
+  "Amaura",
+  "Annihilape",
+  "Anorith",
+  "Appletun",
+  "Applin",
+  "Arbok",
+  "Archen",
+  "Ariados",
+  "Armarouge",
+  "Aron",
+  "Baltoy",
+  "Banette",
+  "Barboach",
+  "Basculin",
+  "Beautifly",
+  "Bellsprout",
+  "Bewear",
+  "Blitzle",
+  "Boltund",
+  "Bounsweet",
+  "Braviary",
+  "Breloom",
+  "Bronzor",
+  "Bruxish",
+  "Buizel",
+  "Cascoon",
+  "Ceruledge",
+  "Charcadet",
+  "Charjabug",
+  "Chatot",
+  "Cherrim",
+  "Cherubi",
+  "Chespin",
+  "Chikorita",
+  "Chinchou",
+  "Clamperl",
+  "Clauncher",
+  "Clawitzer",
+  "Claydol",
+  "Clodsire",
+  "Cloyster",
+  "Comfey",
+  "Corphish",
+  "Corsola",
+  "Crabominable",
+  "Crabrawler",
+  "Crawdaunt",
+  "Cubchoo",
+  "Cubone",
+  "Cufant",
+  "Cutiefly",
+  "Cyclizar",
+  "Cyndaquil",
+  "Dedenne",
+  "Dhelmise",
+  "Dipplin",
+  "Dodrio",
+  "Doduo",
+  "Doublade",
+  "Dragonair",
+  "Drakloak",
+  "Drapion",
+  "Dratini",
+  "Dreepy",
+  "Drowzee",
+  "Ducklett",
+  "Duosion",
+  "Dusclops",
+  "Duskull",
+  "Dustox",
+  "Dwebble",
+  "Eevee",
+  "Ekans",
+  "Electrode",
+  "Espathra",
+  "Falinks",
+  "Farigiraf",
+  "Fennekin",
+  "Finizen",
+  "Finneon",
+  "Flaaffy",
+  "Flabébé",
+  "Flapple",
+  "Flittle",
+  "Floatzel",
+  "Floette",
+  "Florges",
+  "Fomantis",
+  "Froakie",
+  "Fuecoco",
+  "Gastly",
+  "Girafarig",
+  "Gligar",
+  "Gogoat",
+  "Golduck",
+  "Goomy",
+  "Gorebyss",
+  "Gothita",
+  "Gothitelle",
+  "Gothorita",
+  "Gourgeist",
+  "Grafaiai",
+  "Grimer",
+  "Grimmsnarl",
+  "Growlithe",
+  "Grubbin",
+  "Gurdurr",
+  "Gyarados",
+  "Hawlucha",
+  "Helioptile",
+  "Heracross",
+  "Honedge",
+  "Hoothoot",
+  "Hoppip",
+  "Houndoom",
+  "Houndour",
+  "Huntail",
+  "Igglybuff",
+  "Impidimp",
+  "Jangmo-o",
+  "Jigglypuff",
+  "Kabuto",
+  "Kecleon",
+  "Kilowattrel",
+  "Kirlia",
+  "Klawf",
+  "Komala",
+  "Krokorok",
+  "Lampent",
+  "Lanturn",
+  "Lapras",
+  "Larvitar",
+  "Lileep",
+  "Lillipup",
+  "Linoone",
+  "Litleo",
+  "Litten",
+  "Litwick",
+  "Lumineon",
+  "Lurantis",
+  "Lycanroc",
+  "Magikarp",
+  "Magnemite",
+  "Mankey",
+  "Mareep",
+  "Mawile",
+  "Meditite",
+  "Meowth",
+  "Mienfoo",
+  "Mimikyu",
+  "Minior",
+  "Morgrem",
+  "Mudbray",
+  "Muk",
+  "Munna",
+  "Murkrow",
+  "Musharna",
+  "Natu",
+  "Nincada",
+  "Ninjask",
+  "Noctowl",
+  "Nosepass",
+  "Numel",
+  "Obstagoon",
+  "Octillery",
+  "Omanyte",
+  "Onix",
+  "Oranguru",
+  "Oricorio",
+  "Pachirisu",
+  "Pancham",
+  "Panpour",
+  "Pansage",
+  "Pansear",
+  "Paras",
+  "Passimian",
+  "Pawmi",
+  "Pawmo",
+  "Pelipper",
+  "Perrserker",
+  "Persian",
+  "Phanpy",
+  "Pichu",
+  "Pikachu",
+  "Pikipek",
+  "Poliwag",
+  "Poliwhirl",
+  "Ponyta",
+  "Popplio",
+  "Primeape",
+  "Psyduck",
+  "Pumpkaboo",
+  "Pyroar",
+  "Quagsire",
+  "Quaxly",
+  "Raichu",
+  "Ralts",
+  "Rapidash",
+  "Relicanth",
+  "Remoraid",
+  "Reuniclus",
+  "Ribombee",
+  "Rockruff",
+  "Rowlet",
+  "Rufflet",
+  "Salandit",
+  "Sandile",
+  "Sandshrew",
+  "Scrafty",
+  "Scraggy",
+  "Scyther",
+  "Sealeo",
+  "Seel",
+  "Shedinja",
+  "Shellder",
+  "Shroodle",
+  "Shroomish",
+  "Shuppet",
+  "Silcoon",
+  "Sizzlipede",
+  "Skiddo",
+  "Skiploom",
+  "Skorupi",
+  "Skrelp",
+  "Skuntank",
+  "Sliggoo",
+  "Sneasel",
+  "Snom",
+  "Snorunt",
+  "Snover",
+  "Solosis",
+  "Spheal",
+  "Spinarak",
+  "Sprigatito",
+  "Stantler",
+  "Steenee",
+  "Stufful",
+  "Stunky",
+  "Swablu",
+  "Swanna",
+  "Swinub",
+  "Tauros",
+  "Tentacool",
+  "Tentacruel",
+  "Timburr",
+  "Tinkatink",
+  "Tinkatuff",
+  "Tirtouga",
+  "Toedscool",
+  "Toedscruel",
+  "Togedemaru",
+  "Togepi",
+  "Togetic",
+  "Torkoal",
+  "Totodile",
+  "Toucannon",
+  "Trapinch",
+  "Tropius",
+  "Trumbeak",
+  "Tyrunt",
+  "Victreebel",
+  "Voltorb",
+  "Vullaby",
+  "Vulpix",
+  "Wailmer",
+  "Wattrel",
+  "Weepinbell",
+  "Whiscash",
+  "Wigglytuff",
+  "Wimpod",
+  "Wingull",
+  "Woobat",
+  "Wooper",
+  "Wurmple",
+  "Xatu",
+  "Yamper",
+  "Yanma",
+  "Yanmega",
+  "Zigzagoon",
+  "Zorua"
+ ],
+ "tags": {
+  "Abomasnow": [
+   "underwater"
+  ],
+  "Aerodactyl": [
+   "underwater"
+  ],
+  "Aipom": [
+   "underwater"
+  ],
+  "Altaria": [
+   "underwater"
+  ],
+  "Amaura": [
+   "underwater"
+  ],
+  "Annihilape": [
+   "underwater"
+  ],
+  "Anorith": [
+   "underwater"
+  ],
+  "Appletun": [
+   "underwater"
+  ],
+  "Applin": [
+   "underwater"
+  ],
+  "Arbok": [
+   "underwater"
+  ],
+  "Archen": [
+   "underwater"
+  ],
+  "Ariados": [
+   "underwater"
+  ],
+  "Armarouge": [
+   "underwater"
+  ],
+  "Aron": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Baltoy": [
+   "underwater"
+  ],
+  "Banette": [
+   "underwater"
+  ],
+  "Barboach": [
+   "underwater"
+  ],
+  "Basculin": [
+   "underwater"
+  ],
+  "Beautifly": [
+   "underwater"
+  ],
+  "Bellsprout": [
+   "day",
+   "underwater"
+  ],
+  "Bewear": [
+   "underwater"
+  ],
+  "Blitzle": [
+   "underwater"
+  ],
+  "Boltund": [
+   "underwater"
+  ],
+  "Bounsweet": [
+   "day",
+   "underwater"
+  ],
+  "Braviary": [
+   "underwater"
+  ],
+  "Breloom": [
+   "underwater"
+  ],
+  "Bronzor": [
+   "night",
+   "underwater"
+  ],
+  "Bruxish": [
+   "underwater"
+  ],
+  "Buizel": [
+   "fishing",
+   "underwater"
+  ],
+  "Cascoon": [
+   "underwater"
+  ],
+  "Ceruledge": [
+   "underwater"
+  ],
+  "Charcadet": [
+   "underwater"
+  ],
+  "Charjabug": [
+   "underwater"
+  ],
+  "Chatot": [
+   "underwater"
+  ],
+  "Cherrim": [
+   "underwater"
+  ],
+  "Cherubi": [
+   "underwater"
+  ],
+  "Chespin": [
+   "underwater"
+  ],
+  "Chikorita": [
+   "underwater"
+  ],
+  "Chinchou": [
+   "underwater"
+  ],
+  "Clamperl": [
+   "underwater"
+  ],
+  "Clauncher": [
+   "fishing",
+   "surfing",
+   "underwater"
+  ],
+  "Clawitzer": [
+   "fishing"
+  ],
+  "Claydol": [
+   "underwater"
+  ],
+  "Clodsire": [
+   "underwater"
+  ],
+  "Cloyster": [
+   "underwater"
+  ],
+  "Comfey": [
+   "day",
+   "underwater"
+  ],
+  "Corphish": [
+   "underwater"
+  ],
+  "Corsola": [
+   "underwater"
+  ],
+  "Crabominable": [
+   "underwater"
+  ],
+  "Crabrawler": [
+   "underwater"
+  ],
+  "Crawdaunt": [
+   "underwater"
+  ],
+  "Cubchoo": [
+   "night",
+   "underwater"
+  ],
+  "Cubone": [
+   "day",
+   "night"
+  ],
+  "Cufant": [
+   "underwater"
+  ],
+  "Cutiefly": [
+   "day"
+  ],
+  "Cyclizar": [
+   "underwater"
+  ],
+  "Cyndaquil": [
+   "underwater"
+  ],
+  "Dedenne": [
+   "night",
+   "underwater"
+  ],
+  "Dhelmise": [
+   "underwater"
+  ],
+  "Dipplin": [
+   "underwater"
+  ],
+  "Dodrio": [
+   "underwater"
+  ],
+  "Doduo": [
+   "underwater"
+  ],
+  "Doublade": [
+   "underwater"
+  ],
+  "Dragonair": [
+   "underwater"
+  ],
+  "Drakloak": [
+   "underwater"
+  ],
+  "Drapion": [
+   "underwater"
+  ],
+  "Dratini": [
+   "underwater"
+  ],
+  "Dreepy": [
+   "underwater"
+  ],
+  "Drowzee": [
+   "underwater"
+  ],
+  "Ducklett": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Duosion": [
+   "underwater"
+  ],
+  "Dusclops": [
+   "underwater"
+  ],
+  "Duskull": [
+   "underwater"
+  ],
+  "Dustox": [
+   "underwater"
+  ],
+  "Dwebble": [
+   "underwater"
+  ],
+  "Eevee": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Ekans": [
+   "underwater"
+  ],
+  "Electrode": [
+   "underwater"
+  ],
+  "Espathra": [
+   "underwater"
+  ],
+  "Falinks": [
+   "underwater"
+  ],
+  "Farigiraf": [
+   "underwater"
+  ],
+  "Fennekin": [
+   "underwater"
+  ],
+  "Finizen": [
+   "underwater"
+  ],
+  "Finneon": [
+   "fishing",
+   "surfing",
+   "underwater"
+  ],
+  "Flaaffy": [
+   "underwater"
+  ],
+  "Flabébé": [
+   "day"
+  ],
+  "Flapple": [
+   "underwater"
+  ],
+  "Flittle": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Floatzel": [
+   "underwater"
+  ],
+  "Floette": [
+   "underwater"
+  ],
+  "Florges": [
+   "underwater"
+  ],
+  "Fomantis": [
+   "day",
+   "underwater"
+  ],
+  "Froakie": [
+   "underwater"
+  ],
+  "Fuecoco": [
+   "underwater"
+  ],
+  "Gastly": [
+   "underwater"
+  ],
+  "Girafarig": [
+   "underwater"
+  ],
+  "Gligar": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Gogoat": [
+   "underwater"
+  ],
+  "Golduck": [
+   "underwater"
+  ],
+  "Goomy": [
+   "underwater"
+  ],
+  "Gorebyss": [
+   "underwater"
+  ],
+  "Gothita": [
+   "underwater"
+  ],
+  "Gothitelle": [
+   "underwater"
+  ],
+  "Gothorita": [
+   "underwater"
+  ],
+  "Gourgeist": [
+   "underwater"
+  ],
+  "Grafaiai": [
+   "underwater"
+  ],
+  "Grimer": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Grimmsnarl": [
+   "underwater"
+  ],
+  "Growlithe": [
+   "day",
+   "underwater"
+  ],
+  "Grubbin": [
+   "day",
+   "night"
+  ],
+  "Gurdurr": [
+   "underwater"
+  ],
+  "Gyarados": [
+   "underwater"
+  ],
+  "Hawlucha": [
+   "underwater"
+  ],
+  "Helioptile": [
+   "underwater"
+  ],
+  "Heracross": [
+   "underwater"
+  ],
+  "Honedge": [
+   "underwater"
+  ],
+  "Hoothoot": [
+   "night",
+   "underwater"
+  ],
+  "Hoppip": [
+   "day",
+   "night"
+  ],
+  "Houndoom": [
+   "underwater"
+  ],
+  "Houndour": [
+   "underwater"
+  ],
+  "Huntail": [
+   "underwater"
+  ],
+  "Igglybuff": [
+   "underwater"
+  ],
+  "Impidimp": [
+   "underwater"
+  ],
+  "Jangmo-o": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Jigglypuff": [
+   "underwater"
+  ],
+  "Kabuto": [
+   "underwater"
+  ],
+  "Kecleon": [
+   "underwater"
+  ],
+  "Kilowattrel": [
+   "underwater"
+  ],
+  "Kirlia": [
+   "underwater"
+  ],
+  "Klawf": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Komala": [
+   "underwater"
+  ],
+  "Krokorok": [
+   "underwater"
+  ],
+  "Lampent": [
+   "underwater"
+  ],
+  "Lanturn": [
+   "underwater"
+  ],
+  "Lapras": [
+   "underwater"
+  ],
+  "Larvitar": [
+   "underwater"
+  ],
+  "Lileep": [
+   "underwater"
+  ],
+  "Lillipup": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Linoone": [
+   "underwater"
+  ],
+  "Litleo": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Litten": [
+   "underwater"
+  ],
+  "Litwick": [
+   "underwater"
+  ],
+  "Lumineon": [
+   "underwater"
+  ],
+  "Lurantis": [
+   "underwater"
+  ],
+  "Lycanroc": [
+   "underwater"
+  ],
+  "Magikarp": [
+   "fishing",
+   "underwater"
+  ],
+  "Magnemite": [
+   "underwater"
+  ],
+  "Mankey": [
+   "day",
+   "night"
+  ],
+  "Mareep": [
+   "day",
+   "night"
+  ],
+  "Mawile": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Meditite": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Meowth": [
+   "underwater"
+  ],
+  "Mienfoo": [
+   "underwater"
+  ],
+  "Mimikyu": [
+   "underwater"
+  ],
+  "Minior": [
+   "underwater"
+  ],
+  "Morgrem": [
+   "underwater"
+  ],
+  "Mudbray": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Muk": [
+   "underwater"
+  ],
+  "Munna": [
+   "night",
+   "underwater"
+  ],
+  "Murkrow": [
+   "night",
+   "underwater"
+  ],
+  "Musharna": [
+   "underwater"
+  ],
+  "Natu": [
+   "underwater"
+  ],
+  "Nincada": [
+   "day",
+   "night"
+  ],
+  "Ninjask": [
+   "underwater"
+  ],
+  "Noctowl": [
+   "underwater"
+  ],
+  "Nosepass": [
+   "day",
+   "underwater"
+  ],
+  "Numel": [
+   "underwater"
+  ],
+  "Obstagoon": [
+   "underwater"
+  ],
+  "Octillery": [
+   "underwater"
+  ],
+  "Omanyte": [
+   "underwater"
+  ],
+  "Onix": [
+   "underwater"
+  ],
+  "Oranguru": [
+   "underwater"
+  ],
+  "Oricorio": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Pachirisu": [
+   "underwater"
+  ],
+  "Pancham": [
+   "underwater"
+  ],
+  "Panpour": [
+   "day",
+   "night"
+  ],
+  "Pansage": [
+   "day",
+   "night"
+  ],
+  "Pansear": [
+   "day",
+   "night"
+  ],
+  "Paras": [
+   "night",
+   "underwater"
+  ],
+  "Passimian": [
+   "underwater"
+  ],
+  "Pawmi": [
+   "underwater"
+  ],
+  "Pawmo": [
+   "underwater"
+  ],
+  "Pelipper": [
+   "underwater"
+  ],
+  "Perrserker": [
+   "underwater"
+  ],
+  "Persian": [
+   "underwater"
+  ],
+  "Phanpy": [
+   "day",
+   "night"
+  ],
+  "Pichu": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Pikachu": [
+   "underwater"
+  ],
+  "Pikipek": [
+   "day"
+  ],
+  "Poliwag": [
+   "day",
+   "fishing",
+   "night",
+   "underwater"
+  ],
+  "Poliwhirl": [
+   "underwater"
+  ],
+  "Ponyta": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Popplio": [
+   "underwater"
+  ],
+  "Primeape": [
+   "underwater"
+  ],
+  "Psyduck": [
+   "underwater"
+  ],
+  "Pumpkaboo": [
+   "underwater"
+  ],
+  "Pyroar": [
+   "underwater"
+  ],
+  "Quagsire": [
+   "underwater"
+  ],
+  "Quaxly": [
+   "underwater"
+  ],
+  "Raichu": [
+   "underwater"
+  ],
+  "Ralts": [
+   "night",
+   "underwater"
+  ],
+  "Rapidash": [
+   "underwater"
+  ],
+  "Relicanth": [
+   "underwater"
+  ],
+  "Remoraid": [
+   "fishing",
+   "surfing",
+   "underwater"
+  ],
+  "Reuniclus": [
+   "underwater"
+  ],
+  "Ribombee": [
+   "underwater"
+  ],
+  "Rockruff": [
+   "day",
+   "night"
+  ],
+  "Rowlet": [
+   "underwater"
+  ],
+  "Rufflet": [
+   "underwater"
+  ],
+  "Salandit": [
+   "underwater"
+  ],
+  "Sandile": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Sandshrew": [
+   "day",
+   "night"
+  ],
+  "Scrafty": [
+   "underwater"
+  ],
+  "Scraggy": [
+   "underwater"
+  ],
+  "Scyther": [
+   "underwater"
+  ],
+  "Sealeo": [
+   "underwater"
+  ],
+  "Seel": [
+   "underwater"
+  ],
+  "Shedinja": [
+   "underwater"
+  ],
+  "Shellder": [
+   "underwater"
+  ],
+  "Shroodle": [
+   "underwater"
+  ],
+  "Shroomish": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Shuppet": [
+   "underwater"
+  ],
+  "Silcoon": [
+   "underwater"
+  ],
+  "Sizzlipede": [
+   "underwater"
+  ],
+  "Skiddo": [
+   "day",
+   "night"
+  ],
+  "Skiploom": [
+   "underwater"
+  ],
+  "Skorupi": [
+   "underwater"
+  ],
+  "Skrelp": [
+   "underwater"
+  ],
+  "Skuntank": [
+   "underwater"
+  ],
+  "Sliggoo": [
+   "underwater"
+  ],
+  "Sneasel": [
+   "underwater"
+  ],
+  "Snom": [
+   "underwater"
+  ],
+  "Snorunt": [
+   "underwater"
+  ],
+  "Snover": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Solosis": [
+   "underwater"
+  ],
+  "Spheal": [
+   "underwater"
+  ],
+  "Spinarak": [
+   "night",
+   "underwater"
+  ],
+  "Sprigatito": [
+   "underwater"
+  ],
+  "Stantler": [
+   "underwater"
+  ],
+  "Steenee": [
+   "underwater"
+  ],
+  "Stufful": [
+   "underwater"
+  ],
+  "Stunky": [
+   "underwater"
+  ],
+  "Swablu": [
+   "underwater"
+  ],
+  "Swanna": [
+   "underwater"
+  ],
+  "Swinub": [
+   "underwater"
+  ],
+  "Tauros": [
+   "underwater"
+  ],
+  "Tentacool": [
+   "underwater"
+  ],
+  "Tentacruel": [
+   "underwater"
+  ],
+  "Timburr": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Tinkatink": [
+   "underwater"
+  ],
+  "Tinkatuff": [
+   "underwater"
+  ],
+  "Tirtouga": [
+   "underwater"
+  ],
+  "Toedscool": [
+   "underwater"
+  ],
+  "Toedscruel": [
+   "underwater"
+  ],
+  "Togedemaru": [
+   "underwater"
+  ],
+  "Togepi": [
+   "underwater"
+  ],
+  "Togetic": [
+   "underwater"
+  ],
+  "Torkoal": [
+   "underwater"
+  ],
+  "Totodile": [
+   "underwater"
+  ],
+  "Toucannon": [
+   "underwater"
+  ],
+  "Trapinch": [
+   "underwater"
+  ],
+  "Tropius": [
+   "underwater"
+  ],
+  "Trumbeak": [
+   "underwater"
+  ],
+  "Tyrunt": [
+   "underwater"
+  ],
+  "Victreebel": [
+   "underwater"
+  ],
+  "Voltorb": [
+   "night",
+   "underwater"
+  ],
+  "Vullaby": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Vulpix": [
+   "night",
+   "underwater"
+  ],
+  "Wailmer": [
+   "underwater"
+  ],
+  "Wattrel": [
+   "underwater"
+  ],
+  "Weepinbell": [
+   "underwater"
+  ],
+  "Whiscash": [
+   "underwater"
+  ],
+  "Wigglytuff": [
+   "underwater"
+  ],
+  "Wimpod": [
+   "fishing",
+   "surfing",
+   "underwater"
+  ],
+  "Wingull": [
+   "underwater"
+  ],
+  "Woobat": [
+   "day",
+   "night"
+  ],
+  "Wooper": [
+   "fishing",
+   "underwater"
+  ],
+  "Wurmple": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Xatu": [
+   "underwater"
+  ],
+  "Yamper": [
+   "day",
+   "night",
+   "underwater"
+  ],
+  "Yanma": [
+   "night",
+   "underwater"
+  ],
+  "Yanmega": [
+   "underwater"
+  ],
+  "Zigzagoon": [
+   "underwater"
+  ],
+  "Zorua": [
+   "underwater"
+  ]
+ },
+ "unmatched": []
+}
