@@ -67,7 +67,11 @@ Full plan: `/home/jbfish00/.claude/plans/plan-how-to-make-dazzling-hammock.md`.
 
 ## Status
 
-- **2026-07-17**: **PHASE 6 COMPLETE — ALL FOUR TEST LAYERS GREEN. SHIP GATE MET.** Full test doc: docs/TESTING.md; end-user README.md written (179-character code tables generated from the manifest).
+- **2026-07-17 (b)**: **Phase 3 CLOSED (survey done, sprites deliberately not shipped) + ship state committed. Only the manual playthrough remains.**
+  - Ship commit `cd3ca5d` (Phases 4–6: 30 files; `.gitignore` now ignores `build/*` except the deliberately-committed `lazarus_cm.bps`).
+  - Sprite survey run (`tools/character_mode/sprite_coverage_survey.py`, results in docs/SPRITE_COVERAGE.md): 100/179 (55%) have ≥1 ROWE donor asset; the 79 zero-coverage split exactly along the RR/Unbound pattern (Gen 6–9 3D-era roles + 10 Gen 1–5 anime-only). **Decision per DoD ("sprites never block") + shipped-RR precedent: v1 ships without sprites**; `sprite_asset_id` stays 0xFFFF; ROM-side pic tables never hunted (not needed). Future-pass recipe recorded in the doc.
+  - Remaining: **manual playthrough** (the only human-in-the-loop item); Seaglass feedback checkpoint #2 (Seaglass's backlog, not this repo's); optional in-situ trade NPC verification if the warp black-screen ever gets cracked.
+- **2026-07-17 (a)**: **PHASE 6 COMPLETE — ALL FOUR TEST LAYERS GREEN. SHIP GATE MET.** Full test doc: docs/TESTING.md; end-user README.md written (179-character code tables generated from the manifest).
   - **Two real bugs found and fixed** (rebuilt ROM+BPS, all regressions re-passed):
     1. **Confirm script died mid-chain**: `RECEIVED_MSG_SUB 0x083289DB` is a goto-only tail — every path ends releaseall/`end` (target `0x083289D9` IS `releaseall,end`), it never returns from `call`. Everything after our `call` was dead code: the marker var never reset → **any invalid code typed after an activation re-gave a starter** (stale-marker bug). Fix: injector act-script reordered (mode msgbox FIRST, `setvar VAR_CM_STARTER 0` BEFORE the give, `goto` the tail); C hook now also clears the marker on total non-match.
     2. **Wrapper-boxed gives showed a phantom nickname prompt**: the native tail branches on VAR_RESULT (0=party→nickname flow, 1=boxed→"transferred to the PC"); our wrapper boxed the mon but left Result=0. Fix: `CM_GiveMonNativeGated` sets `gSpecialVar_Result=1` when it boxes (and only zeroes the party slot if `CopyMonToPC`==1, so full boxes no longer vaporize the mon).
