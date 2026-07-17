@@ -1,27 +1,41 @@
 #!/usr/bin/env python3
-"""Independent static verification of the built Character Mode artifacts.
+"""Independent static verification of the built Lazarus Character Mode artifacts.
 
 Deliberately does NOT reuse tools/inject_character_mode.py's build-time
 assertions — it re-derives everything from the finished artifacts, so a bug
 in the injector's own bookkeeping can't hide itself:
 
-  1. rom/ original matches rom.sha1 (all pinned addresses valid).
-  2. BPS round-trip: flips-apply build/radicalred_cm.bps onto a fresh copy
-     of the original -> byte-identical to build/radicalred_cm.gba.
-  3. Patched ROM differs from the original in EXACTLY the 5 intended
-     regions (shim, bitmaps, script blob, 2 BLs, 1 goto operand) — nothing
-     else moved.
-  4. The two patched BL instructions decode (independent decoder) to the
-     shim entry; the shim's first instruction is a valid push.
-  5. Bitmaps in-ROM == rosters_expanded.bin, and Red's bitmap spot-checks
-     (allow 25/26/172/1022, reject 0/52) hold in the ROM copy itself.
-  6. Script chain walk: from the retargeted goto operand, decode all 187
-     check blocks (3 debug + 184 characters) instruction-by-instruction,
-     following every pointer: each alias string is valid text ending 0xFF,
-     each handler decodes to the expected opcode sequence with the right
-     var/flag ids, givepokemon species == that character's signature
-     (roster[0] in characters_manifest.json), and the chain tail gotos the
-     original "Invalid code." handler.
+  1. rom/lazarus-v2.gba matches rom.sha1 (all pinned addresses valid).
+  2. BPS round-trip: flips-apply build/lazarus_cm.bps onto a fresh copy of
+     the original -> byte-identical to build/lazarus_cm.gba.
+  3. Patched ROM differs from the original ONLY inside the intended regions:
+     6 free-block payloads (shim/bitmaps/codes/starters/confirm script/trade
+     wrappers), the 8-byte trampoline, 2 BLs, the specials-table slot, the
+     112 callnative give pointers, the branch-0 goto pointer, and the 4
+     five-byte trade-junction overlays. Nothing else moved.
+  4. BL patches decode (independent decoder) to the trampoline; the original
+     BLs decoded to GiveMonToPlayer; the trampoline decodes to
+     ldr r3,[pc]; bx r3 with a Thumb literal inside the shim.
+  5. Bitmaps in-ROM == rosters_expanded.bin; every character's manifest
+     roster ids are set in their own bitmap; bitmaps are per-character
+     distinct and not degenerate.
+  6. Codes table decodes (charmap) to independently recomputed codes for all
+     179 characters — unique case-folded, no native-code clash. Starters
+     table == signature (or roster[0]) and each starter is on-bitmap.
+  7. Specials slot 0x222: originally the native matcher, now a Thumb pointer
+     into the shim (CM_CheatDispatchHook).
+  8. All 112 callnative give sites (found independently in the ORIGINAL by
+     the 0x23+ptr idiom) now share one Thumb shim pointer
+     (CM_GiveMonNativeGated); no un-retargeted site remains in the patched
+     ROM outside our own confirm script.
+  9. Confirm-script walk: branch-0 pointer retargeted from the original
+     invalid-code handler to our script; every opcode of entry/activation/
+     off-handler decodes, internal pointers land where expected, and both
+     message texts decode via the charmap.
+ 10. Trade gates: original 17-byte junctions verified, overlaid gotos ->
+     wrapper scripts that decode fully (copyvars, callnative CM_TradeCheck,
+     refusal path, resume goto == junction+17); refusal text decodes; the
+     sIngameTrades species fields are sane.
 
 Usage: verify_artifacts.py   (exit 0 = all pass)
 """
@@ -32,30 +46,60 @@ import struct
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent.parent
 
-ROM_IN = ROOT / "rom" / "radicalred 4.1.gba"
-ROM_OUT = ROOT / "build" / "radicalred_cm.gba"
-BPS = ROOT / "build" / "radicalred_cm.bps"
+ROM_IN = ROOT / "rom" / "lazarus-v2.gba"
+ROM_OUT = ROOT / "build" / "lazarus_cm.gba"
+BPS = ROOT / "build" / "lazarus_cm.bps"
 FLIPS = ROOT / "tools" / "bin" / "flips"
+CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
-ROM_SHA1 = "964f951a0fdaf209e4ea1344883ef0d557bb3a80"
-SHIM_ADDR = 0x08C80000
-BITMAPS_ADDR = 0x08C80100
-SCRIPT_ADDR = 0x08C88000
-BL_SITES = (0x107DD84, 0x10777CE)
-GOTO_OPERAND_OFF = 0x10500EF
-INVALID_CODE_HANDLER = 0x09050811
-FLAG_CM = 0x18FE
-VAR_ID = 0x51FD
-STRIDE = 172
-TRADE_BG_PTR_OFF = 0x3B432C
-TRADE_ORIG = 0x08164B03
-TRADE_WRAPPER_ADDR = 0x08C8E000
-TRADE_SPECIES = 848
+ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
+
+NUM_CHARACTERS = 179
+NUM_SPECIES = 1561
+STRIDE = 196
+CODE_LEN = 11
+
+SHIM_ADDR = 0x095F1000
+BITMAPS_ADDR = 0x095F1800
+CODES_ADDR = 0x095FA200
+STARTERS_ADDR = 0x095FAA00
+SCRIPT_ADDR = 0x095FAC00
+TRADE_SCRIPT_ADDR = 0x095FB000
+
+TRAMPOLINE_ADDR = 0x08470A64
+BL_SITES = (0x0A7BDA, 0x20D416)
+GIVEMON_ADDR = 0x081C40BC
+SPECIALS_SLOT_222 = 0x28D47C
+ORIG_DISPATCH = 0x0813F86D
+GIVE_NATIVE = 0x0820DF41
+BRANCH0_PTR_OFF = 0x3287D7
+ORIG_INVALID = 0x08328994
+RECEIVED_MSG_SUB = 0x083289DB
+
+VAR_CM_STARTER = 0x40E4
+
+TRADE_JUNCTIONS = (0x2B61E5, 0x2C8442, 0x2C8E00, 0x319684)
+TRADE_JUNCTION_BYTES = bytes([0x19, 0x04, 0x80, 0x08, 0x80,
+                              0x19, 0x05, 0x80, 0x0A, 0x80,
+                              0x25, 0x00, 0x01, 0x25, 0x01, 0x01, 0x27])
+TRADE_TABLE_OFF = 0xE4D578
+TRADE_STRIDE = 60
+
+NATIVE_CODES = {"9RARECANDY", "JUSTCATCH", "WORLDCHAMP", "WATCHPHAUN",
+                "ILOVEALOLA", "ILOVEKALOS", "IWANTMONKE", "ILOVPALDEA",
+                "NEMOSFAVE", "JUSTSHOWME", "WISHINGSTR", "GIMMENUGS",
+                "IMISSJOHTO", "MASKEDOGRE", "LEGENDSZA", "HOUSESTARK",
+                "DRESSUP", "HYLIANFIT", "WILDNATURE", "PORTABLEPC",
+                "MOSEY", "BATTLEPASS"} | {f"MONO{t}" for t in
+                ("BUG", "DARK", "DRAGN", "ELECT", "FAIRY", "FIGHT", "FIRE",
+                 "FLYIN", "GHOST", "GRASS", "GROUN", "ICE", "NORML", "POISN",
+                 "PSYCH", "ROCK", "STEEL", "WATER")}
 
 failures = []
 
@@ -76,9 +120,43 @@ def decode_bl(halfwords_bytes, site_rom_addr):
     return site_rom_addr + 4 + (off << 1)
 
 
+def load_charmap():
+    enc, dec = {}, {}
+    pat = re.compile(r"^'(.)'\s*=\s*([0-9A-Fa-f]{2})\s*$")
+    with open(CHARMAP, encoding="utf-8") as f:
+        for line in f:
+            m = pat.match(line.rstrip("\n"))
+            if not m:
+                continue
+            ch, b = m.group(1), int(m.group(2), 16)
+            if ch not in enc:
+                enc[ch] = b
+            # several chars share a byte -> prefer the ASCII one for decoding
+            if b not in dec or (not dec[b].isascii() and ch.isascii()):
+                dec[b] = ch
+    return enc, dec
+
+
+def code_for(display):
+    n = unicodedata.normalize("NFKD", display)
+    n = "".join(ch for ch in n if not unicodedata.combining(ch))
+    return "".join(ch for ch in n if ch.isalnum())[:10]
+
+
 def main():
     orig = ROM_IN.read_bytes()
     patched = ROM_OUT.read_bytes()
+    _, dec = load_charmap()
+
+    def text_at(rom, addr, maxlen=96):
+        raw = rom[addr - 0x08000000: addr - 0x08000000 + maxlen]
+        end = raw.find(0xFF)
+        if end < 0:
+            return None
+        return "".join("\n" if b == 0xFE else dec.get(b, "?") for b in raw[:end])
+
+    def u32(rom, off):
+        return struct.unpack_from("<I", rom, off)[0]
 
     print("== 1. baseline ==")
     check("original ROM sha1 pinned", hashlib.sha1(orig).hexdigest() == ROM_SHA1)
@@ -93,212 +171,316 @@ def main():
     check("flips applies patch cleanly", b"" != applied, r.stdout + r.stderr)
     check("round-trip byte-identical to built ROM", applied == patched)
 
-    print("== 3. diff confined to intended regions ==")
-    shim_len = next(i for i in range(0x100) if all(
-        b == 0xFF for b in patched[SHIM_ADDR - 0x08000000 + i:SHIM_ADDR - 0x08000000 + 0x100]))
+    # independently locate the 112 callnative give sites in the ORIGINAL
+    pat = struct.pack("<I", GIVE_NATIVE)
+    native_sites = []
+    i = orig.find(pat)
+    while i != -1:
+        if orig[i - 1] == 0x23:
+            native_sites.append(i)
+        i = orig.find(pat, i + 1)
+    check("112 callnative give sites found in original", len(native_sites) == 112,
+          f"found {len(native_sites)}")
+
     bitmaps = (ROOT / "tools" / "character_mode" / "rosters_expanded.bin").read_bytes()
-    # script blob length: scan forward from SCRIPT_ADDR to the next 0xFF run
-    soff = SCRIPT_ADDR - 0x08000000
-    send = soff
-    while not all(b == 0xFF for b in patched[send:send + 64]):
-        send += 64
-    woff = TRADE_WRAPPER_ADDR - 0x08000000
-    wend = woff
-    while not all(b == 0xFF for b in patched[wend:wend + 64]):
-        wend += 64
-    intended = [(SHIM_ADDR - 0x08000000, SHIM_ADDR - 0x08000000 + 0x100),
-                (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
-                (soff, send),
-                (woff, wend),
-                *[(s, s + 4) for s in BL_SITES],
-                (GOTO_OPERAND_OFF, GOTO_OPERAND_OFF + 4),
-                (TRADE_BG_PTR_OFF, TRADE_BG_PTR_OFF + 4)]
+    check("rosters_expanded.bin is 179 x 196", len(bitmaps) == NUM_CHARACTERS * STRIDE)
+
+    print("== 3. diff confined to intended regions ==")
+    intended = [
+        (SHIM_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000),
+        (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
+        (CODES_ADDR - 0x08000000, CODES_ADDR - 0x08000000 + NUM_CHARACTERS * CODE_LEN),
+        (STARTERS_ADDR - 0x08000000, STARTERS_ADDR - 0x08000000 + NUM_CHARACTERS * 2),
+        (SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000),
+        (TRADE_SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000 + 0x400),
+        (TRAMPOLINE_ADDR - 0x08000000, TRAMPOLINE_ADDR - 0x08000000 + 8),
+        *[(s, s + 4) for s in BL_SITES],
+        (SPECIALS_SLOT_222, SPECIALS_SLOT_222 + 4),
+        (BRANCH0_PTR_OFF, BRANCH0_PTR_OFF + 4),
+        *[(s, s + 4) for s in native_sites],
+        *[(j, j + 5) for j in TRADE_JUNCTIONS],
+    ]
     stray = []
-    i = 0
-    n = len(orig)
-    while i < n:
-        if orig[i] != patched[i]:
-            if not any(a <= i < b for a, b in intended):
-                stray.append(i)
+    CHUNK = 4096
+    for base in range(0, len(orig), CHUNK):
+        if orig[base:base + CHUNK] == patched[base:base + CHUNK]:
+            continue
+        for k in range(base, min(base + CHUNK, len(orig))):
+            if orig[k] != patched[k] and not any(a <= k < b for a, b in intended):
+                stray.append(k)
                 if len(stray) > 5:
                     break
-            j = i + 1
-            while j < n and orig[j] != patched[j]:
-                j += 1
-            i = j
-        else:
-            i += 1
-    check("no stray modified bytes outside the 8 intended regions",
+        if len(stray) > 5:
+            break
+    check("no stray modified bytes outside the intended regions",
           not stray, f"first strays at {[hex(x) for x in stray]}")
 
-    print("== 4. BL patches ==")
+    print("== 4. BL patches + trampoline ==")
     for site in BL_SITES:
-        tgt = decode_bl(patched[site:site + 4], 0x08000000 + site)
-        check(f"BL at {site:#x} -> shim", tgt == SHIM_ADDR, f"decoded {tgt and hex(tgt)}")
         old = decode_bl(orig[site:site + 4], 0x08000000 + site)
-        check(f"BL at {site:#x} originally -> GiveMonToPlayer", old == 0x0907D790,
+        check(f"BL at {site:#x} originally -> GiveMonToPlayer", old == GIVEMON_ADDR,
               f"decoded {old and hex(old)}")
-    check("shim starts with push {..,lr}",
-          (struct.unpack_from("<H", patched, SHIM_ADDR - 0x08000000)[0] & 0xFF00) == 0xB500)
+        tgt = decode_bl(patched[site:site + 4], 0x08000000 + site)
+        check(f"BL at {site:#x} -> trampoline", tgt == TRAMPOLINE_ADDR,
+              f"decoded {tgt and hex(tgt)}")
+    toff = TRAMPOLINE_ADDR - 0x08000000
+    hw1, hw2 = struct.unpack_from("<HH", patched, toff)
+    gate = u32(patched, toff + 4)
+    check("trampoline = ldr r3,[pc]; bx r3", (hw1, hw2) == (0x4B00, 0x4718))
+    check("trampoline literal is Thumb ptr into shim",
+          (gate & 1) == 1 and SHIM_ADDR <= (gate & ~1) < BITMAPS_ADDR, hex(gate))
+    check("shim code present at gate target",
+          patched[(gate & ~1) - 0x08000000] != 0xFF)
+    check("trampoline bytes were free (0xFF) in original",
+          all(b == 0xFF for b in orig[toff:toff + 8]))
+
+    # exhaustive GiveMonToPlayer caller scan — the DexNav coverage proof.
+    # DexNav (and every other in-battle acquisition) can only reach the
+    # player's party through a BL to GiveMonToPlayer; if the patched ROM
+    # contains no such BL outside the 2 gated sites + the deliberately
+    # exempt daycare caller, no bypass path exists.
+    DAYCARE_SITE = 0x19FC8E
+    def bl_callers(rom, target):
+        sites = []
+        for off in range(0, len(rom) - 3, 2):
+            if (rom[off + 1] & 0xF8) == 0xF0 and (rom[off + 3] & 0xF8) == 0xF8:
+                if decode_bl(rom[off:off + 4], 0x08000000 + off) == target:
+                    sites.append(off)
+        return sites
+    orig_callers = bl_callers(orig, GIVEMON_ADDR)
+    check("original ROM: exactly 3 GiveMonToPlayer BL callers",
+          sorted(orig_callers) == sorted([*BL_SITES, DAYCARE_SITE]),
+          f"found {[hex(x) for x in orig_callers]}")
+    left = bl_callers(patched, GIVEMON_ADDR)
+    check("patched ROM: only the exempt daycare caller still BLs GiveMonToPlayer "
+          "(DexNav/battle funnel fully gated)", left == [DAYCARE_SITE],
+          f"found {[hex(x) for x in left]}")
 
     print("== 5. bitmaps ==")
-    off = BITMAPS_ADDR - 0x08000000
+    boff = BITMAPS_ADDR - 0x08000000
     check("bitmaps in ROM == rosters_expanded.bin",
-          patched[off:off + len(bitmaps)] == bitmaps)
+          patched[boff:boff + len(bitmaps)] == bitmaps)
     with open(ROOT / "tools" / "character_mode" / "characters_manifest.json") as f:
         manifest = json.load(f)
-    chars = [c for c in manifest["characters"] if "roster_species_ids" in c]
-    check("184 characters in manifest", len(chars) == 184)
-    red = next(i for i, c in enumerate(chars) if c["character"] == "Red")
-    bm = patched[off + red * STRIDE: off + (red + 1) * STRIDE]
-    def has(s): return bool(bm[s >> 3] & (1 << (s & 7)))
-    check("Red bitmap (in ROM): allows 25/26/172/1022, rejects 0/52",
-          has(25) and has(26) and has(172) and has(1022) and not has(0) and not has(52))
+    chars = manifest["characters"]
+    check("179 characters in manifest", len(chars) == NUM_CHARACTERS, str(len(chars)))
 
-    print("== 6. script chain walk ==")
-    goto_tgt = struct.unpack_from("<I", patched, GOTO_OPERAND_OFF)[0]
-    check("cheat fallthrough goto retargeted to chain", goto_tgt == SCRIPT_ADDR)
-    check("original goto operand was Invalid-code handler",
-          struct.unpack_from("<I", orig, GOTO_OPERAND_OFF)[0] == INVALID_CODE_HANDLER)
+    def bit(ci, sp):
+        return (patched[boff + ci * STRIDE + (sp >> 3)] >> (sp & 7)) & 1
 
-    def rd(addr, ln):
-        return patched[addr - 0x08000000: addr - 0x08000000 + ln]
+    bad_roster = 0
+    degenerate = 0
+    for ci, c in enumerate(chars):
+        ids = c["roster_species_ids"]
+        if not all(0 < sp < NUM_SPECIES and bit(ci, sp) for sp in ids):
+            bad_roster += 1
+            if bad_roster <= 3:
+                miss = [sp for sp in ids if not (0 < sp < NUM_SPECIES and bit(ci, sp))]
+                print(f"    roster bits missing [{ci}] {c['character']}: {miss}")
+        pop = sum(bin(b).count("1")
+                  for b in patched[boff + ci * STRIDE: boff + (ci + 1) * STRIDE])
+        if pop < len(ids) or pop > NUM_SPECIES // 2:
+            degenerate += 1
+    check("every character's manifest roster ids set in own bitmap (in ROM)",
+          bad_roster == 0, f"{bad_roster} bad")
+    check("no degenerate bitmaps (empty / half-full)", degenerate == 0, str(degenerate))
+    distinct = len({bytes(patched[boff + i * STRIDE: boff + (i + 1) * STRIDE])
+                    for i in range(NUM_CHARACTERS)})
+    check("bitmaps mostly distinct across characters", distinct > NUM_CHARACTERS * 3 // 4,
+          f"only {distinct} distinct")
 
-    def read_text(addr, maxlen=64):
-        raw = rd(addr, maxlen)
+    print("== 6. codes + starters ==")
+    coff = CODES_ADDR - 0x08000000
+    soff = STARTERS_ADDR - 0x08000000
+    bad_code = bad_starter = 0
+    seen = set()
+    for ci, c in enumerate(chars):
+        raw = patched[coff + ci * CODE_LEN: coff + (ci + 1) * CODE_LEN]
         end = raw.find(0xFF)
-        return raw[:end] if end >= 0 else None
+        decoded = "".join(dec.get(b, "?") for b in (raw[:end] if end >= 0 else raw))
+        want = code_for(c["character"])
+        key = decoded.upper()
+        ok = (decoded == want and 1 <= len(decoded) <= 10
+              and key not in seen and key not in NATIVE_CODES)
+        seen.add(key)
+        if not ok:
+            bad_code += 1
+            if bad_code <= 3:
+                print(f"    code mismatch [{ci}] {c['character']}: {decoded!r} != {want!r}")
+        starter = struct.unpack_from("<H", patched, soff + ci * 2)[0]
+        sig = (c["signature_id"] if c.get("has_signature") and c.get("signature_id")
+               else c["roster_species_ids"][0])
+        if starter != sig or not bit(ci, starter):
+            bad_starter += 1
+            if bad_starter <= 3:
+                print(f"    starter mismatch [{ci}] {c['character']}: "
+                      f"{starter} (want {sig}, on-bitmap={bit(ci, starter)})")
+    check("all 179 codes decode to recomputed names, unique, no native clash",
+          bad_code == 0, f"{bad_code} bad")
+    check("all 179 starters == signature/roster[0] and on own bitmap",
+          bad_starter == 0, f"{bad_starter} bad")
 
-    # load ROWE charmap to decode alias strings back to ASCII
-    # reverse charmap; several chars share a byte (e.g. ' ' and the ideographic
-    # space both encode to 0x00) — prefer the ASCII one for round-trip checks
-    cmap = {}
-    pat = re.compile(r"^'(.)'\s*=\s*([0-9A-Fa-f]{2})\s*$")
-    with open("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt", encoding="utf-8") as f:
-        for line in f:
-            m = pat.match(line.rstrip("\n"))
-            if m:
-                b, ch = int(m.group(2), 16), m.group(1)
-                if b not in cmap or (not cmap[b].isascii() and ch.isascii()):
-                    cmap[b] = ch
+    print("== 7. specials slot (selection hook) ==")
+    check("slot 0x222 originally -> native matcher",
+          u32(orig, SPECIALS_SLOT_222) == ORIG_DISPATCH)
+    disp = u32(patched, SPECIALS_SLOT_222)
+    check("slot 0x222 -> Thumb ptr into shim (CM_CheatDispatchHook)",
+          (disp & 1) == 1 and SHIM_ADDR <= (disp & ~1) < BITMAPS_ADDR, hex(disp))
 
-    def alias_for(display):
-        if display.endswith(" (anime)"):
-            display = display[:-len(" (anime)")]
-        return re.sub(r"[^A-Za-z0-9]", "", display)
+    print("== 8. callnative give sites ==")
+    vals = {u32(patched, s) for s in native_sites}
+    hook_native = vals.pop() if len(vals) == 1 else None
+    check("all 112 sites share one retargeted pointer", hook_native is not None,
+          f"{len(vals) + 1} distinct values")
+    if hook_native is not None:
+        check("retargeted give ptr is Thumb ptr into shim",
+              (hook_native & 1) == 1 and SHIM_ADDR <= (hook_native & ~1) < BITMAPS_ADDR,
+              hex(hook_native))
+        leftovers = []
+        i = patched.find(pat)
+        while i != -1:
+            if patched[i - 1] == 0x23:
+                leftovers.append(i)
+            i = patched.find(pat, i + 1)
+        check("no un-retargeted callnative give site remains", not leftovers,
+              f"at {[hex(x) for x in leftovers]}")
 
-    p = SCRIPT_ADDR
-    checks_parsed = []          # (string_addr, handler_addr)
-    chain_ok = True
-    for i in range(187):
-        blk = rd(p, 20)
-        if not (blk[0] == 0x0F and blk[1] == 0x00 and blk[6] == 0x25
-                and struct.unpack_from("<H", blk, 7)[0] == 0x12D
-                and blk[9] == 0x21
-                and struct.unpack_from("<HH", blk, 10) == (0x800D, 0)
-                and blk[14] == 0x06 and blk[15] == 1):
-            chain_ok = False
-            check(f"check block {i} decodes", False, f"@{p:#x}: {blk.hex()}")
-            break
-        checks_parsed.append((struct.unpack_from("<I", blk, 2)[0],
-                              struct.unpack_from("<I", blk, 16)[0]))
-        p += 20
-    check("all 187 check blocks decode (loadword/special 12D/compare/goto_if)",
-          chain_ok and len(checks_parsed) == 187)
-    tail = rd(p, 5)
-    check("chain tail = goto Invalid-code handler",
-          tail[0] == 0x05 and struct.unpack_from("<I", tail, 1)[0] == INVALID_CODE_HANDLER)
+    print("== 9. confirm script walk ==")
+    check("branch-0 ptr originally -> invalid-code handler",
+          u32(orig, BRANCH0_PTR_OFF) == ORIG_INVALID)
+    check("branch-0 ptr retargeted to confirm script",
+          u32(patched, BRANCH0_PTR_OFF) == SCRIPT_ADDR)
 
-    if chain_ok and len(checks_parsed) == 187:
-        # debug code strings
-        dbg_names = ["CMDbgOff", "CMDbgGive1", "CMDbgGive2"]
-        for i, name in enumerate(dbg_names):
-            raw = read_text(checks_parsed[i][0])
-            decoded = "".join(cmap.get(b, "?") for b in raw) if raw is not None else None
-            check(f"debug code {i} string == {name!r}", decoded == name, repr(decoded))
+    p = SCRIPT_ADDR - 0x08000000
 
-        # character aliases + handlers
-        bad_alias = bad_handler = 0
-        for i, c in enumerate(chars):
-            saddr, haddr = checks_parsed[3 + i]
-            raw = read_text(saddr)
-            decoded = "".join(cmap.get(b, "?") for b in raw) if raw is not None else None
-            if decoded != alias_for(c["character"]):
-                bad_alias += 1
-                if bad_alias <= 3:
-                    print(f"    alias mismatch [{i}] {c['character']}: {decoded!r}")
-                continue
-            h = rd(haddr, 30)
-            ok = (h[0] == 0x16 and struct.unpack_from("<HH", h, 1) == (VAR_ID, i + 1)
-                  and h[5] == 0x29 and struct.unpack_from("<H", h, 6)[0] == FLAG_CM
-                  and h[8] == 0x79
-                  and struct.unpack_from("<H", h, 9)[0] == c["roster_species_ids"][0]
-                  and h[11] == 5      # level
-                  and h[23] == 0x0F   # loadword msg
-                  and h[29] == 0x09)  # callstd
-            if not ok:
-                bad_handler += 1
-                if bad_handler <= 3:
-                    print(f"    handler mismatch [{i}] {c['character']} @{haddr:#x}: {h.hex()}")
-        check("all 184 alias strings decode to expected names", bad_alias == 0,
-              f"{bad_alias} mismatches")
-        check("all 184 handlers: setvar id, setflag, givepokemon(signature, L5), msgbox",
-              bad_handler == 0, f"{bad_handler} mismatches")
+    def expect(desc, blob):
+        nonlocal p
+        got = patched[p:p + len(blob)]
+        ok = got == blob
+        if not ok:
+            check(f"script: {desc}", False, f"@ +{p - (SCRIPT_ADDR - 0x08000000):#x}: "
+                  f"{bytes(got).hex()} != {blob.hex()}")
+        p += len(blob)
+        return ok
 
-        # debug handlers
-        h = rd(checks_parsed[0][1], 12)
-        check("CMDbgOff handler: clearflag CM + setvar 0",
-              h[0] == 0x2A and struct.unpack_from("<H", h, 1)[0] == FLAG_CM
-              and h[3] == 0x16 and struct.unpack_from("<HH", h, 4) == (VAR_ID, 0))
-        for i, species in ((1, 25), (2, 52)):
-            h = rd(checks_parsed[i][1], 12)
-            check(f"CMDbg{'Give1' if i == 1 else 'Give2'} handler: givepokemon {species} L5",
-                  h[0] == 0x79 and struct.unpack_from("<H", h, 1)[0] == species and h[3] == 5)
+    def take_u32():
+        nonlocal p
+        v = u32(patched, p)
+        p += 4
+        return v
 
-    print("== 7. trade gate ==")
-    check("trade BG script ptr originally -> live trade script",
-          struct.unpack_from("<I", orig, TRADE_BG_PTR_OFF)[0] == TRADE_ORIG)
-    check("trade BG script ptr retargeted to wrapper",
-          struct.unpack_from("<I", patched, TRADE_BG_PTR_OFF)[0] == TRADE_WRAPPER_ADDR)
-    # decode the wrapper: checkflag CM; goto_if 0 -> orig; compare var,0;
-    # goto_if 1 -> orig; compare var,185; goto_if 4 -> orig; [per-allowing
-    # character compare/goto_if pairs]; loadword msg; callstd 3; end
-    w = TRADE_WRAPPER_ADDR - 0x08000000
-    def u32p(o): return struct.unpack_from("<I", patched, o)[0]
-    ok = (patched[w] == 0x2B and struct.unpack_from("<H", patched, w+1)[0] == FLAG_CM
-          and patched[w+3] == 0x06 and patched[w+4] == 0 and u32p(w+5) == TRADE_ORIG
-          and patched[w+9] == 0x21 and struct.unpack_from("<HH", patched, w+10) == (VAR_ID, 0)
-          and patched[w+14] == 0x06 and patched[w+15] == 1 and u32p(w+16) == TRADE_ORIG
-          and patched[w+20] == 0x21 and struct.unpack_from("<HH", patched, w+21) == (VAR_ID, 185)
-          and patched[w+25] == 0x06 and patched[w+26] == 4 and u32p(w+27) == TRADE_ORIG)
-    check("wrapper preamble decodes (flag/char-0/char-range passthroughs)", ok)
-    p2 = w + 31
-    n_allow = 0
-    while patched[p2] == 0x21:
-        var, idx = struct.unpack_from("<HH", patched, p2+1)
-        good = (var == VAR_ID and 1 <= idx <= 184 and patched[p2+5] == 0x06
-                and patched[p2+6] == 1 and u32p(p2+7) == TRADE_ORIG)
-        if not good:
-            break
-        # the allowing character's bitmap must actually allow the species
-        bmi = (idx-1)*STRIDE
-        if not bitmaps[bmi + (TRADE_SPECIES >> 3)] & (1 << (TRADE_SPECIES & 7)):
-            break
-        n_allow += 1
-        p2 += 11
-    expected_allow = sum(1 for i in range(184)
-                         if bitmaps[i*STRIDE + (TRADE_SPECIES >> 3)] & (1 << (TRADE_SPECIES & 7)))
-    check(f"wrapper allow-list matches bitmaps ({expected_allow} characters)",
-          n_allow == expected_allow)
-    ok_tail = (patched[p2] == 0x0F and patched[p2+1] == 0
-               and patched[p2+6] == 0x09 and patched[p2+7] == 3 and patched[p2+8] == 0x02)
-    msg = ""
-    if ok_tail:
-        ma = u32p(p2+2) - 0x08000000
-        raw = patched[ma:ma+80]
-        msg = "".join(cmap.get(b, "?") for b in raw[:raw.find(0xFF)])
-    check("wrapper tail: msgbox(sign) + end, message decodes",
-          ok_tail and msg.startswith("Character Mode:"), repr(msg))
+    ok = True
+    # entry: compare VAR_CM_STARTER,0; goto_if NE -> act; goto ORIG_INVALID
+    ok &= expect("compare(VAR_CM_STARTER, 0)",
+                 bytes([0x21]) + struct.pack("<HH", VAR_CM_STARTER, 0))
+    ok &= expect("goto_if 5 (NE)", bytes([0x06, 5]))
+    act_addr = take_u32()
+    ok &= expect("goto", bytes([0x05]))
+    ok &= take_u32() == ORIG_INVALID
+    check("entry block decodes (incl. fallthrough -> orig invalid handler)",
+          ok and act_addr == 0x08000000 + p)
+
+    # activation handler: mode msgbox FIRST, marker consumed BEFORE the give,
+    # then goto (never call) into the ROM's own received-mon tail — the tail
+    # ends every path with releaseall/end and cannot return.
+    ok = expect("compare(VAR_CM_STARTER, 0xFFFF)",
+                bytes([0x21]) + struct.pack("<HH", VAR_CM_STARTER, 0xFFFF))
+    ok &= expect("goto_if 1 (EQ)", bytes([0x06, 1]))
+    off_addr = take_u32()
+    ok &= expect("delay", bytes([0x28]) + struct.pack("<H", 2))
+    ok &= expect("loadword", bytes([0x0F, 0x00]))
+    txt_on_addr = take_u32()
+    ok &= expect("callstd 4 (mode msgbox)", bytes([0x09, 4]))
+    ok &= expect("copyvar(0x8000, VAR_CM_STARTER)",
+                 bytes([0x19]) + struct.pack("<HH", 0x8000, VAR_CM_STARTER))
+    ok &= expect("bufferspecies(0, var 0x8000)",
+                 bytes([0x7D, 0x00]) + struct.pack("<H", 0x8000))
+    ok &= expect("setvar(0x4001, 0x8000)",
+                 bytes([0x16]) + struct.pack("<HH", 0x4001, 0x8000))
+    ok &= expect("setvar(VAR_CM_STARTER, 0) before the give",
+                 bytes([0x16]) + struct.pack("<HH", VAR_CM_STARTER, 0))
+    ok &= expect("callnative give", bytes([0x23]))
+    give_ptr = take_u32()
+    ok &= give_ptr == hook_native
+    ok &= expect("give args (species=var 0x8000, L5)",
+                 bytes([0x00, 0x06]) + struct.pack("<HHI", 0x8000, 5, 0))
+    ok &= expect("goto received-msg tail",
+                 bytes([0x05]) + struct.pack("<I", RECEIVED_MSG_SUB))
+    check("activation handler decodes (incl. give via shim ptr)", ok)
+
+    # off handler
+    ok = (0x08000000 + p) == off_addr
+    ok &= expect("off: setvar(VAR_CM_STARTER, 0)",
+                 bytes([0x16]) + struct.pack("<HH", VAR_CM_STARTER, 0))
+    ok &= expect("off: delay", bytes([0x28]) + struct.pack("<H", 2))
+    ok &= expect("off: loadword", bytes([0x0F, 0x00]))
+    txt_off_addr = take_u32()
+    ok &= expect("off: callstd 4; releaseall; end", bytes([0x09, 4, 0x6B, 0x02]))
+    check("off handler decodes at goto_if target", ok)
+
+    t_on = text_at(patched, txt_on_addr)
+    t_off = text_at(patched, txt_off_addr)
+    check("activation text decodes",
+          t_on == "Character Mode is now active!\nOff-roster catches go to the PC.",
+          repr(t_on))
+    check("off text decodes", t_off == "Character Mode is now off.", repr(t_off))
+
+    print("== 10. trade gates ==")
+    for k, j in enumerate(TRADE_JUNCTIONS):
+        check(f"junction {k} original bytes intact",
+              orig[j:j + 17] == TRADE_JUNCTION_BYTES)
+    wrapper_addrs = []
+    for k, j in enumerate(TRADE_JUNCTIONS):
+        got = patched[j:j + 5]
+        ok = got[0] == 0x05
+        wa = u32(patched, j + 1) if ok else 0
+        ok = ok and TRADE_SCRIPT_ADDR <= wa < TRADE_SCRIPT_ADDR + 0x400
+        check(f"junction {k} overlaid with goto wrapper", ok, bytes(got).hex())
+        check(f"junction {k} tail untouched",
+              patched[j + 5:j + 17] == TRADE_JUNCTION_BYTES[5:])
+        wrapper_addrs.append(wa)
+
+    hook_trade = None
+    for k, (j, wa) in enumerate(zip(TRADE_JUNCTIONS, wrapper_addrs)):
+        w = wa - 0x08000000
+        ok = patched[w:w + 10] == TRADE_JUNCTION_BYTES[:10]  # the 2 copyvars
+        ok = ok and patched[w + 10] == 0x23
+        tptr = u32(patched, w + 11)
+        if hook_trade is None:
+            hook_trade = tptr
+        ok = ok and tptr == hook_trade and (tptr & 1) == 1 \
+            and SHIM_ADDR <= (tptr & ~1) < BITMAPS_ADDR
+        ok = ok and patched[w + 15] == 0x21 \
+            and struct.unpack_from("<HH", patched, w + 16) == (0x800D, 0)
+        ok = ok and patched[w + 20] == 0x06 and patched[w + 21] == 1
+        refuse_addr = u32(patched, w + 22)
+        ok = ok and refuse_addr == TRADE_SCRIPT_ADDR
+        ok = ok and patched[w + 26:w + 33] == TRADE_JUNCTION_BYTES[10:]  # specials+waitstate
+        ok = ok and patched[w + 33] == 0x05 \
+            and u32(patched, w + 34) == 0x08000000 + j + 17
+        check(f"wrapper {k} decodes (check, refuse-on-0, resume at junction+17)", ok)
+
+    r = TRADE_SCRIPT_ADDR - 0x08000000
+    ok = patched[r:r + 3] == bytes([0x28]) + struct.pack("<H", 2)
+    ok = ok and patched[r + 3:r + 5] == bytes([0x0F, 0x00])
+    refuse_txt_addr = u32(patched, r + 5)
+    ok = ok and patched[r + 9:r + 13] == bytes([0x09, 4, 0x6C, 0x02])
+    msg = text_at(patched, refuse_txt_addr) if ok else None
+    check("refusal script decodes", ok)
+    check("refusal text decodes",
+          msg == "Character Mode:\nthis trade is not in your roster.", repr(msg))
+
+    n_bad_species = 0
+    for k in range(4):
+        sp = struct.unpack_from("<H", orig, TRADE_TABLE_OFF + k * TRADE_STRIDE + 14)[0]
+        if not (0 < sp < NUM_SPECIES):
+            n_bad_species += 1
+    check("sIngameTrades received-species fields sane (4 trades)", n_bad_species == 0)
+
+    distinct_hooks = {gate & ~1, (disp & ~1),
+                      (hook_native or 0) & ~1, (hook_trade or 0) & ~1}
+    check("4 shim entry points are distinct", len(distinct_hooks) == 4,
+          str([hex(x) for x in distinct_hooks]))
 
     print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
     return 1 if failures else 0

@@ -178,6 +178,11 @@ function H.finish()
     else
         H.log("RESULT: FAIL")
     end
+    -- exit the emulator so callers don't have to wait out their `timeout`
+    -- bound (mGBA otherwise idles forever after the script goes quiet);
+    -- os.exit is available in mGBA's scripting env, but keep the timeout
+    -- as a belt-and-braces bound in case a build sandboxes it away
+    if os and os.exit then os.exit(#failures == 0 and 0 or 1) end
 end
 
 -- ---------------------------------------------------------------------- input

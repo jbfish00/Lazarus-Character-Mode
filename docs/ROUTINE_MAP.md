@@ -99,6 +99,80 @@ variants — audit with the above).
 | Item quantity XOR key | u16 @ `SB2+0xB0` | AddBagItem's `eors`; live-verified (wrote 10 balls, bag UI shows "Poké Ball ×10") |
 | gItemsInfo | `0x08868520`, stride 80; name inline +0x3C, pocket byte +0x69; max id 0x362 | "Poké Ball" found inline at item **id 1** (expansion re-ids: 1=Poké, 2=Great, 3=Ultra, 4=Master…) |
 
+## Cheat-code system (CONFIRMED 2026-07-16, Phase 4.1 — static XREF chain)
+
+Full detail + injection design: docs/SELECTION_MECHANISM.md.
+
+| Symbol | Address | Evidence |
+|---|---|---|
+| Code string table (40 codes) | `0x087D9294`.. | charmap text, 0xFF-terminated, 4-aligned variable length |
+| Special 0x221 (entry screen) | `0x0813F848` | `DoNamingScreen(5, 0x0203CCE0, 0,0,0, 0x08190B55)` |
+| DoNamingScreen | `0x08186BC8` | arg shape matches donor |
+| Code buffer | EWRAM `0x0203CCE0` | dest arg of DoNamingScreen; loaded as r4 by matcher |
+| Special 0x222 (matcher) | `0x0813F86C` | 40× StringCompare chain; 1-based index (0 none) → gSpecialVar_Result |
+| StringCompare | `0x08005D40` | r0==r1 content → returns 0 |
+| **gSpecialsTable** | **`0x0828CBF4`** | base from cmd-0x25/0x26 handler literals; special ID = (slot−base)/4 |
+| Calling script + switch | `0x083287CD` / `0x083287D0..0x08328993` | compare/goto_if chain k=0..0x28; no-match branch ptr at file `0x3287D7` → `0x08328994` |
+| Cheat toggle state | SB1 `+0x1494..0x1499` | bitfield funcs `0x0813F404/0x0813F4BC/0x0813F704/0x0813F71C/0x0813F734`; do not collide with CM save fields |
+
+## In-game trades (CONFIRMED 2026-07-16, Phase 4.3 — static, donor-index method)
+
+Found via donor `data/specials.inc` ordering (trade specials at the same
+indices 0xFF/0x100/0x101 in this ROM's specials table — the donor ORDER
+transferred even though addresses never do):
+
+| Symbol | Address | Evidence |
+|---|---|---|
+| GetInGameTradeSpeciesInfo (special 0xFF) | `0x08226FBC` | table slot |
+| CreateInGameTradePokemon (special 0x100) | `0x082272A8` → inner `0x08227068` | reads gSpecialVar_0x8004/5 (EWRAM `0x020055FC/FE`), indexes stride-60 structs |
+| DoInGameTradeScene (special 0x101) | `0x08227738` | table slot |
+| **sIngameTrades** | **`0x08E4D578`**, stride 60, **4 entries** | literal pool of inner create fn (flanked by gPlayerParty/gEnemyParty pools) |
+
+Struct: nickname[11] @+0 (charmap), **received species u16 @+14**, otName
+@+41-ish, **requested species u32 @+56**. The 4 trades: DOTS (Seedot 273 ←
+Ralts 280), PLUSES (Plusle 311 ← Volbeat 313), SEASOR (Horsea 116 ← Bagon
+371), MEOWOW (Meowth 52 ← Skitty 300).
+
+All 4 trade scripts share an identical 17-byte "deal confirmed" junction
+(`copyvar 8004,8008; copyvar 8005,800A; special 0x100; special 0x101;
+waitstate`) at file `0x2B61E5 / 0x2C8442 / 0x2C8E00 / 0x319684` — the Phase
+4.3 gate overlays the first 5 bytes with a goto into per-trade wrapper
+scripts that `callnative CM_TradeCheck` first (polite refusal on off-roster,
+matching the scripts' own decline idiom).
+
+DexNav note: the catch gate covers DexNav by construction — `0x080A7BDA` is
+the ONLY battle-engine caller of GiveMonToPlayer and DexNav catches are
+in-battle catches. Live confirmation queued in Phase 6 (unlocks post-gym-2).
+
+## Maps, warps, special vars (CONFIRMED 2026-07-17, Phase 6 — static chain + live)
+
+- **gMapGroups**: file `0xFAF098`, **34 groups** (group 0 base `0xFAE5F0`;
+  validated by walking the desk BG events (7,8)/(8,8) → MapEvents `0xEA28B0`
+  → header `0xFAA1B0` = entry 58 of group 0 = the known lab map 0.58).
+  ⚠ **Decoy**: an 88-entry pointer run at `0xFAEFC0` looks like a groups
+  table and is NOT (assigns bogus banks like 61/65/80).
+- **Trade scripts hardcode their sIngameTrades index** via `setvar 0x8008, N`
+  just before the shared junction — junction order (0x2B61E5, 0x2C8442,
+  0x2C8E00, 0x319684) = indices **2, 0, 1, 3**. Requested species u16 at
+  struct **+56** (SEASOR wants Bagon 371, DOTS Ralts 280, PLUSES 313,
+  MEOWOW Skitty 300). Trade NPC home maps (event→header→group chain):
+  SEASOR **7.4** (door on town 0.15 at (12,24)), DOTS 11.10, PLUSES 11.15,
+  MEOWOW 26.48.
+- **Special-vars pointer table** (vars 0x8000+, used by GetVarPointer):
+  ROM `0x0828CB9C` → e.g. VAR_0x8004 storage `0x020055FC`, VAR_RESULT
+  (0x800D) `0x0200560C` (matches gSpecialVar_Result).
+- **SaveBlock1 head is vanilla-layout**: pos @+0, location @+4 (group,num,
+  warpId,pad,x:s16,y:s16), continueGameWarp @+0xC, dynamicWarp @+0x14,
+  lastHealLocation @+0x1C. ⚠ **Writing a nonzero continueGameWarp bricks
+  boot** (crash at title). Location-only edit + in-game save + continue
+  loads the save but comes up black-screen/input-locked — RAM-warping is
+  currently NOT usable; use the desk-repoint test technique instead
+  (docs/TESTING.md).
+- **Received-mon script tail** `0x083289DB`: goto-only, every path ends
+  `releaseall; end` (target `0x083289D9` IS `releaseall,end`) — `call`ing
+  it never returns. VAR_RESULT semantics in give tails: 0 = went to party
+  (nickname flow), 1 = boxed ("transferred to the PC").
+
 ## Phase 1 EXIT GATE: CLOSED (2026-07-16)
 
 Catch handler caller ✓, gift handler (ScriptGiveMon) ✓, SendMonToPC ✓,

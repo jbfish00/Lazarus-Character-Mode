@@ -117,10 +117,21 @@ def load_order(mapped):
     return order
 
 
+def _signature_base_map():
+    """Donor evolution topology: const -> its family-base const. Used to keep
+    signatures whose ace is an evolved form (e.g. Red's Pikachu) when the
+    roster stores only family bases (e.g. Pichu). Lazy import: map_species
+    pulls the donor clone, which stays optional for --dry-run validation."""
+    from map_species import load_donor, first_stage_map
+    _, parent = load_donor()
+    return first_stage_map(parent)
+
+
 def build_rosters(mapped, order):
     """Compute starter/legendary split + signature placement per character.
     Returns (per-character dict, skipped-empty list, warnings list) -- pure
     function of consts, independent of whether numeric ids exist yet."""
+    base_of = _signature_base_map()
     built = {}
     skipped = []
     warnings = []
@@ -145,7 +156,15 @@ def build_rosters(mapped, order):
             elif sig_const in legends:
                 legends.remove(sig_const)
             else:
-                sig_const = None
+                # Ace is an evolved form; roster stores family bases. Accept
+                # when the ace's family base is on the roster — the ace id
+                # becomes roster[0] (the signature/starter give), and the
+                # bitmap expansion covers the whole family either way.
+                sig_base = base_of.get(sig_const, sig_const)
+                if sig_base not in starters and sig_base not in legends:
+                    warnings.append("%s: signature %s (base %s) not on roster, dropped"
+                                    % (disp, sig_const, sig_base))
+                    sig_const = None
             if sig_const:
                 starters.insert(0, sig_const)
                 has_signature = 1

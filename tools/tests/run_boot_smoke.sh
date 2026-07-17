@@ -1,46 +1,27 @@
-#!/bin/bash
-# Boot smoke test (see boot_smoke.gdb). Runs against a given ROM;
-# default is the patched build. Run it against rom/*.gba too to get an
-# original-ROM baseline for comparison.
+#!/bin/sh
+# Boot smoke: cold boot -> A-mash -> SaveBlock trio live in EWRAM + spawn
+# map 0.57 reached (tools/mgba_scripts/boot_smoke.lua). Runs the patched
+# build by default; pass a ROM path to test another (e.g. the original for
+# a baseline). The RR-inherited GDB variant was dropped: its gMain
+# addresses are FRLG-only and the Lua assertions are strictly stronger.
 #   usage: run_boot_smoke.sh [rom.gba]
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
-ROM="${1:-$ROOT/build/radicalred_cm.gba}"
+ROM="${1:-$ROOT/build/lazarus_cm.gba}"
+MGBA="$ROOT/../Seaglass-Character-Mode/tools/mgba_src/build/mgba-headless"
 LOG="$ROOT/build/boot_smoke.$(basename "$ROM" .gba | tr -c 'A-Za-z0-9._-' '_').log"
 
 [ -f "$ROM" ] || { echo "ROM missing: $ROM"; exit 1; }
 
-pkill -f "mgba-qt -g" 2>/dev/null && sleep 1
+cd "$ROOT"
+timeout 110 "$MGBA" --script tools/mgba_scripts/boot_smoke.lua "$ROM" > "$LOG" 2>&1 || true
 
-mgba-qt -g "$ROM" >/dev/null 2>&1 &
-MGBA_PID=$!
-trap 'kill $MGBA_PID 2>/dev/null' EXIT
-sleep 5
-
-timeout 90 gdb-multiarch -nx -batch -x "$HERE/boot_smoke.gdb" >"$LOG" 2>&1
-
-kill $MGBA_PID 2>/dev/null
-trap - EXIT
-
-echo "--- gdb output ($LOG) ---"
-cat "$LOG"
-echo "------------------"
-
-python3 - "$LOG" <<'EOF'
-import re, sys
-fails = 0
-checks = 0
-for line in open(sys.argv[1]):
-    m = re.search(r"\(want (\d+)\): (\d+)", line)
-    if m:
-        checks += 1
-        if m.group(1) != m.group(2):
-            print(f"FAIL: {line.strip()}")
-            fails += 1
-if checks == 0:
-    print("NO CHECKS RAN — gdb session failed?")
-    sys.exit(2)
-print(f"{checks - fails}/{checks} checks passed")
-sys.exit(1 if fails else 0)
-EOF
+grep -a "HARNESS" "$LOG" | tail -8
+if grep -aq "HARNESS RESULT: PASS" "$LOG"; then
+    echo "[PASS] boot smoke: $ROM"
+    exit 0
+else
+    echo "[FAIL] boot smoke: $ROM (see $LOG)"
+    exit 1
+fi

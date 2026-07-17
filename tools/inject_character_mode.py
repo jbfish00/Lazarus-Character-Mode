@@ -1,34 +1,34 @@
 #!/usr/bin/env python3
-"""Build the Character Mode patched ROM for Pokemon Radical Red v4.1.
+"""Build the Character Mode patched ROM for Pokemon Lazarus v2.0.
 
-Pipeline (all addresses CONFIRMED in docs/ROUTINE_MAP.md, pinned to rom.sha1):
-  1. Compile src/character_mode.c (the GiveMonToPlayer gate shim) with
-     arm-none-eabi-gcc, linked at SHIM_ADDR.
-  2. Splice into a ROM copy:
-       shim code            @ SHIM_ADDR    (0x08C80000)
-       rosters_expanded.bin @ BITMAPS_ADDR (0x08C80100)
-       selection script ext @ SCRIPT_ADDR  (0x08C88000)
-     — all inside the tail of the confirmed 1.63 MiB free block at
-     0xB71D04. The shim MUST stay in [0xC7DD88, 0xD004D7): Thumb BL range
-     is ±4 MB from the two patch sites (~0x0907xxxx), and this block's
-     tail is the only big free run inside that window.
-  3. Patch:
-       - BL at 0x107DD84 (atkF0_givecaughtmon)  -> BL shim
-       - BL at 0x10777CE (ScriptGiveMon)        -> BL shim
-       - goto operand at 0x10500EF (cheat-code no-match fallthrough)
-         -> selection script chain (chain's own fallthrough continues to
-            the original "Invalid code." handler at 0x09050811)
-  4. Verify expected original bytes before every patch (refuses to run on a
-     mismatched ROM), write build/radicalred_cm.gba + build/radicalred_cm.bps.
+Pipeline (all addresses CONFIRMED — docs/ROUTINE_MAP.md +
+docs/SELECTION_MECHANISM.md, pinned to rom.sha1):
 
-The selection UI rides RR's own cheat-code entry system: the player talks
-to the cheat-code NPC and types a character's name (non-alphanumerics
-stripped: "Lt. Surge" -> "LtSurge"). Matching sets VAR_CHARACTER_ID +
-FLAG_CHARACTER_MODE and delivers the character's signature mon at Lv 5.
-Debug codes (mirroring ROWE's in-game debug-menu test method):
-  CMDbgOff    - turn Character Mode off
-  CMDbgGive1  - givepokemon Pikachu Lv5  (allowed for Red -> stays in party)
-  CMDbgGive2  - givepokemon Meowth Lv5   (off-roster for Red -> sent to PC)
+  1. Compile src/character_mode.c (three entry points) at SHIM_ADDR inside
+     the big free block (ROM 0x095F0EA4+). The block is BL-unreachable from
+     low ROM, but every reference to it is a full 32-bit pointer except the
+     two BL call-site patches, which go through an 8-byte trampoline at
+     0x08470A64 (verified 0xFF padding inside both sites' BL windows).
+  2. Splice payloads into a ROM copy (source ROM is never written):
+       shim code   @ SHIM_ADDR      confirm script @ SCRIPT_ADDR
+       bitmaps     @ BITMAPS_ADDR   codes          @ CODES_ADDR
+       starters    @ STARTERS_ADDR  trampoline     @ TRAMPOLINE_ADDR
+  3. Patch (verifying original bytes first, refusing otherwise):
+       - specials-table slot for special 0x222 (file 0x28D47C):
+         0x0813F86D -> CM_CheatDispatchHook   (selection hook)
+       - BL @0x0A7BDA (wild catch) and BL @0x20D416 (ScriptGiveMon):
+         GiveMonToPlayer -> trampoline -> CM_GiveMonToPlayerGated
+       - 112 inline `callnative 0x0820DF41` script pointers ->
+         CM_GiveMonNativeGated                (script-gift gate)
+       - branch-0 goto_if target of the cheat switch (file 0x3287D7):
+         0x08328994 -> confirm script         (confirmation message + give)
+  4. Write build/lazarus_cm.gba + build/lazarus_cm.bps (BPS against the
+     OFFICIAL-PATCH OUTPUT, never clean Emerald — standing rule).
+
+Selection UX: type a character code at the Acrisia University cheat-code
+entry (codes = character name, spaces/punctuation stripped, max 10 chars,
+case-insensitive). Debug codes: CMDBGOFF, CMDBGGIVE1 (on-roster test give),
+CMDBGGIVE2 (off-roster test give).
 """
 import hashlib
 import json
@@ -36,44 +36,57 @@ import re
 import struct
 import subprocess
 import sys
+import unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent
-ROM_IN = ROOT / "rom" / "radicalred 4.1.gba"
-ROM_SHA1 = "964f951a0fdaf209e4ea1344883ef0d557bb3a80"
+ROM_IN = ROOT / "rom" / "lazarus-v2.gba"
+ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 BUILD = ROOT / "build"
 CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
-# --- confirmed layout constants (docs/ROUTINE_MAP.md) ---
-# All three payloads live in the confirmed 1.63 MiB free block
-# (0xB71D04-0xD004D7), placed in its upper region because the shim must be
-# within Thumb BL range (+/-4 MB) of both patch sites (~0x0907xxxx): the
-# reachable window is [0xC7DD88, 0x14777D0), and this block's tail
-# [0xC7DD88, 0xD004D7) is comfortably the largest free run inside it.
-SHIM_ADDR    = 0x08C80000
-BITMAPS_ADDR = 0x08C80100
-SCRIPT_ADDR  = 0x08C88000
-FREE_BLOCK_END = 0xD004D7  # end of the 1.63MiB free run
+NUM_CHARACTERS = 179
+BITMAP_STRIDE = 196
+CODE_LEN = 11
 
-BL_SITE_CATCH = 0x107DD84   # inside atkF0_givecaughtmon
-BL_SITE_GIFT  = 0x10777CE   # inside ScriptGiveMon
-GIVEMON_ADDR  = 0x0907D790  # current BL target at both sites (no Thumb bit)
+# --- confirmed layout constants ---
+FREE_FILE_BASE = 0x15F0EA4          # big 0xFF block start (file offset)
+SHIM_ADDR      = 0x095F1000
+BITMAPS_ADDR   = 0x095F1800
+CODES_ADDR     = 0x095FA200
+STARTERS_ADDR  = 0x095FAA00
+SCRIPT_ADDR    = 0x095FAC00
+FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
-GOTO_OPERAND_OFF = 0x10500EF          # operand of `goto 0x09050811`
-INVALID_CODE_HANDLER = 0x09050811
+TRAMPOLINE_ADDR = 0x08470A64        # 8B inside a 22B 0xFF run (word-aligned)
 
-# The ONLY live in-game trade in RR v4.1 (docs/ROUTINE_MAP.md): a BG-event
-# console on map 2.11 at tile (0,2) trading the player's Florges (779) for
-# Eternal Flower Floette (848). Script pointer lives in the BG event struct;
-# wrapper gates it on the character's allowed-species bitmap.
-TRADE_BG_SCRIPT_PTR_OFF = 0x3B432C    # BG event struct +8 (script field)
-TRADE_ORIG_SCRIPT = 0x08164B03        # lockall; setvar 0x8004,6; ... trade scene
-TRADE_GIVEN_SPECIES = 848             # what the player RECEIVES (the gated side)
-TRADE_WRAPPER_ADDR = 0x08C8E000
+BL_SITE_CATCH = 0x0A7BDA            # battle-engine catch caller (live-pinned)
+BL_SITE_GIFT  = 0x20D416            # ScriptGiveMon's internal call
+GIVEMON_ADDR  = 0x081C40BC
 
-FLAG_CHARACTER_MODE = 0x18FE
-VAR_CHARACTER_ID    = 0x51FD
+SPECIALS_SLOT_222 = 0x28D47C        # specials table entry for special 0x222
+ORIG_DISPATCH = 0x0813F86D
+
+GIVE_NATIVE = 0x0820DF41            # callnative give fn (inline script ptrs)
+
+BRANCH0_PTR_OFF = 0x3287D7          # goto_if target when VAR_RESULT == 0
+ORIG_INVALID = 0x08328994           # original "invalid code" branch
+RECEIVED_MSG_SUB = 0x083289DB       # fanfare + "received!" script subroutine
+
+FLAG_CHARACTER_MODE = 0x945
+VAR_CM_CHAR    = 0x40E0
+VAR_CM_STARTER = 0x40E4
+
+# In-game trades (docs/ROUTINE_MAP.md): 4 scripts share an identical 17-byte
+# "deal confirmed" junction (copyvar 8004,8008; copyvar 8005,800A;
+# special 0x100; special 0x101; waitstate). We overlay the first 5 bytes with
+# a goto into a per-trade wrapper that asks CM_TradeCheck first.
+TRADE_JUNCTIONS = (0x2B61E5, 0x2C8442, 0x2C8E00, 0x319684)
+TRADE_JUNCTION_BYTES = bytes([0x19, 0x04, 0x80, 0x08, 0x80,
+                              0x19, 0x05, 0x80, 0x0A, 0x80,
+                              0x25, 0x00, 0x01, 0x25, 0x01, 0x01, 0x27])
+TRADE_SCRIPT_ADDR = 0x095FB000
 
 # --- helpers ---
 
@@ -83,7 +96,7 @@ def load_charmap():
     with open(CHARMAP, encoding="utf-8") as f:
         for line in f:
             m = pat.match(line.rstrip("\n"))
-            if m:
+            if m and m.group(1) not in table:
                 table[m.group(1)] = int(m.group(2), 16)
     return table
 
@@ -105,32 +118,34 @@ def thumb_bl(src_rom_addr, dst_rom_addr):
     off = dst_rom_addr - (src_rom_addr + 4)
     assert -0x400000 <= off < 0x400000, f"BL out of range: {off:#x}"
     off = (off >> 1) & 0x3FFFFF
-    hw1 = 0xF000 | ((off >> 11) & 0x7FF)
-    hw2 = 0xF800 | (off & 0x7FF)
-    return struct.pack("<HH", hw1, hw2)
+    return struct.pack("<HH", 0xF000 | ((off >> 11) & 0x7FF), 0xF800 | (off & 0x7FF))
 
 
-# --- script assembly (Gen 3 event bytecode) ---
+def code_for(display):
+    """Character name -> typed code: strip accents + non-alnum, cap at 10."""
+    n = unicodedata.normalize("NFKD", display)
+    n = "".join(ch for ch in n if not unicodedata.combining(ch))
+    return "".join(ch for ch in n if ch.isalnum())[:10]
 
-def op_loadword(addr):      return bytes([0x0F, 0x00]) + struct.pack("<I", addr)
-def op_special(n):          return bytes([0x25]) + struct.pack("<H", n)
+
+# --- script assembly (opcode lengths verified against this ROM's scripts) ---
+
 def op_compare(var, val):   return bytes([0x21]) + struct.pack("<HH", var, val)
 def op_goto_if(cond, addr): return bytes([0x06, cond]) + struct.pack("<I", addr)
 def op_goto(addr):          return bytes([0x05]) + struct.pack("<I", addr)
+def op_call(addr):          return bytes([0x04]) + struct.pack("<I", addr)
+def op_copyvar(dst, src):   return bytes([0x19]) + struct.pack("<HH", dst, src)
 def op_setvar(var, val):    return bytes([0x16]) + struct.pack("<HH", var, val)
-def op_setflag(f):          return bytes([0x29]) + struct.pack("<H", f)
-def op_clearflag(f):        return bytes([0x2A]) + struct.pack("<H", f)
+def op_bufferspecies(buf, sp): return bytes([0x7D, buf]) + struct.pack("<H", sp)
+def op_loadword(addr):      return bytes([0x0F, 0x00]) + struct.pack("<I", addr)
 def op_callstd(n):          return bytes([0x09, n])
-def op_release():           return bytes([0x6C])
+def op_delay(n):            return bytes([0x28]) + struct.pack("<H", n)
+def op_releaseall():        return bytes([0x6B])
 def op_end():               return bytes([0x02])
-def op_givepokemon(species, level, item=0):
-    return bytes([0x79]) + struct.pack("<HBH", species, level, item) + bytes(9)
-
-
-def alias_for(display):
-    if display.endswith(" (anime)"):
-        display = display[:-len(" (anime)")]
-    return re.sub(r"[^A-Za-z0-9]", "", display)
+def op_callnative_give(fn_thumb, species, level):
+    # exact idiom of the ROM's own MONO/starter gives (docs/SELECTION_MECHANISM.md)
+    return (bytes([0x23]) + struct.pack("<I", fn_thumb)
+            + bytes([0x00, 0x06]) + struct.pack("<HHI", species, level, 0))
 
 
 def main():
@@ -142,10 +157,52 @@ def main():
     cm = load_charmap()
     with open(HERE / "character_mode" / "characters_manifest.json") as f:
         manifest = json.load(f)
-    chars = [c for c in manifest["characters"] if "roster_species_ids" in c]
-    assert len(chars) == 184, len(chars)
+    chars = manifest["characters"]
+    assert len(chars) == NUM_CHARACTERS, len(chars)
     bitmaps = (HERE / "character_mode" / "rosters_expanded.bin").read_bytes()
-    assert len(bitmaps) == 184 * 172, len(bitmaps)
+    assert len(bitmaps) == NUM_CHARACTERS * BITMAP_STRIDE, len(bitmaps)
+
+    # --- code + starter tables ---
+    codes = bytearray()
+    seen = {}
+    native_codes = {"9RARECANDY", "JUSTCATCH", "WORLDCHAMP", "WATCHPHAUN",
+                    "ILOVEALOLA", "ILOVEKALOS", "IWANTMONKE", "ILOVPALDEA",
+                    "NEMOSFAVE", "JUSTSHOWME", "WISHINGSTR", "GIMMENUGS",
+                    "IMISSJOHTO", "MASKEDOGRE", "LEGENDSZA", "HOUSESTARK",
+                    "DRESSUP", "HYLIANFIT", "WILDNATURE", "PORTABLEPC",
+                    "MOSEY", "BATTLEPASS"} | {f"MONO{t}" for t in
+                    ("BUG","DARK","DRAGN","ELECT","FAIRY","FIGHT","FIRE","FLYIN",
+                     "GHOST","GRASS","GROUN","ICE","NORML","POISN","PSYCH","ROCK",
+                     "STEEL","WATER")}
+    starters = []
+    typed_codes = []
+    for c in chars:
+        code = code_for(c["character"])
+        key = code.upper()
+        assert 1 <= len(code) <= 10, (c["character"], code)
+        assert key not in seen, f"code collision: {code} ({c['character']} vs {seen[key]})"
+        assert key not in native_codes, f"clashes with native code: {code}"
+        seen[key] = c["character"]
+        typed_codes.append(code)
+        enc = enc_text(code, cm)
+        assert len(enc) <= CODE_LEN
+        codes += enc + b"\xFF" * (CODE_LEN - len(enc))
+        sig = c["signature_id"] if c.get("has_signature") and c.get("signature_id") else c["roster_species_ids"][0]
+        starters.append(sig)
+    starters_blob = b"".join(struct.pack("<H", s) for s in starters)
+
+    # off-roster debug species for CMDBGGIVE2: wild-obtainable, off char 1's roster
+    enc_json = json.loads((HERE / "character_mode" / "encounters.json").read_text())
+    sp_table = json.loads((HERE / "character_mode" / "rom_species_table.json").read_text())
+    name_to_id = {v: int(k) for k, v in sp_table["species"].items()}
+    wild_ids = sorted(name_to_id[n] for n in enc_json["wild"] if n in name_to_id)
+    assert wild_ids, "no wild species resolved"
+    bm0 = bitmaps[0:BITMAP_STRIDE]
+    def on0(sp): return (bm0[sp >> 3] >> (sp & 7)) & 1
+    dbg_give2 = next(sp for sp in wild_ids if not on0(sp))
+    give2_name = sp_table["species"][str(dbg_give2)]
+    print(f"CMDBGGIVE2 species (off-roster for {chars[0]['character']}): "
+          f"{dbg_give2} ({give2_name})")
 
     # --- 1. compile shim ---
     BUILD.mkdir(exist_ok=True)
@@ -153,197 +210,188 @@ def main():
     elf = BUILD / "character_mode.elf"
     binf = BUILD / "character_mode.bin"
     subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
-                    "-mtune=arm7tdmi", "-O2", "-ffreestanding", "-fno-builtin",
+                    "-O2", "-ffreestanding", "-fno-builtin", "-fno-jump-tables",
+                    f"-DCODES_ADDR={CODES_ADDR:#x}",
+                    f"-DSTARTERS_ADDR={STARTERS_ADDR:#x}",
                     f"-DBITMAPS_ADDR={BITMAPS_ADDR:#x}",
+                    f"-DDBG_GIVE2_SPECIES={dbg_give2}",
                     "-o", str(obj), str(ROOT / "src" / "character_mode.c")],
                    check=True)
+    libgcc = subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-mcpu=arm7tdmi",
+                             "-print-libgcc-file-name"],
+                            check=True, capture_output=True, text=True).stdout.strip()
     subprocess.run(["arm-none-eabi-ld", "-Ttext", f"{SHIM_ADDR:#x}",
-                    "--entry", "CM_GiveMonToPlayerGated",
-                    "-o", str(elf), str(obj)], check=True)
-    subprocess.run(["arm-none-eabi-objcopy", "-O", "binary",
-                    "--only-section=.text", str(elf), str(binf)], check=True)
+                    "--entry", "CM_CheatDispatchHook",
+                    "-o", str(elf), str(obj), libgcc], check=True)
+    subprocess.run(["arm-none-eabi-objcopy", "-O", "binary", str(elf), str(binf)],
+                   check=True)
     shim = binf.read_bytes()
-    # entry must be at the very start of .text
-    sym = subprocess.run(["arm-none-eabi-nm", str(elf)], check=True,
-                         capture_output=True, text=True).stdout
-    m = re.search(r"^([0-9a-f]+) T CM_GiveMonToPlayerGated$", sym, re.M)
-    assert m and int(m.group(1), 16) == SHIM_ADDR, f"shim entry not at SHIM_ADDR:\n{sym}"
-    print(f"shim: {len(shim)} bytes @ {SHIM_ADDR:#x}")
+    sym_out = subprocess.run(["arm-none-eabi-nm", str(elf)], check=True,
+                             capture_output=True, text=True).stdout
+    syms = {m.group(2): int(m.group(1), 16)
+            for m in re.finditer(r"^([0-9a-f]+) [Tt] (\w+)$", sym_out, re.M)}
+    for need in ("CM_CheatDispatchHook", "CM_GiveMonToPlayerGated",
+                 "CM_GiveMonNativeGated", "CM_TradeCheck"):
+        assert need in syms, f"missing symbol {need}"
+    assert len(shim) <= BITMAPS_ADDR - SHIM_ADDR, f"shim too big: {len(shim)}"
+    print(f"shim: {len(shim)} bytes @ {SHIM_ADDR:#x}; entries: "
+          + ", ".join(f"{k}={v:#x}" for k, v in syms.items() if k.startswith("CM_")))
 
-    # --- 2. build the selection script extension ---
-    # Layout inside the script blob (single pass with fixups):
-    #   [check chain][handlers][strings]
-    # Compute sizes first: every check = 20B; debug handlers and char handlers
-    # are fixed-size except trailing strings, so lay out strings last.
-    debug_codes = [
-        ("CMDbgOff",   "off"),
-        ("CMDbgGive1", "give_ok"),
-        ("CMDbgGive2", "give_bad"),
-    ]
-    aliases = []
-    seen = {}
-    for i, c in enumerate(chars):
-        a = alias_for(c["character"])
-        assert 1 <= len(a) <= 11, f"alias too long for naming screen: {a!r}"
-        assert a not in seen, f"alias collision: {a!r} ({c['character']} vs {seen[a]})"
-        seen[a] = c["character"]
-        aliases.append(a)
-    for code, _ in debug_codes:
-        assert code not in seen
+    hook_dispatch = syms["CM_CheatDispatchHook"] | 1
+    hook_gate     = syms["CM_GiveMonToPlayerGated"] | 1
+    hook_native   = syms["CM_GiveMonNativeGated"] | 1
+    hook_trade    = syms["CM_TradeCheck"] | 1
 
-    CHECK_SIZE = len(op_loadword(0) + op_special(0x12D) + op_compare(0x800D, 0) + op_goto_if(1, 0))
-    assert CHECK_SIZE == 20
-    n_checks = len(debug_codes) + len(chars)
-    chain_size = n_checks * CHECK_SIZE + len(op_goto(0))
+    # --- 2. confirm script ---
+    txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
+    txt_off = enc_text("Character Mode is now off.", cm)
 
-    # handlers
-    H_OFF_SIZE  = len(op_clearflag(0) + op_setvar(0, 0) + op_loadword(0) + op_callstd(6) + op_release() + op_end())
-    H_GIVE_SIZE = len(op_givepokemon(0, 5) + op_loadword(0) + op_callstd(6) + op_release() + op_end())
-    H_CHAR_SIZE = len(op_setvar(0, 0) + op_setflag(0) + op_givepokemon(0, 5)
-                      + op_loadword(0) + op_callstd(6) + op_release() + op_end())
+    # layout: [entry][act][off][txt_on][txt_off] — compute sizes first
+    entry_sz = len(op_compare(0, 0) + op_goto_if(5, 0) + op_goto(0))
+    # NOTE: RECEIVED_MSG_SUB is a goto-only tail (every path ends in
+    # releaseall/end, target 0x083289D9 IS releaseall/end) — it never returns,
+    # so everything must happen BEFORE we enter it, and we goto, not call.
+    act = (op_compare(VAR_CM_STARTER, 0xFFFF) + op_goto_if(1, 0)  # ptr fixed below
+           + op_delay(2) + op_loadword(0)  # txt_on ptr fixed below
+           + op_callstd(4)
+           + op_copyvar(0x8000, VAR_CM_STARTER)
+           + op_bufferspecies(0, 0x8000)
+           + op_setvar(0x4001, 0x8000)
+           + op_setvar(VAR_CM_STARTER, 0)  # consume the marker before the give
+           + op_callnative_give(hook_native, 0x8000, 5)
+           + op_goto(RECEIVED_MSG_SUB))  # fanfare + "received!" + nickname/PC, ends script
+    off_h = (op_setvar(VAR_CM_STARTER, 0)
+             + op_delay(2) + op_loadword(0)  # txt_off ptr fixed below
+             + op_callstd(4) + op_releaseall() + op_end())
 
-    chain_addr = SCRIPT_ADDR
-    handlers_addr = chain_addr + chain_size
-    h_addrs = {}
-    cur = handlers_addr
-    for code, kind in debug_codes:
-        h_addrs[code] = cur
-        cur += H_OFF_SIZE if kind == "off" else H_GIVE_SIZE
-    char_h_addrs = []
-    for _ in chars:
-        char_h_addrs.append(cur)
-        cur += H_CHAR_SIZE
-    strings_addr = cur
+    act_addr = SCRIPT_ADDR + entry_sz
+    off_addr = act_addr + len(act)
+    txt_on_addr = off_addr + len(off_h)
+    txt_off_addr = txt_on_addr + len(txt_on)
 
-    # strings: debug code names + messages, alias names, per-char messages
-    strings = bytearray()
-    str_addrs = {}
-    def add_str(key, text):
-        str_addrs[key] = strings_addr + len(strings)
-        strings.extend(enc_text(text, cm))
+    script = bytearray()
+    script += op_compare(VAR_CM_STARTER, 0)
+    script += op_goto_if(5, act_addr)          # != 0 -> we matched something
+    script += op_goto(ORIG_INVALID)            # else original invalid-code path
+    assert len(script) == entry_sz
+    script += act
+    script += off_h
+    script += txt_on
+    script += txt_off
+    # fix the two placeholder pointers inside act/off_h
+    def fixup(needle_off, addr):
+        struct.pack_into("<I", script, needle_off, addr)
+    # goto_if EQ ptr inside act: entry_sz + 5(compare) + 2 -> u32
+    fixup(entry_sz + 5 + 2, off_addr)
+    # loadword ptr inside act: after compare(5) + goto_if(6) + delay(3), skip "0F 00"
+    lw_on_off = entry_sz + 5 + 6 + 3 + 2
+    fixup(lw_on_off, txt_on_addr)
+    lw_off_off = entry_sz + len(act) + len(off_h) - (len(op_callstd(4)) + 1 + 1) - 4
+    fixup(lw_off_off, txt_off_addr)
+    print(f"confirm script: {len(script)} bytes @ {SCRIPT_ADDR:#x}")
 
-    for code, _ in debug_codes:
-        add_str("code:" + code, code)
-    add_str("msg:off", "Character Mode is now off.")
-    add_str("msg:give_ok", "Debug: tried to give Pikachu.")
-    add_str("msg:give_bad", "Debug: tried to give Meowth.")
-    for i, (c, a) in enumerate(zip(chars, aliases)):
-        add_str(f"alias:{i}", a)
-        disp = c["character"]
-        if disp.endswith(" (anime)"):
-            disp = disp[:-len(" (anime)")]
-        add_str(f"msg:{i}", f"Character Mode:\nyou are now {disp}!")
-
-    # emit chain
-    blob = bytearray()
-    for code, kind in debug_codes:
-        blob += op_loadword(str_addrs["code:" + code])
-        blob += op_special(0x12D)
-        blob += op_compare(0x800D, 0)
-        blob += op_goto_if(1, h_addrs[code])
-    for i in range(len(chars)):
-        blob += op_loadword(str_addrs[f"alias:{i}"])
-        blob += op_special(0x12D)
-        blob += op_compare(0x800D, 0)
-        blob += op_goto_if(1, char_h_addrs[i])
-    blob += op_goto(INVALID_CODE_HANDLER)
-    assert len(blob) == chain_size
-
-    # emit handlers
-    for code, kind in debug_codes:
-        assert SCRIPT_ADDR + len(blob) == h_addrs[code]
-        if kind == "off":
-            blob += op_clearflag(FLAG_CHARACTER_MODE)
-            blob += op_setvar(VAR_CHARACTER_ID, 0)
-            blob += op_loadword(str_addrs["msg:off"])
-        else:
-            species = 25 if kind == "give_ok" else 52  # Pikachu / Meowth
-            blob += op_givepokemon(species, 5)
-            blob += op_loadword(str_addrs["msg:" + kind])
-        blob += op_callstd(6) + op_release() + op_end()
-    for i, c in enumerate(chars):
-        assert SCRIPT_ADDR + len(blob) == char_h_addrs[i]
-        sig = c["roster_species_ids"][0]
-        blob += op_setvar(VAR_CHARACTER_ID, i + 1)
-        blob += op_setflag(FLAG_CHARACTER_MODE)
-        blob += op_givepokemon(sig, 5)
-        blob += op_loadword(str_addrs[f"msg:{i}"])
-        blob += op_callstd(6) + op_release() + op_end()
-    assert SCRIPT_ADDR + len(blob) == strings_addr
-    blob += strings
-    print(f"script extension: {len(blob)} bytes @ {SCRIPT_ADDR:#x} "
-          f"({n_checks} codes: {len(debug_codes)} debug + {len(chars)} characters)")
-
-    # --- 3. splice + patch ---
+    # --- 3. splice payloads ---
     def splice(rom_addr, payload, label):
         off = rom_addr - 0x08000000
-        assert off + len(payload) <= FREE_BLOCK_END, f"{label} overruns free block"
+        assert rom_addr + len(payload) <= FREE_END_ROM, f"{label} overruns ROM"
         seg = data[off:off + len(payload)]
-        assert all(b == 0xFF for b in seg), f"{label}: target not 0xFF-free at {rom_addr:#x}"
+        assert all(b == 0xFF for b in seg), f"{label}: target not 0xFF @ {rom_addr:#x}"
         data[off:off + len(payload)] = payload
 
     splice(SHIM_ADDR, shim, "shim")
     splice(BITMAPS_ADDR, bitmaps, "bitmaps")
-    splice(SCRIPT_ADDR, blob, "script")
+    splice(CODES_ADDR, bytes(codes), "codes")
+    splice(STARTERS_ADDR, starters_blob, "starters")
+    splice(SCRIPT_ADDR, bytes(script), "script")
 
-    # BL retargets (verify current bytes first)
+    # trampoline: ldr r3,[pc,#0]; bx r3; .word gate|1
+    tramp = struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_gate)
+    assert TRAMPOLINE_ADDR % 4 == 0
+    splice(TRAMPOLINE_ADDR, tramp, "trampoline")
+
+    # --- 4. patches (verify-then-write) ---
     for site in (BL_SITE_CATCH, BL_SITE_GIFT):
-        cur_bl = bytes(data[site:site + 4])
+        cur = bytes(data[site:site + 4])
         expect = thumb_bl(0x08000000 + site, GIVEMON_ADDR)
-        assert cur_bl == expect, (f"BL site {site:#x} bytes {cur_bl.hex()} != expected "
-                                  f"BL GiveMonToPlayer {expect.hex()} — wrong ROM or already patched")
-        data[site:site + 4] = thumb_bl(0x08000000 + site, SHIM_ADDR)
+        assert cur == expect, (f"BL site {site:#x}: {cur.hex()} != {expect.hex()} "
+                               "(wrong ROM or already patched)")
+        data[site:site + 4] = thumb_bl(0x08000000 + site, TRAMPOLINE_ADDR)
 
-    # goto retarget
-    cur_goto = struct.unpack_from("<I", data, GOTO_OPERAND_OFF)[0]
-    assert cur_goto == INVALID_CODE_HANDLER, f"goto operand is {cur_goto:#x}, expected {INVALID_CODE_HANDLER:#x}"
-    struct.pack_into("<I", data, GOTO_OPERAND_OFF, SCRIPT_ADDR)
+    cur = struct.unpack_from("<I", data, SPECIALS_SLOT_222)[0]
+    assert cur == ORIG_DISPATCH, f"specials slot: {cur:#x} != {ORIG_DISPATCH:#x}"
+    struct.pack_into("<I", data, SPECIALS_SLOT_222, hook_dispatch)
 
-    # --- 3b. trade gate: wrap the one live in-game trade ---
-    # Wrapper mirrors the shim's semantics: flag off, char unset (0), or char
-    # out of range -> original trade runs untouched; otherwise the trade is
-    # allowed only for characters whose bitmap permits the received species.
-    allowing = [i + 1 for i in range(len(chars))
-                if bitmaps[i*172 + (TRADE_GIVEN_SPECIES >> 3)] & (1 << (TRADE_GIVEN_SPECIES & 7))]
-    wrapper = bytearray()
-    wrapper += bytes([0x2B]) + struct.pack("<H", FLAG_CHARACTER_MODE)   # checkflag
-    wrapper += op_goto_if(0, TRADE_ORIG_SCRIPT)                          # unset -> orig
-    wrapper += op_compare(VAR_CHARACTER_ID, 0)
-    wrapper += op_goto_if(1, TRADE_ORIG_SCRIPT)                          # char 0 -> orig
-    wrapper += op_compare(VAR_CHARACTER_ID, len(chars) + 1)
-    wrapper += op_goto_if(4, TRADE_ORIG_SCRIPT)                          # >184 -> orig
-    for idx in allowing:
-        wrapper += op_compare(VAR_CHARACTER_ID, idx)
-        wrapper += op_goto_if(1, TRADE_ORIG_SCRIPT)
-    msg_addr = TRADE_WRAPPER_ADDR + len(wrapper) + len(op_loadword(0) + op_callstd(3) + op_end())
-    wrapper += op_loadword(msg_addr)
-    wrapper += op_callstd(3)                                             # sign-style msgbox
-    wrapper += op_end()
-    wrapper += enc_text("Character Mode:\nthis trade is not in your roster.", cm)
-    splice(TRADE_WRAPPER_ADDR, bytes(wrapper), "trade wrapper")
-    cur_bg = struct.unpack_from("<I", data, TRADE_BG_SCRIPT_PTR_OFF)[0]
-    assert cur_bg == TRADE_ORIG_SCRIPT, f"trade BG script ptr is {cur_bg:#x}, expected {TRADE_ORIG_SCRIPT:#x}"
-    struct.pack_into("<I", data, TRADE_BG_SCRIPT_PTR_OFF, TRADE_WRAPPER_ADDR)
-    print(f"trade gate: wrapper {len(wrapper)} B @ {TRADE_WRAPPER_ADDR:#x} "
-          f"({len(allowing)} characters allow species {TRADE_GIVEN_SPECIES})")
+    pat = struct.pack("<I", GIVE_NATIVE)
+    n_native = 0
+    i = bytes(data).find(pat)
+    sites = []
+    while i != -1:
+        if data[i - 1] == 0x23:
+            sites.append(i)
+        i = bytes(data).find(pat, i + 1)
+    assert len(sites) == 112, f"expected 112 callnative sites, found {len(sites)}"
+    for s in sites:
+        struct.pack_into("<I", data, s, hook_native)
+        n_native += 1
 
-    out_rom = BUILD / "radicalred_cm.gba"
+    cur = struct.unpack_from("<I", data, BRANCH0_PTR_OFF)[0]
+    assert cur == ORIG_INVALID, f"branch-0 ptr: {cur:#x} != {ORIG_INVALID:#x}"
+    struct.pack_into("<I", data, BRANCH0_PTR_OFF, SCRIPT_ADDR)
+
+    # --- 4b. trade gates: per-trade wrapper scripts + junction overlays ---
+    txt_refuse = enc_text("Character Mode:\nthis trade is not in your roster.", cm)
+    # build: refuse blob first (shared), then 4 wrappers
+    refuse_addr = TRADE_SCRIPT_ADDR
+    refuse = (op_delay(2) + op_loadword(0) + op_callstd(4) + bytes([0x6C]) + op_end())
+    # fixup loadword inside refuse: txt after the 4 wrappers
+    wrappers_addr = refuse_addr + len(refuse)
+    trade_blob = bytearray(refuse)
+    for j in TRADE_JUNCTIONS:
+        w_addr = refuse_addr + len(trade_blob)
+        resume = 0x08000000 + j + len(TRADE_JUNCTION_BYTES)
+        w = bytearray()
+        w += bytes([0x19, 0x04, 0x80, 0x08, 0x80])            # copyvar 0x8004, 0x8008
+        w += bytes([0x19, 0x05, 0x80, 0x0A, 0x80])            # copyvar 0x8005, 0x800A
+        w += bytes([0x23]) + struct.pack("<I", hook_trade)     # callnative CM_TradeCheck
+        w += op_compare(0x800D, 0)
+        w += op_goto_if(1, refuse_addr)
+        w += bytes([0x25, 0x00, 0x01, 0x25, 0x01, 0x01, 0x27])  # special 0x100; 0x101; waitstate
+        w += op_goto(resume)
+        trade_blob += w
+    txt_addr = refuse_addr + len(trade_blob)
+    trade_blob += txt_refuse
+    struct.pack_into("<I", trade_blob, len(op_delay(2)) + 2, txt_addr)  # loadword ptr
+    splice(TRADE_SCRIPT_ADDR, bytes(trade_blob), "trade wrappers")
+
+    w_addr = wrappers_addr
+    per_w = (len(trade_blob) - len(refuse) - len(txt_refuse)) // len(TRADE_JUNCTIONS)
+    for i, j in enumerate(TRADE_JUNCTIONS):
+        cur = bytes(data[j:j + len(TRADE_JUNCTION_BYTES)])
+        assert cur == TRADE_JUNCTION_BYTES, f"trade junction {j:#x}: {cur.hex()}"
+        data[j:j + 5] = op_goto(wrappers_addr + i * per_w)
+
+    print(f"patched: 2 BL sites, specials slot, {n_native} callnative ptrs, "
+          f"branch-0 ptr, {len(TRADE_JUNCTIONS)} trade junctions "
+          f"(wrappers @ {TRADE_SCRIPT_ADDR:#x}, {len(trade_blob)} B)")
+
+    # --- 5. outputs ---
+    out_rom = BUILD / "lazarus_cm.gba"
     out_rom.write_bytes(data)
     print(f"wrote {out_rom} sha1={hashlib.sha1(data).hexdigest()}")
 
-    # --- 4. BPS patch (flips supports IPS/BPS; BPS is the recommended format) ---
     flips = ROOT / "tools" / "bin" / "flips"
-    bps = BUILD / "radicalred_cm.bps"
+    bps = BUILD / "lazarus_cm.bps"
     r = subprocess.run([str(flips), "--create", "--bps", str(ROM_IN), str(out_rom), str(bps)],
                        capture_output=True, text=True)
     print(r.stdout.strip() or r.stderr.strip())
     if bps.exists():
         print(f"patch: {bps} ({bps.stat().st_size} bytes)")
 
-    # summary of typed codes for the report
-    print("\nSelection codes (type at the cheat-code NPC):")
-    print("  " + ", ".join(aliases[:8]) + ", ...")
-    print("Debug codes: " + ", ".join(c for c, _ in debug_codes))
+    (BUILD / "codes.txt").write_text(
+        "\n".join(f"{code}\t{c['character']}\tstarter={s}"
+                  for code, c, s in zip(typed_codes, chars, starters)) + "\n")
+    print(f"code list: {BUILD/'codes.txt'} ({len(typed_codes)} characters)")
+    print("Debug codes: CMDBGOFF, CMDBGGIVE1, CMDBGGIVE2 (case-insensitive)")
 
 
 if __name__ == "__main__":

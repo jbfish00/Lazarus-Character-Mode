@@ -5,8 +5,11 @@ rom/
 *.ss[0-9]
 *.State
 
-# Build outputs (patched ROMs live here; the .bps is committed deliberately when shipped)
-build/*.gba
+# Build outputs (patched ROMs, test logs/screenshots, compile intermediates —
+# all regenerable via tools/inject_character_mode.py and the test suite).
+# The shipped .bps is committed deliberately.
+build/*
+!build/lazarus_cm.bps
 
 # Emulator/analysis workspaces
 ghidra_project/
