@@ -57,6 +57,13 @@ Notes:
 - **DexNav catches are enforced** like any other catch.
 - **In-game trades are enforced**: all four trade NPCs politely refuse a
   trade whose incoming Pokemon is off your roster.
+- **Wild encounters occasionally give you a roster Pokemon.** Grass/cave,
+  surfing, rock smash, and every fishing rod tier all have a 1-in-10 chance
+  to swap the wild Pokemon for a random member of your character's roster
+  (never a legendary/mythical one), at whichever evolution stage best fits
+  the level you would have encountered. The other 9 times out of 10 it's a
+  completely normal wild encounter. This never affects gift Pokemon or
+  scripted story encounters.
 - All of Lazarus's own cheat codes (`ILOVEALOLA`, the `MONO...` codes,
   etc.) still work unchanged.
 

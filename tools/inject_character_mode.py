@@ -22,6 +22,10 @@ docs/SELECTION_MECHANISM.md, pinned to rom.sha1):
          CM_GiveMonNativeGated                (script-gift gate)
        - branch-0 goto_if target of the cheat switch (file 0x3287D7):
          0x08328994 -> confirm script         (confirmation message + give)
+       - 9 BL callers of CreateWildMon 0x0824AA54 (grass/cave, surf, rock
+         smash, all fishing rods — every random-roll wild table; static/
+         scripted gifts never call it) -> wild trampoline ->
+         CM_CreateWildMonGated                (wild-encounter roster override)
   4. Write build/lazarus_cm.gba + build/lazarus_cm.bps (BPS against the
      OFFICIAL-PATCH OUTPUT, never clean Emerald — standing rule).
 
@@ -57,13 +61,22 @@ BITMAPS_ADDR   = 0x095F1800
 CODES_ADDR     = 0x095FA200
 STARTERS_ADDR  = 0x095FAA00
 SCRIPT_ADDR    = 0x095FAC00
+WILDMONS_ADDR  = 0x095FC000
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
-TRAMPOLINE_ADDR = 0x08470A64        # 8B inside a 22B 0xFF run (word-aligned)
+TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
+WILD_TRAMPOLINE_ADDR = 0x08470A6C   # next 8B in the same 22B run
 
 BL_SITE_CATCH = 0x0A7BDA            # battle-engine catch caller (live-pinned)
 BL_SITE_GIFT  = 0x20D416            # ScriptGiveMon's internal call
 GIVEMON_ADDR  = 0x081C40BC
+
+# CreateWildMon(species, level) — live breakpoint-trace-confirmed 2026-07-17
+# (docs/ROUTINE_MAP.md): the single choke point every wild table (land/cave,
+# surf, rock smash, fishing) funnels species+level through after its roll.
+CREATEWILDMON_ADDR = 0x0824AA54
+BL_SITES_WILD = (0x1036FE, 0x103876, 0x24AC24, 0x24ACF0, 0x24AD50,
+                 0x24ADC8, 0x24ADF6, 0x24B4E2, 0x24B504)
 
 SPECIALS_SLOT_222 = 0x28D47C        # specials table entry for special 0x222
 ORIG_DISPATCH = 0x0813F86D
@@ -161,6 +174,9 @@ def main():
     assert len(chars) == NUM_CHARACTERS, len(chars)
     bitmaps = (HERE / "character_mode" / "rosters_expanded.bin").read_bytes()
     assert len(bitmaps) == NUM_CHARACTERS * BITMAP_STRIDE, len(bitmaps)
+    wildmons = (HERE / "character_mode" / "wildmons.bin").read_bytes()
+    assert len(wildmons) % NUM_CHARACTERS == 0, len(wildmons)
+    wildmon_stride = len(wildmons) // NUM_CHARACTERS
 
     # --- code + starter tables ---
     codes = bytearray()
@@ -215,6 +231,8 @@ def main():
                     f"-DSTARTERS_ADDR={STARTERS_ADDR:#x}",
                     f"-DBITMAPS_ADDR={BITMAPS_ADDR:#x}",
                     f"-DDBG_GIVE2_SPECIES={dbg_give2}",
+                    f"-DWILDMONS_ADDR={WILDMONS_ADDR:#x}",
+                    f"-DWILDMON_STRIDE={wildmon_stride}",
                     "-o", str(obj), str(ROOT / "src" / "character_mode.c")],
                    check=True)
     libgcc = subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-mcpu=arm7tdmi",
@@ -231,7 +249,7 @@ def main():
     syms = {m.group(2): int(m.group(1), 16)
             for m in re.finditer(r"^([0-9a-f]+) [Tt] (\w+)$", sym_out, re.M)}
     for need in ("CM_CheatDispatchHook", "CM_GiveMonToPlayerGated",
-                 "CM_GiveMonNativeGated", "CM_TradeCheck"):
+                 "CM_GiveMonNativeGated", "CM_TradeCheck", "CM_CreateWildMonGated"):
         assert need in syms, f"missing symbol {need}"
     assert len(shim) <= BITMAPS_ADDR - SHIM_ADDR, f"shim too big: {len(shim)}"
     print(f"shim: {len(shim)} bytes @ {SHIM_ADDR:#x}; entries: "
@@ -241,6 +259,7 @@ def main():
     hook_gate     = syms["CM_GiveMonToPlayerGated"] | 1
     hook_native   = syms["CM_GiveMonNativeGated"] | 1
     hook_trade    = syms["CM_TradeCheck"] | 1
+    hook_wild     = syms["CM_CreateWildMonGated"] | 1
 
     # --- 2. confirm script ---
     txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
@@ -303,11 +322,19 @@ def main():
     splice(CODES_ADDR, bytes(codes), "codes")
     splice(STARTERS_ADDR, starters_blob, "starters")
     splice(SCRIPT_ADDR, bytes(script), "script")
+    splice(WILDMONS_ADDR, wildmons, "wildmons")
 
     # trampoline: ldr r3,[pc,#0]; bx r3; .word gate|1
     tramp = struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_gate)
     assert TRAMPOLINE_ADDR % 4 == 0
     splice(TRAMPOLINE_ADDR, tramp, "trampoline")
+
+    # second trampoline for the wild-encounter gate, same 22B scavenged 0xFF
+    # run as the one above (8B used there, this uses the next 8B — verified
+    # both fall in the same run and within BL range of all 9 wild call sites).
+    wild_tramp = struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_wild)
+    assert WILD_TRAMPOLINE_ADDR % 4 == 0
+    splice(WILD_TRAMPOLINE_ADDR, wild_tramp, "wild trampoline")
 
     # --- 4. patches (verify-then-write) ---
     for site in (BL_SITE_CATCH, BL_SITE_GIFT):
@@ -316,6 +343,13 @@ def main():
         assert cur == expect, (f"BL site {site:#x}: {cur.hex()} != {expect.hex()} "
                                "(wrong ROM or already patched)")
         data[site:site + 4] = thumb_bl(0x08000000 + site, TRAMPOLINE_ADDR)
+
+    for site in BL_SITES_WILD:
+        cur = bytes(data[site:site + 4])
+        expect = thumb_bl(0x08000000 + site, CREATEWILDMON_ADDR)
+        assert cur == expect, (f"wild BL site {site:#x}: {cur.hex()} != {expect.hex()} "
+                               "(wrong ROM or already patched)")
+        data[site:site + 4] = thumb_bl(0x08000000 + site, WILD_TRAMPOLINE_ADDR)
 
     cur = struct.unpack_from("<I", data, SPECIALS_SLOT_222)[0]
     assert cur == ORIG_DISPATCH, f"specials slot: {cur:#x} != {ORIG_DISPATCH:#x}"
@@ -372,7 +406,9 @@ def main():
 
     print(f"patched: 2 BL sites, specials slot, {n_native} callnative ptrs, "
           f"branch-0 ptr, {len(TRADE_JUNCTIONS)} trade junctions "
-          f"(wrappers @ {TRADE_SCRIPT_ADDR:#x}, {len(trade_blob)} B)")
+          f"(wrappers @ {TRADE_SCRIPT_ADDR:#x}, {len(trade_blob)} B), "
+          f"{len(BL_SITES_WILD)} wild-encounter BL sites "
+          f"(wildmons @ {WILDMONS_ADDR:#x}, stride {wildmon_stride}, {len(wildmons)} B)")
 
     # --- 5. outputs ---
     out_rom = BUILD / "lazarus_cm.gba"

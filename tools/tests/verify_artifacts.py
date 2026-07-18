@@ -36,6 +36,18 @@ in the injector's own bookkeeping can't hide itself:
      wrapper scripts that decode fully (copyvars, callnative CM_TradeCheck,
      refusal path, resume goto == junction+17); refusal text decodes; the
      sIngameTrades species fields are sane.
+ 11. Wild-encounter override (new, 2026-07-17): all 9 BL callers of
+     CreateWildMon 0x0824AA54 (grass/cave, surf, rock smash, all fishing
+     rods) originally targeted CreateWildMon and now target the wild
+     trampoline -> CM_CreateWildMonGated; exhaustive whole-ROM BL scan
+     confirms exactly 9 callers pre-patch and 0 un-retargeted callers
+     post-patch (so static/scripted gifts, which never call this function,
+     are untouched by construction and nothing was missed); wildmons.bin in
+     ROM byte-matches the pipeline output; every entry's species is NEVER
+     one of that character's legendary/mythical roster members (cross-
+     checked against emit_characters.LEGENDARY_BASES directly, not
+     re-derived); every family's stage windows are gapless, monotonic, and
+     confined to [1,100].
 
 Usage: verify_artifacts.py   (exit 0 = all pass)
 """
@@ -71,10 +83,15 @@ CODES_ADDR = 0x095FA200
 STARTERS_ADDR = 0x095FAA00
 SCRIPT_ADDR = 0x095FAC00
 TRADE_SCRIPT_ADDR = 0x095FB000
+WILDMONS_ADDR = 0x095FC000
 
 TRAMPOLINE_ADDR = 0x08470A64
+WILD_TRAMPOLINE_ADDR = 0x08470A6C
 BL_SITES = (0x0A7BDA, 0x20D416)
 GIVEMON_ADDR = 0x081C40BC
+CREATEWILDMON_ADDR = 0x0824AA54
+BL_SITES_WILD = (0x1036FE, 0x103876, 0x24AC24, 0x24ACF0, 0x24AD50,
+                 0x24ADC8, 0x24ADF6, 0x24B4E2, 0x24B504)
 SPECIALS_SLOT_222 = 0x28D47C
 ORIG_DISPATCH = 0x0813F86D
 GIVE_NATIVE = 0x0820DF41
@@ -184,6 +201,9 @@ def main():
 
     bitmaps = (ROOT / "tools" / "character_mode" / "rosters_expanded.bin").read_bytes()
     check("rosters_expanded.bin is 179 x 196", len(bitmaps) == NUM_CHARACTERS * STRIDE)
+    wildmons = (ROOT / "tools" / "character_mode" / "wildmons.bin").read_bytes()
+    check("wildmons.bin length is a multiple of 179", len(wildmons) % NUM_CHARACTERS == 0)
+    wildmon_stride = len(wildmons) // NUM_CHARACTERS if len(wildmons) % NUM_CHARACTERS == 0 else 0
 
     print("== 3. diff confined to intended regions ==")
     intended = [
@@ -193,8 +213,11 @@ def main():
         (STARTERS_ADDR - 0x08000000, STARTERS_ADDR - 0x08000000 + NUM_CHARACTERS * 2),
         (SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000),
         (TRADE_SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000 + 0x400),
+        (WILDMONS_ADDR - 0x08000000, WILDMONS_ADDR - 0x08000000 + len(wildmons)),
         (TRAMPOLINE_ADDR - 0x08000000, TRAMPOLINE_ADDR - 0x08000000 + 8),
+        (WILD_TRAMPOLINE_ADDR - 0x08000000, WILD_TRAMPOLINE_ADDR - 0x08000000 + 8),
         *[(s, s + 4) for s in BL_SITES],
+        *[(s, s + 4) for s in BL_SITES_WILD],
         (SPECIALS_SLOT_222, SPECIALS_SLOT_222 + 4),
         (BRANCH0_PTR_OFF, BRANCH0_PTR_OFF + 4),
         *[(s, s + 4) for s in native_sites],
@@ -477,9 +500,108 @@ def main():
             n_bad_species += 1
     check("sIngameTrades received-species fields sane (4 trades)", n_bad_species == 0)
 
+    print("== 11. wild-encounter override ==")
+    for site in BL_SITES_WILD:
+        old = decode_bl(orig[site:site + 4], 0x08000000 + site)
+        check(f"wild BL at {site:#x} originally -> CreateWildMon", old == CREATEWILDMON_ADDR,
+              f"decoded {old and hex(old)}")
+        tgt = decode_bl(patched[site:site + 4], 0x08000000 + site)
+        check(f"wild BL at {site:#x} -> wild trampoline", tgt == WILD_TRAMPOLINE_ADDR,
+              f"decoded {tgt and hex(tgt)}")
+    wtoff = WILD_TRAMPOLINE_ADDR - 0x08000000
+    whw1, whw2 = struct.unpack_from("<HH", patched, wtoff)
+    hook_wild = u32(patched, wtoff + 4)
+    check("wild trampoline = ldr r3,[pc]; bx r3", (whw1, whw2) == (0x4B00, 0x4718))
+    check("wild trampoline literal is Thumb ptr into shim",
+          (hook_wild & 1) == 1 and SHIM_ADDR <= (hook_wild & ~1) < BITMAPS_ADDR, hex(hook_wild))
+    check("shim code present at wild gate target",
+          patched[(hook_wild & ~1) - 0x08000000] != 0xFF)
+    check("wild trampoline bytes were free (0xFF) in original",
+          all(b == 0xFF for b in orig[wtoff:wtoff + 8]))
+
+    # exhaustive CreateWildMon caller scan: every random-roll wild table
+    # (land/cave, surf, rock smash, fishing) funnels species+level through
+    # this one function; static/scripted gifts never call it, so gating it
+    # exclusively cannot touch them, and exhaustion proves no 10th site was
+    # missed.
+    orig_wild_callers = bl_callers(orig, CREATEWILDMON_ADDR)
+    check("original ROM: exactly 9 CreateWildMon BL callers",
+          sorted(orig_wild_callers) == sorted(BL_SITES_WILD),
+          f"found {[hex(x) for x in orig_wild_callers]}")
+    left_wild = bl_callers(patched, CREATEWILDMON_ADDR)
+    check("patched ROM: no un-retargeted CreateWildMon BL caller remains",
+          not left_wild, f"found {[hex(x) for x in left_wild]}")
+
+    check("wildmons.bin in ROM == pipeline output",
+          patched[WILDMONS_ADDR - 0x08000000: WILDMONS_ADDR - 0x08000000 + len(wildmons)]
+          == wildmons)
+
+    sys.path.insert(0, str(ROOT / "tools" / "character_mode"))
+    import emit_characters  # noqa: E402
+    LEGENDARY_BASES = emit_characters.LEGENDARY_BASES
+    sp_table = json.loads((ROOT / "tools" / "character_mode" / "rom_species_table.json").read_text())["species"]
+    from map_species import load_donor, MACRO_FORM_CONST_OVERRIDES  # noqa: E402
+    name_to_const, _ = load_donor()
+    for nm, c in MACRO_FORM_CONST_OVERRIDES.items():
+        name_to_const.setdefault(nm, c)
+    const_by_norm = {}
+    for nm, c in name_to_const.items():
+        n = unicodedata.normalize("NFD", nm)
+        n = "".join(ch for ch in n if unicodedata.category(ch) != "Mn")
+        n = re.sub(r"[^a-z0-9]", "", n.lower())
+        const_by_norm.setdefault(n, c)
+
+    def const_for_species_id(sid):
+        nm = sp_table.get(str(sid))
+        if not nm:
+            return None
+        n = unicodedata.normalize("NFD", nm)
+        n = "".join(ch for ch in n if unicodedata.category(ch) != "Mn")
+        n = re.sub(r"[^a-z0-9]", "", n.lower())
+        return const_by_norm.get(n)
+
+    legendary_leaks = []
+    window_bad = 0
+    zero_entry_chars = 0
+    if wildmon_stride:
+        woff = WILDMONS_ADDR - 0x08000000
+        for ci in range(NUM_CHARACTERS):
+            base = woff + ci * wildmon_stride
+            i = 0
+            n_entries = 0
+            fam_lo = fam_hi = None
+            while i + 4 <= wildmon_stride:
+                raw, lo, hi = struct.unpack_from("<HBB", patched, base + i)
+                if raw == 0:
+                    break
+                n_entries += 1
+                sid = raw & 0x7FFF
+                is_start = bool(raw & 0x8000)
+                const = const_for_species_id(sid)
+                if const and const in LEGENDARY_BASES:
+                    legendary_leaks.append((ci, sid))
+                if not (1 <= lo <= hi <= 100):
+                    window_bad += 1
+                elif is_start:
+                    fam_lo, fam_hi = lo, hi
+                else:
+                    if fam_hi is not None and lo != fam_hi + 1:
+                        window_bad += 1
+                    fam_lo, fam_hi = lo, hi
+                i += 4
+            if n_entries == 0:
+                zero_entry_chars += 1
+    check("no legendary/mythical species anywhere in wildmons.bin",
+          not legendary_leaks, f"{len(legendary_leaks)} leaks, e.g. {legendary_leaks[:5]}")
+    check("every family's stage windows are gapless/monotonic within [1,100]",
+          window_bad == 0, f"{window_bad} bad windows")
+    if zero_entry_chars:
+        print(f"    NOTE: {zero_entry_chars} characters have 0 wild-override entries "
+              f"(override no-ops for them) — expected for all-legendary/unresolved rosters")
+
     distinct_hooks = {gate & ~1, (disp & ~1),
-                      (hook_native or 0) & ~1, (hook_trade or 0) & ~1}
-    check("4 shim entry points are distinct", len(distinct_hooks) == 4,
+                      (hook_native or 0) & ~1, (hook_trade or 0) & ~1, hook_wild & ~1}
+    check("5 shim entry points are distinct", len(distinct_hooks) == 5,
           str([hex(x) for x in distinct_hooks]))
 
     print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")

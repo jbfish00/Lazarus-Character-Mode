@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
 """GDB-driven unit test for the Lazarus Character Mode acquisition gate.
 
+Also covers the wild-encounter roster override (new, 2026-07-17):
+CM_CreateWildMonGated(species, level), decoded from the wild trampoline
+literal. Observation point is CreateWildMon's own real entry 0x0824AA54 —
+the gate always tail-calls it, so whatever (species, level) it's entered
+with IS the gate's decision (unchanged input = no override; anything else =
+override fired). Runs many trials to check the ~10% rate and confirms every
+overridden species is a member of Red's own wildmons.bin table (which is
+built exclusively from non-legendary roster bases — see
+tools/character_mode/emit_wildmons.py — so this also proves legendary
+exclusion without re-deriving LEGENDARY_BASES here).
+
 Runs the REAL CM_GiveMonToPlayerGated code in the REAL emulator (mGBA's GDB
 stub), with a synthetic Pokemon struct and a synthetic SaveBlock1, and checks
 which branch the shim takes for every case in the decision table.
@@ -48,6 +59,10 @@ GIVEMON = 0x081C40BC     # pass-through branch point (function entry)
 COPYPC = 0x081C4130      # enforcement branch point (function entry)
 TRAMP_LIT_OFF = 0x470A68  # trampoline literal in ROM = gate entry | 1
 
+CREATEWILDMON = 0x0824AA54       # observation point: gate always tail-calls here
+WILD_TRAMP_LIT_OFF = 0x470A70    # wild trampoline literal in ROM = wild gate entry | 1
+WILDMONS_OFF = 0x15FC000         # WILDMONS_ADDR - 0x08000000
+
 # trade-gate observation: CM_TradeCheck is void and returns; entry decoded
 # from the first trade wrapper script's callnative ptr, verdict read from
 # gSpecialVar_Result after returning onto the GIVEMON breakpoint
@@ -92,7 +107,7 @@ def build_mon(species, is_egg=False):
 
 
 def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
-               var8004_addr):
+               var8004_addr, wild_cases, wild_entry_thumb):
     # ARM->Thumb entry trampoline in scratch EWRAM: the stub ignores manual
     # CPSR T-bit writes, so the first entry goes through a real BX. Later
     # cases re-enter from Thumb context and can set $pc directly.
@@ -108,6 +123,7 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
         f'set *(unsigned int*){SB1_PTR:#x} = {SB1_FAKE:#x}',
         f"break *{GIVEMON:#x}",
         f"break *{COPYPC:#x}",
+        f"break *{CREATEWILDMON:#x}",
     ]
     for i, c in enumerate(cases):
         mon = build_mon(c["species"], c.get("egg", False))
@@ -141,6 +157,22 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
             f'set $pc = {trade_entry_thumb & ~1:#x}',
             "continue",
             f'printf "TRADE_RESULT=%04x\\n", *(unsigned short*){SPECIAL_RESULT:#x}',
+        ]
+    # wild-encounter override trials: observation point is CreateWildMon's
+    # own entry, which the gate always tail-calls (overridden or not) — so
+    # whatever (r0,r1) it's entered with is exactly the gate's decision.
+    # Every run after the give cases is already in Thumb context.
+    for i, c in enumerate(wild_cases):
+        lines += [
+            f'set *(unsigned char*){FLAG_BYTE:#x} = {FLAG_MASK if c["flag"] else 0:#x}',
+            f'set *(unsigned short*){VAR_ADDR:#x} = {c["char_id"]}',
+            f'set $r0 = {c["species"]}',
+            f'set $r1 = {c["level"]}',
+            'set $sp = 0x03007F00',
+            f'set $lr = {GIVEMON | 1:#x}',
+            f'set $pc = {wild_entry_thumb & ~1:#x}',
+            "continue",
+            'printf "WILD_RESULT=%d,%d\\n", $r0, $r1',
         ]
     lines += ["disconnect", "quit"]
     return "\n".join(lines) + "\n"
@@ -247,8 +279,45 @@ def main():
     trade_cases.append({"name": "Red, trade idx 7 out of range -> allow",
                         "flag": 1, "char_id": red_id, "idx": 7, "expect": 1})
 
+    # wild-encounter override trials (new, 2026-07-17): decode the wild gate
+    # entry from the shipped wild trampoline literal, and independently
+    # derive Red's own wildmons.bin table (never-legendary by construction —
+    # see emit_wildmons.py) to check every override lands on a real member.
+    wild_gate = struct.unpack_from("<I", romdata, WILD_TRAMP_LIT_OFF)[0]
+    assert wild_gate & 1 and 0x08000000 < (wild_gate & ~1) < 0x0A000000, hex(wild_gate)
+    print(f"wild gate entry (from ROM wild trampoline literal): {wild_gate:#x}")
+
+    wildmons = (ROOT / "tools" / "character_mode" / "wildmons.bin").read_bytes()
+    assert len(wildmons) % NUM_CHARACTERS == 0
+    wildmon_stride = len(wildmons) // NUM_CHARACTERS
+    red_wild_species = set()
+    base = red0 * wildmon_stride
+    i = 0
+    while i + 4 <= wildmon_stride:
+        raw, lo, hi = struct.unpack_from("<HBB", wildmons, base + i)
+        if raw == 0:
+            break
+        red_wild_species.add(raw & 0x7FFF)
+        i += 4
+    assert red_wild_species, "Red's wildmons table must not be empty"
+    assert not (red_wild_species & set(chars[red0]["roster_species_ids"][chars[red0]["starter_count"]:])), \
+        "Red's wildmons table must never contain a legendary roster id"
+    print(f"Red's wild-override pool: {len(red_wild_species)} species")
+
+    WILD_TRIALS_OFF = 20    # CM off: deterministic, a handful of trials suffices
+    WILD_TRIALS_ON = 200    # CM on: enough for a ~10% rate estimate with a loose band
+    wild_input_species = other_sp  # off-Red's-catch-roster, so an override is unambiguous
+    wild_input_level = 30
+    wild_cases = (
+        [{"flag": 0, "char_id": red_id, "species": wild_input_species,
+          "level": wild_input_level} for _ in range(WILD_TRIALS_OFF)]
+        + [{"flag": 1, "char_id": red_id, "species": wild_input_species,
+            "level": wild_input_level} for _ in range(WILD_TRIALS_ON)]
+    )
+
     script = HERE / "shim_test.gdb"
-    script.write_text(gdb_script(cases, gate, trade_cases, trade_entry, var8004))
+    script.write_text(gdb_script(cases, gate, trade_cases, trade_entry, var8004,
+                                  wild_cases, wild_gate))
 
     launcher = ["mgba-qt", "-g", str(rom)]
     if not os.environ.get("DISPLAY"):
@@ -271,10 +340,14 @@ def main():
 
     stops = [int(m, 16) for m in re.findall(r"STOPPED_AT=([0-9a-f]+)", out)]
     tresults = [int(m, 16) for m in re.findall(r"TRADE_RESULT=([0-9a-f]+)", out)]
+    wresults = [(int(a), int(b) & 0xFF) for a, b in
+                (m.split(",") for m in re.findall(r"WILD_RESULT=(-?\d+,-?\d+)", out))]
+    wresults = [(a & 0xFFFF, b) for a, b in wresults]
     print(out[-3000:] if len(out) > 3000 else out)
-    if len(stops) != len(cases) or len(tresults) != len(trade_cases):
+    if len(stops) != len(cases) or len(tresults) != len(trade_cases) or len(wresults) != len(wild_cases):
         print(f"FATAL: expected {len(cases)} stops + {len(trade_cases)} trade "
-              f"results, got {len(stops)} + {len(tresults)}")
+              f"+ {len(wild_cases)} wild results, got {len(stops)} + {len(tresults)} "
+              f"+ {len(wresults)}")
         print(r.stderr[-2000:])
         return 1
 
@@ -290,7 +363,40 @@ def main():
         failures += not ok
         print(f"  [{'PASS' if ok else 'FAIL'}] trade: {c['name']}: result {got} "
               f"(expected {c['expect']})")
-    total = len(cases) + len(trade_cases)
+
+    # wild-encounter override trials
+    wild_off = wresults[:WILD_TRIALS_OFF]
+    wild_on = wresults[WILD_TRIALS_OFF:WILD_TRIALS_OFF + WILD_TRIALS_ON]
+
+    off_unchanged = sum(1 for sp, lvl in wild_off
+                        if sp == wild_input_species and lvl == wild_input_level)
+    ok = off_unchanged == len(wild_off)
+    failures += not ok
+    print(f"  [{'PASS' if ok else 'FAIL'}] wild: CM off, {len(wild_off)} trials -> "
+          f"never overridden ({off_unchanged}/{len(wild_off)} unchanged)")
+
+    on_overridden = [(sp, lvl) for sp, lvl in wild_on
+                     if not (sp == wild_input_species and lvl == wild_input_level)]
+    rate = len(on_overridden) / len(wild_on) if wild_on else 0
+    rate_ok = 0.04 <= rate <= 0.20   # target 10%, generous band for 300 Bernoulli trials
+    failures += not rate_ok
+    print(f"  [{'PASS' if rate_ok else 'FAIL'}] wild: CM on, {len(wild_on)} trials -> "
+          f"{len(on_overridden)} overridden ({rate:.1%}, expected ~10%)")
+
+    exclusion_bad = [sp for sp, lvl in on_overridden if sp not in red_wild_species]
+    excl_ok = not exclusion_bad
+    failures += not excl_ok
+    print(f"  [{'PASS' if excl_ok else 'FAIL'}] wild: every overridden species is a "
+          f"non-legendary member of Red's roster ({len(exclusion_bad)} bad, "
+          f"e.g. {exclusion_bad[:5]})")
+
+    level_bad = [lvl for _, lvl in on_overridden if not (1 <= lvl <= 100)]
+    lvl_ok = not level_bad
+    failures += not lvl_ok
+    print(f"  [{'PASS' if lvl_ok else 'FAIL'}] wild: every overridden level stays in "
+          f"[1,100] ({len(level_bad)} bad)")
+
+    total = len(cases) + len(trade_cases) + 4  # 4 wild-trial aggregate checks
     print(f"\n{total - failures}/{total} passed")
     return 1 if failures else 0
 

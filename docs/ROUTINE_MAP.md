@@ -182,6 +182,38 @@ cheat-code string table + handler ("ILOVEALOLA" — selection mechanism
 candidate), DexNav funnel verification (unlocks post-gym-2; regression-test in
 Phase 6).
 
+## Wild encounter generation (CONFIRMED 2026-07-17, Phase 7 — live watchpoint/breakpoint trace + exhaustive static BL scan)
+
+Found by walking from `tools/savestates/del_end.ss` into grass headlessly
+(`tools/mgba_scripts/wild_gen_trace*.lua`, `MGBA_HEADLESS_DEBUGGER=1`) with a
+write-watchpoint on `gEnemyParty+0` (personality field, same offset trick as
+the Phase 1f catch trace's `slot1.pid`), then chasing the LR chain one
+breakpointed hop at a time (watchpoint LR is unreliable mid-function — the
+compiler reuses `lr` as scratch once its true value is pushed to the stack —
+so each hop re-anchored on a fresh **function-entry** breakpoint instead,
+where `lr` is always the genuine, unclobbered return address):
+
+| Symbol | Address | Evidence |
+|---|---|---|
+| ZeroMonData | `0x081C09EC` | memset + 2 SetBoxMonData calls + direct level/mail field zeroing; called from both party-zeroing loops |
+| ZeroPlayerPartyMons | `0x081C0A38` | loops `gPlayerParty` (literal `0x0201B960`) 6x calling ZeroMonData |
+| ZeroEnemyPartyMons | `0x081C0A58` | loops `gEnemyParty` (literal `0x0201BBB8`) 6x calling ZeroMonData; 36 BL callers (every battle start, not wild-specific — not itself a hook candidate) |
+| CreateBoxMon | `0x081C0AE8` | box-level field dispatcher: personality field 0 write pinned by the watchpoint trace; species field 18 write independently re-confirms MON_DATA_SPECIES=18; 15 static BL callers (multiple per-call-site-inlined "CreateMon" instances across wild/trainer/hatch/etc — too many to be the hook) |
+| SetMonData/SetBoxMonData shared dispatcher | `0x081C37B0` | huge switch-on-field-id (`mov pc,r3` jump table); called by CreateBoxMon and ZeroMonData alike |
+| **CreateWildMon** | **`0x0824AA54`** | `void CreateWildMon(u16 species, u8 level)` — r0/r1 truncated via lsl16/lsr16 and lsl24/lsr24 exactly matching the donor prototype; body: ZeroEnemyPartyMons → PickWildMonNature-shaped retry loop (calls `VarGet 0x08114644` then a sync-nature helper) → GetMonPersonality-shaped rejection loop (calls Random32 `0x081F59FC` repeatedly) → CreateBoxMon → direct level write (`strb` at struct+0x54) → stats-calc call. **Exhaustive whole-ROM BL scan: exactly 9 callers** (land/cave, surf, rock smash, all fishing rod tiers, and 2 further contexts — Battle Frontier facility/Safari-style wild generation, harmless to include per spec: "every table that does a random roll"). Static/scripted gifts (ScriptGiveMon, the 112 callnative give sites) never call this function, so they are excluded by construction, no exemption logic needed. |
+| Random32 | `0x081F59FC` | JKISS-shaped 4-word state update (x+=const; y^=shifts; z,w,c rotate) — no args, fresh u32 in r0 each call; used pervasively by personality/nature generation, reused for the wild-override's 10% roll and random-family pick |
+
+**9 CreateWildMon BL callers** (the Phase 7 hook/audit surface): `0x081036FE`,
+`0x08103876` (both outside the main cluster — Battle Frontier/Safari-style
+paths), `0x0824AC24`, `0x0824ACF0`, `0x0824AD50`, `0x0824ADC8`, `0x0824ADF6`,
+`0x0824B4E2`, `0x0824B504` (the dense cluster — each a distinct
+per-call-site-inlined TryGenerateWildMon/GenerateFishingWildMon variant for
+land/water/rock/fishing/repel-check/DexNav-style contexts). All 9 retargeted
+to a second scavenged trampoline `0x08470A6C` (same 22-byte 0xFF run as the
+existing catch-gate trampoline `0x08470A64`, immediately after it, still
+within BL range of every site — span between farthest sites is only
+~1.34 MB, well inside the ±4 MB Thumb window) → `CM_CreateWildMonGated`.
+
 ## Headless bring-up notes (Lazarus-specific)
 
 - Seaglass's patched `mgba-headless` runs Lazarus fine (`--script`, screenshots OK).

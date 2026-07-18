@@ -6,6 +6,7 @@ python gdb.selected_inferior().write_memory(0x2030000, bytes(6144))
 set *(unsigned int*)0x3003664 = 0x2030000
 break *0x81c40bc
 break *0x81c4130
+break *0x824aa54
 echo \n=== CASE 0: flag off -> give ===\n
 python gdb.selected_inferior().write_memory(0x2033000, bytes.fromhex("000000000000000000000000000000000000000200000000000000008e0000008e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
 set *(unsigned char*)0x2031410 = 0x0
@@ -182,5 +183,1985 @@ set $lr = 0x81c40bd
 set $pc = 0x95f1234
 continue
 printf "TRADE_RESULT=%04x\n", *(unsigned short*)0x200560c
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
+set *(unsigned char*)0x2031410 = 0x20
+set *(unsigned short*)0x20315d4 = 1
+set $r0 = 142
+set $r1 = 30
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f13cc
+continue
+printf "WILD_RESULT=%d,%d\n", $r0, $r1
 disconnect
 quit

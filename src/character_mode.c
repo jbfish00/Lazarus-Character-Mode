@@ -1,9 +1,9 @@
 /* Character Mode shims for Pokemon Lazarus v2.0.
  *
- * Three entry points, all placed in the big free block (ROM 0x095F0EA4+)
+ * Entry points, all placed in the big free block (ROM 0x095F0EA4+)
  * and reached only through full 32-bit pointers, so no BL-range concerns
- * for the code itself (the two BL call-site patches go through an 8-byte
- * trampoline at 0x08470A64 instead — see tools/inject_character_mode.py):
+ * for the code itself (the BL call-site patches go through 8-byte
+ * trampolines instead — see tools/inject_character_mode.py):
  *
  *  1. CM_CheatDispatchHook — replaces the specials-table slot for special
  *     0x222 (the cheat-code matcher). Runs the original matcher first; all
@@ -28,6 +28,23 @@
  *     grew and the new last slot is an off-roster non-egg, it is copied to
  *     the PC and removed from the party. Soft-lock guard: never removes
  *     the only party mon.
+ *
+ *  4. CM_TradeCheck — in-game trade gate, see below (unchanged this pass).
+ *
+ *  5. CM_CreateWildMonGated — wild-encounter roster injection (new,
+ *     2026-07-17). Retargets the 9 BL callers of CreateWildMon(species,
+ *     level) 0x0824AA54 — the single choke point every random-roll wild
+ *     table funnels through after picking its species+level (land/cave,
+ *     surf, rock smash, all 3 fishing rod tiers; confirmed by live
+ *     breakpoint trace from a fresh encounter, see docs/ROUTINE_MAP.md).
+ *     Static/scripted gifts never call this function, so they are
+ *     untouched by construction — no exemption logic needed, unlike the
+ *     GiveMonToPlayer daycare case. When Character Mode is on, 1-in-10
+ *     calls (Random32()%10==0) get their species+level replaced with a
+ *     random non-legendary roster member's evolution stage that best fits
+ *     the originally-rolled level (nearest-stage fallback otherwise), then
+ *     falls through to the untouched original CreateWildMon so
+ *     personality/gender/nature/IVs/moveset generation is unaffected.
  *
  * Every fixed address below is CONFIRMED for this exact ROM (rom.sha1);
  * provenance in docs/ROUTINE_MAP.md + docs/SELECTION_MECHANISM.md.
@@ -66,6 +83,16 @@ typedef unsigned int u32;
 #define CopyMonToPC     ((u8   (*)(void *))           0x081C4131)
 #define OrigCheatDispatch ((void (*)(void))           0x0813F86D)
 #define OrigGiveMonNative ((void (*)(void *))         0x0820DF41)
+/* CreateWildMon(species, level) — live breakpoint-trace-confirmed 2026-07-17
+ * (docs/ROUTINE_MAP.md): pushes {r4-r7,lr}; r0=species truncated to u16 via
+ * lsl16/lsr16, r1=level truncated to u8 via lsl24/lsr24, exactly matching the
+ * donor prototype CreateWildMon(enum Species species, u8 level). */
+#define OrigCreateWildMon ((void (*)(u16, u8))        0x0824AA55)
+/* Random32 — the JKISS-shaped low-level RNG primitive (state update matches
+ * modern pokeemerald-expansion's Random()/Random32 shape exactly: x+=const;
+ * y^=y<<5/y>>9/... ; z,w,c rotate), called pervasively by personality/nature
+ * generation. No args, returns a fresh u32 in r0 each call. */
+#define Random32        ((u32  (*)(void))             0x081F59FD)
 
 #define gSpecialVar_Result (*(volatile u16 *) 0x0200560C)
 #define gPlayerPartyCount  (*(volatile u8 *)  0x0201B95D)
@@ -74,11 +101,17 @@ typedef unsigned int u32;
 
 /* Injection-time data placement. */
 #ifndef CODES_ADDR
-#error "compile with -DCODES_ADDR= -DSTARTERS_ADDR= -DBITMAPS_ADDR= -DDBG_GIVE2_SPECIES="
+#error "compile with -DCODES_ADDR= -DSTARTERS_ADDR= -DBITMAPS_ADDR= -DDBG_GIVE2_SPECIES= -DWILDMONS_ADDR= -DWILDMON_STRIDE="
 #endif
 #define sCodes    ((const u8 *)  CODES_ADDR)    /* 179 x 11, charmap, 0xFF pad */
 #define sStarters ((const u16 *) STARTERS_ADDR) /* 179 x u16 ROM species id   */
 #define sBitmaps  ((const u8 *)  BITMAPS_ADDR)  /* 179 x 196 allowed-species  */
+/* 179 x WILDMON_STRIDE bytes; each character's region is a sequence of
+ * 4-byte {u16 species (bit15 = family-start marker), u8 minLevel, u8
+ * maxLevel} entries grouped by roster family, 0-terminated. See
+ * tools/character_mode/emit_wildmons.py. */
+#define sWildmons ((const u8 *)  WILDMONS_ADDR)
+#define WILDMON_FAMILY_START 0x8000
 
 /* Charmap case fold: A-Z = 0xBB-0xD4, a-z = 0xD5-0xEE. */
 static u8 fold(u8 c)
@@ -230,4 +263,95 @@ void CM_GiveMonNativeGated(void *ctx)
             }
         }
     }
+}
+
+/* Wild-encounter roster override (new, 2026-07-17). Picks a RANDOM roster
+ * family (base + evolution chain), then within that family the stage whose
+ * [minLevel,maxLevel] window contains the rolled level; if none contains it
+ * (shouldn't happen — each family's windows partition 1..100 — but handled
+ * defensively per spec), picks the nearest stage by level distance. Returns
+ * SPECIES_NONE (0) if the character has no eligible entries at all (e.g. an
+ * unresolved/all-legendary roster), in which case the caller must not
+ * override. Never touches legendaries: the table is built exclusively from
+ * roster_species_ids[0:starter_count], the non-legendary slice — see
+ * tools/character_mode/emit_wildmons.py. */
+static u16 pickRosterWildSpecies(u16 charId, u8 level, u8 *outLevel)
+{
+    const u8 *tbl = sWildmons + (charId - 1) * WILDMON_STRIDE;
+    int i, familyCount, target, cur, start;
+
+    familyCount = 0;
+    for (i = 0; i + 4 <= WILDMON_STRIDE; i += 4) {
+        u16 raw = (u16) (tbl[i] | (tbl[i + 1] << 8));
+        if (raw == 0)
+            break;
+        if (raw & WILDMON_FAMILY_START)
+            familyCount++;
+    }
+    if (familyCount == 0)
+        return 0;
+
+    target = (int) (Random32() % (u32) familyCount);
+
+    start = -1;
+    cur = -1;
+    for (i = 0; i + 4 <= WILDMON_STRIDE; i += 4) {
+        u16 raw = (u16) (tbl[i] | (tbl[i + 1] << 8));
+        if (raw == 0)
+            break;
+        if (raw & WILDMON_FAMILY_START) {
+            cur++;
+            if (cur == target) {
+                start = i;
+                break;
+            }
+        }
+    }
+    if (start < 0)
+        return 0;
+
+    {
+        u16 bestSpecies = 0;
+        u8 bestLevel = level;
+        int bestDist = 0x7FFFFFFF;
+        for (i = start; i + 4 <= WILDMON_STRIDE; i += 4) {
+            u16 raw = (u16) (tbl[i] | (tbl[i + 1] << 8));
+            u8 lo, hi;
+            u16 sp;
+            int dist;
+            if (raw == 0)
+                break;
+            if ((raw & WILDMON_FAMILY_START) && i != start)
+                break; /* reached the next family's group */
+            lo = tbl[i + 2];
+            hi = tbl[i + 3];
+            sp = (u16) (raw & (WILDMON_FAMILY_START - 1));
+            if (level >= lo && level <= hi) {
+                *outLevel = level;
+                return sp;
+            }
+            dist = (level < lo) ? (lo - level) : (level - hi);
+            if (dist < bestDist) {
+                bestDist = dist;
+                bestSpecies = sp;
+                bestLevel = (level < lo) ? lo : hi;
+            }
+        }
+        *outLevel = bestLevel;
+        return bestSpecies;
+    }
+}
+
+void CM_CreateWildMonGated(u16 species, u8 level)
+{
+    if (gateActive() && (Random32() % 10) == 0) {
+        u16 id = *GetVarPointer(VAR_CM_CHAR);
+        u8 newLevel = level;
+        u16 newSpecies = pickRosterWildSpecies(id, level, &newLevel);
+        if (newSpecies != 0) {
+            species = newSpecies;
+            level = newLevel;
+        }
+    }
+    OrigCreateWildMon(species, level);
 }

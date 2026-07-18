@@ -6,7 +6,7 @@ Everything runs headless; no GUI or human input needed.
 ## Layer 1 — Shim unit tests (GDB, real code in the real emulator)
 
 ```
-python3 tools/tests/shim_unit_test.py        # 16/16 expected
+python3 tools/tests/shim_unit_test.py        # 20/20 expected (was 16/16 before the wild-encounter cases)
 ```
 
 Boots `build/lazarus_cm.gba` under `mgba-qt -g` (xvfb if headless) +
@@ -32,6 +32,33 @@ CPSR T-bit writes, so the first entry goes through an ARM→Thumb `bx`
 trampoline in scratch EWRAM; later entries set `$pc` directly from Thumb
 context.
 
+**Wild-encounter override trials (new, 2026-07-17, 4 more cases: 20/20).**
+Same GDB session, same Thumb-context reuse. Observation point is
+`CreateWildMon`'s own real entry `0x0824AA54` — the gate always tail-calls
+it whether or not it overrode, so whatever `(r0=species, r1=level)` it's
+entered with IS the gate's decision:
+- **CM off, 20 trials, fixed input** → every trial must reproduce the input
+  species+level unchanged (proves the override path costs nothing and can't
+  fire when Character Mode is off — `Random32()` is never even called since
+  `gateActive()` short-circuits first).
+- **CM on (Red), 200 trials, fixed off-roster input** → count how many
+  trials return something other than the input; asserts the rate lands in
+  [4%, 20%] (loose band around the 10% target, sized for ~200 Bernoulli
+  trials without flaking).
+- **Exclusion** → every overridden species must be a member of Red's own
+  `wildmons.bin` row (independently re-derived from the shipped artifact,
+  not re-trusting the pipeline) — since that table is built exclusively
+  from `roster_species_ids[0:starter_count]` (the non-legendary slice), this
+  also proves legendary/mythical exclusion without duplicating
+  `LEGENDARY_BASES` logic in the test.
+- **Level sanity** → every overridden level stays in [1,100].
+
+This test caught a real bug on the first pass: `pickRosterWildSpecies`'s
+stage-picker loop declared its species-extraction local as `u8 sp` instead
+of `u16 sp`, silently truncating any roster species id ≥256 to its low byte
+(Kleavor 900→132, Wailmer 320→64 — both observed as real failures before the
+fix). Fixed in `src/character_mode.c`; rebuilt, re-tested, 0 bad after.
+
 ## Layer 2 — Boot smoke
 
 ```
@@ -44,7 +71,7 @@ overworld spawn map (0.57) is reached. Also first item of the live suite.
 ## Layer 3 — Static artifact verification
 
 ```
-python3 tools/tests/verify_artifacts.py      # 56 checks, ALL PASS expected
+python3 tools/tests/verify_artifacts.py      # ALL PASS expected (grew past the original 56 with the wild-encounter section)
 ```
 
 Re-derives everything from the finished artifacts (never trusts the
@@ -61,6 +88,29 @@ wrappers, refusal text, **and the exhaustive `GiveMonToPlayer` BL scan**:
 > In the patched ROM only the deliberately exempt daycare caller remains —
 > so **every** in-battle acquisition path, DexNav included, funnels through
 > the gate. DexNav needs no separate live test: there is no fourth path.
+
+**New (2026-07-17): the same exhaustion argument for the wild-encounter
+override.** The whole ROM contains exactly 9 BL callers of `CreateWildMon`
+(land/cave, surf, rock smash, all fishing rods, plus 2 Battle
+Frontier/Safari-style contexts); the patched ROM has 0 left un-retargeted.
+Static/scripted gifts never call `CreateWildMon` at all, so they are
+excluded by construction — no exemption list needed, unlike the daycare
+case above. Also checks: `wildmons.bin` in ROM byte-matches the pipeline
+output; no legendary/mythical species anywhere in any character's table
+(cross-checked against `emit_characters.LEGENDARY_BASES` directly); every
+family's per-stage level windows are gapless, monotonic, and confined to
+[1,100].
+
+**Wild-encounter override note**: no dedicated Layer 4 live e2e was added for
+it — triggering real wild encounters with a controlled rate/species read-out
+in the overworld is much slower and less deterministic than driving the
+exact shipped entry point (the wild trampoline literal decoded straight from
+the ROM, exactly as GIVEMON's entry already is) via GDB, and the Layer 1
+wild trials already exercise the real compiled code through the real
+9-BL-site hook, not a mock. Layer 3's exhaustive BL scan independently
+proves those 9 real call sites reach it. Considered sufficient; a human
+playthrough will still see it happen organically (10% of any wild
+encounter while Character Mode is on).
 
 ## Layer 4 — Live end-to-end (headless mGBA + savestates)
 
