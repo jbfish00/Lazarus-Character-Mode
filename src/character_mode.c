@@ -63,7 +63,8 @@ typedef unsigned int u32;
 #define VAR_CM_STARTER      0x40E4
 #define CM_STARTER_OFF_MARKER 0xFFFF
 
-#define NUM_CHARACTERS 179
+#define NUM_CHARACTERS 191  /* 179 + 12 professors (2026-07-23); Sada/Turo/Tobias trimmed (species absent from this ROM) */
+#define TOBIAS_CHAR_ID 0     /* Tobias TRIMMED from Lazarus (Darkrai/Latios not in this ROM's dex) — id 0 never matches; branch kept for parity with RR/Seaglass */
 #define NUM_SPECIES    1561
 #define BITMAP_STRIDE  196
 #define CODE_LEN       11
@@ -344,13 +345,20 @@ static u16 pickRosterWildSpecies(u16 charId, u8 level, u8 *outLevel)
 
 void CM_CreateWildMonGated(u16 species, u8 level)
 {
-    if (gateActive() && (Random32() % 10) == 0) {
+    if (gateActive()) {
         u16 id = *GetVarPointer(VAR_CM_CHAR);
-        u8 newLevel = level;
-        u16 newSpecies = pickRosterWildSpecies(id, level, &newLevel);
-        if (newSpecies != 0) {
-            species = newSpecies;
-            level = newLevel;
+        /* Tobias (user spec 2026-07-23): 1% per roll, and his table is
+         * legendary-INCLUSIVE (Darkrai/Latios -- see emit_wildmons.py's
+         * special case). Everyone else keeps the standard 10%. */
+        u32 hit = (id == TOBIAS_CHAR_ID) ? ((Random32() % 100) == 0)
+                                         : ((Random32() % 10) == 0);
+        if (hit) {
+            u8 newLevel = level;
+            u16 newSpecies = pickRosterWildSpecies(id, level, &newLevel);
+            if (newSpecies != 0) {
+                species = newSpecies;
+                level = newLevel;
+            }
         }
     }
     OrigCreateWildMon(species, level);

@@ -99,13 +99,16 @@ def main():
             print(f"    {ch}: id {sid} ({nm})")
 
     # sanity: Red's roster must allow the Pichu family (Pichu 172, Pikachu 25,
-    # partner/alt Pikachu 1487/1493, Raichu forms) and NOT Meowth(52)/NONE(0).
+    # partner/alt Pikachu 1487/1493, Raichu forms) and never SPECIES_NONE(0).
+    # (2026-07-23: Meowth flipped from excluded to EXPECTED -- the full-research
+    # roster rebuild legitimately added Meowth to Red via his Let's Go Pikachu
+    # Champion-team research; the old fixture assumed the pre-rebuild roster.)
     red_i = next(i for i, r in enumerate(report) if r[0] == "Red")
     bm = out[red_i * STRIDE:(red_i + 1) * STRIDE]
     def has(s): return bool(bm[s >> 3] & (1 << (s & 7)))
     checks = [("Pichu 172", has(172), True), ("Pikachu 25", has(25), True),
               ("Pikachu form 1487", has(1487), True),
-              ("Meowth 52", has(52), False), ("SPECIES_NONE 0", has(0), False)]
+              ("Meowth 52", has(52), True), ("SPECIES_NONE 0", has(0), False)]
     ok = True
     for name, got, want in checks:
         status = "OK" if got == want else "FAIL"

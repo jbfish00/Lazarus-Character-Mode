@@ -192,6 +192,17 @@ def main():
         if "roster_species_ids" not in rec:
             per_char.append([])
             continue
+        if rec["character"] == "Tobias":
+            # SPECIAL CASE (user spec 2026-07-23): Tobias's roster IS two
+            # legendaries (Darkrai + Latios) and his wild table must contain
+            # them -- legendary-INCLUSIVE, whole roster, single-stage lv1-100
+            # families. His rate is 1% (not 10%), enforced in the shim via
+            # TOBIAS_CHAR_ID (src/character_mode.c).
+            fams = [[(sid, 1, 100)] for sid in rec["roster_species_ids"]
+                    if 0 < sid < NUM_SPECIES]
+            per_char.append(fams)
+            max_entries = max(max_entries, sum(len(f) for f in fams))
+            continue
         bases = rec["roster_species_ids"][: rec["starter_count"]]  # legendaries EXCLUDED by construction
         families = []         # list of per-base stage-window lists (grouping preserved)
         seen_species = set()

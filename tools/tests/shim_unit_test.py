@@ -88,7 +88,7 @@ PARTY_COUNT = 0x0201B95D
 MON_ADDR = 0x02033000    # scratch EWRAM for the synthetic mon
 TRAMP_ADDR = 0x02032F00  # scratch EWRAM for the ARM->Thumb entry trampoline
 
-NUM_CHARACTERS = 179
+NUM_CHARACTERS = 191  # 2026-07-23 rebuild
 NUM_SPECIES = 1561
 STRIDE = 196
 

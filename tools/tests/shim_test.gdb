@@ -73,10 +73,10 @@ set $lr = 0x95f1181
 set $pc = 0x95f1180
 continue
 printf "STOPPED_AT=%08x\n", $pc
-echo \n=== CASE 6: char 180 out of range -> give ===\n
+echo \n=== CASE 6: char 192 out of range -> give ===\n
 python gdb.selected_inferior().write_memory(0x2033000, bytes.fromhex("000000000000000000000000000000000000000200000000000000008e0000008e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
 set *(unsigned char*)0x2031410 = 0x20
-set *(unsigned short*)0x20315d4 = 180
+set *(unsigned short*)0x20315d4 = 192
 set *(unsigned char*)0x201b95d = 1
 set $r0 = 0x2033000
 set $sp = 0x03007F00
@@ -161,7 +161,7 @@ set $lr = 0x81c40bd
 set $pc = 0x95f1234
 continue
 printf "TRADE_RESULT=%04x\n", *(unsigned short*)0x200560c
-echo \n=== TRADE 4: Red, trade 3 (Meowth) -> refuse ===\n
+echo \n=== TRADE 4: Red, trade 3 (Meowth) -> allow ===\n
 set *(unsigned char*)0x2031410 = 0x20
 set *(unsigned short*)0x20315d4 = 1
 set *(unsigned short*)0x20055fc = 3

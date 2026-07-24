@@ -50,18 +50,18 @@ ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 BUILD = ROOT / "build"
 CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
-NUM_CHARACTERS = 179
+NUM_CHARACTERS = 191  # 179 + 12 professors; Sada/Turo/Tobias trimmed (2026-07-23)
 BITMAP_STRIDE = 196
 CODE_LEN = 11
 
 # --- confirmed layout constants ---
 FREE_FILE_BASE = 0x15F0EA4          # big 0xFF block start (file offset)
 SHIM_ADDR      = 0x095F1000
-BITMAPS_ADDR   = 0x095F1800
-CODES_ADDR     = 0x095FA200
-STARTERS_ADDR  = 0x095FAA00
-SCRIPT_ADDR    = 0x095FAC00
-WILDMONS_ADDR  = 0x095FC000
+BITMAPS_ADDR   = 0x095F1800  # 191*196=37,436B -> ends 0x95FAA3C
+CODES_ADDR     = 0x095FB000  # rebased 2026-07-23 (bitmaps grew past old 0x95FA200)
+STARTERS_ADDR  = 0x095FBA00
+SCRIPT_ADDR    = 0x095FBC00
+WILDMONS_ADDR  = 0x095FD000  # 191*368=70,288B -> ends 0x9610490
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
 TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
@@ -99,7 +99,7 @@ TRADE_JUNCTIONS = (0x2B61E5, 0x2C8442, 0x2C8E00, 0x319684)
 TRADE_JUNCTION_BYTES = bytes([0x19, 0x04, 0x80, 0x08, 0x80,
                               0x19, 0x05, 0x80, 0x0A, 0x80,
                               0x25, 0x00, 0x01, 0x25, 0x01, 0x01, 0x27])
-TRADE_SCRIPT_ADDR = 0x095FB000
+TRADE_SCRIPT_ADDR = 0x095FC800
 
 # --- helpers ---
 
