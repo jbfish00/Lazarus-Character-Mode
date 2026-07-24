@@ -2,7 +2,7 @@
 
 Every playable character and the **final evolutions** their complete roster resolves to, in **National Pokédex order**. Rosters were researched from Bulbapedia (union of all games, remakes, rematches, and anime) and cross-checked where possible. Regional/cosmetic forms show as their base species. Off-roster Pokémon are routed to your PC.
 
-**179 characters.** Sprite version: `ROSTERS_SPRITES.md`.
+**191 characters.** Sprite version: `ROSTERS_SPRITES.md`.
 
 ## Contents
 - [Generation 1](#generation-1)
@@ -86,6 +86,10 @@ Raichu, Electrode, Jolteon, Lanturn, Ampharos, Manectric, Pachirisu, Magnezone, 
 **Final evolutions (24):**
 Blastoise, Golduck, Poliwrath, Slowbro, Dewgong, Seaking, Starmie, Gyarados, Lapras, Vaporeon, Lanturn, Azumarill, Politoed, Quagsire, Kingdra, Milotic, Luvdisc, Floatzel, Togekiss, Carracosta, Swanna, Jellicent, Clawitzer, Cursola
 
+### Oak — Professor
+**Final evolutions (19):**
+Venusaur, Charizard, Blastoise, Pidgeot, Raichu, Nidoqueen, Ditto, Vaporeon, Jolteon, Flareon, Articuno, Mewtwo, Mew, Espeon, Umbreon, Leafeon, Glaceon, Sylveon, Melmetal
+
 ### Red — Protagonist
 **Final evolutions (32):**
 Venusaur, Charizard, Blastoise, Butterfree, Pidgeot, Raticate, Fearow, Arbok, Raichu, Nidoqueen, Persian, Golduck, Victreebel, Tentacruel, Rapidash, Dodrio, Gengar, Hitmonlee, Tauros, Gyarados, Lapras, Jolteon, Kabutops, Snorlax, Articuno, Zapdos, Moltres, Mewtwo, Espeon, Scizor, Blissey, Kleavor
@@ -124,6 +128,10 @@ Poliwrath, Machamp, Hitmonlee, Hitmonchan, Breloom, Medicham, Annihilape
 ### Clair — Gym Leader
 **Final evolutions (15):**
 Charizard, Nidoking, Arcanine, Gyarados, Lapras, Aerodactyl, Dragonite, Ampharos, Kingdra, Altaria, Salamence, Garchomp, Rhyperior, Druddigon, Drampa
+
+### Elm — Professor
+**Final evolutions (17):**
+Arbok, Clefable, Victreebel, Weezing, Meganium, Typhlosion, Feraligatr, Furret, Azumarill, Sudowoodo, Tyranitar, Exploud, Togekiss, Gliscor, Giratina, Arceus, Cursola
 
 ### Ethan — Protagonist
 **Final evolutions (13):**
@@ -179,6 +187,10 @@ Clefable, Alakazam, Slowbro, Hypno, Exeggutor, Jynx, Flareon, Xatu, Mantine, Bli
 ### Archie — Villain
 **Final evolutions (7):**
 Tentacruel, Muk, Crobat, Mightyena, Sharpedo, Walrein, Kyogre
+
+### Birch — Professor
+**Final evolutions (34):**
+Venusaur, Charizard, Blastoise, Clefable, Muk, Gyarados, Meganium, Typhlosion, Feraligatr, Sceptile, Blaziken, Swampert, Mightyena, Beautifly, Dustox, Shiftry, Pelipper, Ninjask, Shedinja, Aggron, Wailord, Tropius, Huntail, Gorebyss, Rayquaza, Jirachi, Torterra, Infernape, Empoleon, Giratina, Serperior, Emboar, Samurott, Obstagoon
 
 ### Brawly — Gym Leader
 **Final evolutions (10):**
@@ -343,6 +355,10 @@ Nidoking, Gyarados, Azumarill, Ninjask, Hariyama, Aggron, Metagross, Torterra, I
 **Final evolutions (11):**
 Golem, Aerodactyl, Sudowoodo, Steelix, Tyranitar, Armaldo, Relicanth, Rampardos, Probopass, Crustle, Archeops
 
+### Rowan — Professor
+**Final evolutions (15):**
+Typhlosion, Ariados, Steelix, Shuckle, Torterra, Infernape, Empoleon, Staraptor, Bastiodon, Ambipom, Mesprit, Dialga, Palkia, Giratina, Yveltal
+
 ### Saturn — Villain
 **Final evolutions (7):**
 Alakazam, Crobat, Sharpedo, Skuntank, Bronzong, Toxicroak, Rhyperior
@@ -429,6 +445,10 @@ Flygon, Serperior, Emboar, Samurott, Simisage, Simisear, Simipour, Unfezant, Eel
 ### Iris — Champion
 **Final evolutions (12):**
 Lapras, Dragonite, Aggron, Salamence, Garchomp, Excadrill, Archeops, Emolga, Haxorus, Druddigon, Hydreigon, Naganadel
+
+### Juniper — Professor
+**Final evolutions (15):**
+Raichu, Victini, Serperior, Emboar, Samurott, Watchog, Musharna, Scolipede, Darmanitan, Crustle, Archeops, Cinccino, Escavalier, Accelgor, Zekrom
 
 ### Lenora — Gym Leader
 **Final evolutions (10):**
@@ -529,6 +549,10 @@ Venusaur, Delcatty, Chesnaught, Delphox, Greninja, Florges, Sylveon, Goodra
 **Final evolutions (6):**
 Blastoise, Starmie, Gyarados, Octillery, Barbaracle, Clawitzer
 
+### Sycamore — Professor
+**Final evolutions (18):**
+Venusaur, Charizard, Blastoise, Pinsir, Blaziken, Gardevoir, Absol, Garchomp, Drapion, Gallade, Druddigon, Chesnaught, Delphox, Greninja, Gogoat, Hawlucha, Xerneas, Yveltal
+
 ### Valerie — Gym Leader
 **Final evolutions (4):**
 Mawile, Aromatisse, Sylveon, Mr. Rime
@@ -551,6 +575,10 @@ Abomasnow, Cryogonal, Avalugg
 ### Acerola — Elite Four
 **Final evolutions (8):**
 Gengar, Sableye, Banette, Drifblim, Froslass, Palossand, Mimikyu, Dhelmise
+
+### Burnet — Professor
+**Final evolutions (11):**
+Snorlax, Mantine, Lycanroc, Silvally, Bruxish, Kommo-o, Tapu Bulu, Solgaleo, Lunala, Guzzlord, Necrozma
 
 ### Elio — Protagonist
 **Final evolutions (8):**
@@ -612,13 +640,17 @@ Sandslash, Dugtrio, Ampharos, Skarmory, Metagross, Magnezone, Klefki, Kingambit
 **Final evolutions (6):**
 Persian, Sableye, Absol, Honchkrow, Krookodile, Perrserker
 
-### Olivia — Elite Four
+### Olivia — Gym Leader
 **Final evolutions (9):**
 Golem, Cradily, Armaldo, Relicanth, Probopass, Gigalith, Carbink, Lycanroc, Bewear
 
 ### Plumeria — Villain
 **Final evolutions (6):**
 Muk, Gengar, Crobat, Toxapex, Lurantis, Salazzle
+
+### Samson Oak — Professor
+**Final evolutions (25):**
+Raticate, Raichu, Ninetales, Dugtrio, Persian, Golem, Muk, Exeggutor, Marowak, Bronzong, Porygon-Z, Gumshoos, Vikavolt, Ribombee, Araquanid, Lurantis, Salazzle, Minior, Komala, Togedemaru, Mimikyu, Kommo-o, Nihilego, Necrozma, Perrserker
 
 ### Selene — Protagonist
 **Final evolutions (9):**
@@ -643,6 +675,10 @@ Machamp, Hitmontop, Vanilluxe, Pangoro, Hawlucha, Grapploct, Sirfetch'd, Falinks
 **Final evolutions (7):**
 Rapidash, Gardevoir, Mawile, Gothitelle, Reuniclus, Sylveon, Hatterene
 
+### Cerise — Professor
+**Final evolutions (19):**
+Venusaur, Charizard, Blastoise, Beedrill, Clefable, Vaporeon, Jolteon, Flareon, Mew, Crobat, Espeon, Umbreon, Lugia, Empoleon, Leafeon, Glaceon, Rotom, Sylveon, Boltund
+
 ### Chloe — Anime
 **Final evolutions (9):**
 Vaporeon, Jolteon, Flareon, Espeon, Umbreon, Leafeon, Glaceon, Sylveon, Boltund
@@ -659,9 +695,17 @@ Shuckle, Tyranitar, Barbaracle, Coalossal, Stonjourner
 **Final evolutions (6):**
 Ninetales, Arcanine, Camerupt, Torkoal, Salazzle, Centiskorch
 
+### Laventon — Professor
+**Final evolutions (5):**
+Typhlosion, Unown, Lucario, Samurott, Decidueye
+
 ### Leon — Champion
 **Final evolutions (11):**
 Charizard, Rhyperior, Seismitoad, Haxorus, Aegislash, Rillaboom, Cinderace, Inteleon, Mr. Rime, Dragapult, Eternatus
+
+### Magnolia — Professor
+**Final evolutions (9):**
+Bronzong, Pangoro, Golisopod, Rillaboom, Inteleon, Drednaw, Polteageist, Dracovish, Eternatus
 
 ### Marnie — Rival
 **Final evolutions (9):**
@@ -694,6 +738,10 @@ Torkoal, Flygon, Gigalith, Goodra, Turtonator, Sandaconda, Archaludon
 ### Rose — Villain
 **Final evolutions (5):**
 Escavalier, Ferrothorn, Klinklang, Perrserker, Copperajah
+
+### Sonia — Professor
+**Final evolutions (10):**
+Charizard, Klinklang, Tsareena, Oranguru, Cinderace, Corviknight, Boltund, Zacian, Zamazenta, Eternatus
 
 
 ## Generation 9
