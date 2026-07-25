@@ -1,6 +1,6 @@
 {
  "mode": "final",
- "record_count": 191,
+ "record_count": 201,
  "record_size_bytes": 12,
  "skipped_empty_roster": [],
  "warnings": [],
@@ -4443,6 +4443,170 @@
     249
    ],
    "starter_count": 3,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Anabel",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1255,
+   "roster_offset": 4300,
+   "roster_species_ids": [
+    133,
+    215,
+    244,
+    243
+   ],
+   "starter_count": 2,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Brandon",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1262,
+   "roster_offset": 4310,
+   "roster_species_ids": [
+    355,
+    290
+   ],
+   "starter_count": 2,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Greta",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1270,
+   "roster_offset": 4316,
+   "roster_species_ids": [
+    133,
+    92,
+    214,
+    307,
+    290,
+    285
+   ],
+   "starter_count": 6,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Lucy",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1276,
+   "roster_offset": 4330,
+   "roster_species_ids": [
+    129,
+    95
+   ],
+   "starter_count": 2,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Noland",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1281,
+   "roster_offset": 4336,
+   "roster_species_ids": [
+    304,
+    322,
+    54,
+    27,
+    285,
+    328
+   ],
+   "starter_count": 6,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Spenser",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1288,
+   "roster_offset": 4350,
+   "roster_species_ids": [
+    343,
+    355,
+    58,
+    131,
+    245
+   ],
+   "starter_count": 4,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Tucker",
+   "category": "frontier",
+   "generation": 3,
+   "name_offset": 1296,
+   "roster_offset": 4362,
+   "roster_species_ids": [
+    58
+   ],
+   "starter_count": 1,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Dahlia",
+   "category": "frontier",
+   "generation": 4,
+   "name_offset": 1303,
+   "roster_offset": 4366,
+   "roster_species_ids": [
+    355,
+    307,
+    175,
+    255
+   ],
+   "starter_count": 4,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Darach",
+   "category": "frontier",
+   "generation": 4,
+   "name_offset": 1310,
+   "roster_offset": 4376,
+   "roster_species_ids": [
+    228,
+    280,
+    244
+   ],
+   "starter_count": 2,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
+   "character": "Palmer",
+   "category": "frontier",
+   "generation": 4,
+   "name_offset": 1317,
+   "roster_offset": 4384,
+   "roster_species_ids": [
+    147
+   ],
+   "starter_count": 1,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"

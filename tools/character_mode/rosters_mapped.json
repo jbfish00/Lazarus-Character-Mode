@@ -257,6 +257,29 @@
    }
   ]
  },
+ "Anabel": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Anabel",
+  "species": [
+   {
+    "const": "SPECIES_EEVEE",
+    "id": 133
+   },
+   {
+    "const": "SPECIES_ENTEI",
+    "id": 244
+   },
+   {
+    "const": "SPECIES_RAIKOU",
+    "id": 243
+   },
+   {
+    "const": "SPECIES_SNEASEL",
+    "id": 215
+   }
+  ]
+ },
  "Archer": {
   "category": "villain",
   "gen": 2,
@@ -1013,6 +1036,21 @@
    {
     "const": "SPECIES_VULPIX",
     "id": 37
+   }
+  ]
+ },
+ "Brandon": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Brandon + Brandon (anime)",
+  "species": [
+   {
+    "const": "SPECIES_DUSKULL",
+    "id": 355
+   },
+   {
+    "const": "SPECIES_NINCADA",
+    "id": 290
    }
   ]
  },
@@ -2401,6 +2439,48 @@
    }
   ]
  },
+ "Dahlia": {
+  "category": "frontier",
+  "gen": 4,
+  "page": "Dahlia",
+  "species": [
+   {
+    "const": "SPECIES_DUSKULL",
+    "id": 355
+   },
+   {
+    "const": "SPECIES_MEDITITE",
+    "id": 307
+   },
+   {
+    "const": "SPECIES_TOGEPI",
+    "id": 175
+   },
+   {
+    "const": "SPECIES_TORCHIC",
+    "id": 255
+   }
+  ]
+ },
+ "Darach": {
+  "category": "frontier",
+  "gen": 4,
+  "page": "Darach",
+  "species": [
+   {
+    "const": "SPECIES_ENTEI",
+    "id": 244
+   },
+   {
+    "const": "SPECIES_HOUNDOUR",
+    "id": 228
+   },
+   {
+    "const": "SPECIES_RALTS",
+    "id": 280
+   }
+  ]
+ },
  "Dawn": {
   "category": "protagonist",
   "gen": 4,
@@ -3765,6 +3845,37 @@
    {
     "const": "SPECIES_TYRUNT",
     "id": 696
+   }
+  ]
+ },
+ "Greta": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Greta",
+  "species": [
+   {
+    "const": "SPECIES_EEVEE",
+    "id": 133
+   },
+   {
+    "const": "SPECIES_GASTLY",
+    "id": 92
+   },
+   {
+    "const": "SPECIES_HERACROSS",
+    "id": 214
+   },
+   {
+    "const": "SPECIES_MEDITITE",
+    "id": 307
+   },
+   {
+    "const": "SPECIES_NINCADA",
+    "id": 290
+   },
+   {
+    "const": "SPECIES_SHROOMISH",
+    "id": 285
    }
   ]
  },
@@ -5943,6 +6054,21 @@
    }
   ]
  },
+ "Lucy": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Lucy",
+  "species": [
+   {
+    "const": "SPECIES_MAGIKARP",
+    "id": 129
+   },
+   {
+    "const": "SPECIES_ONIX",
+    "id": 95
+   }
+  ]
+ },
  "Lusamine": {
   "category": "villain",
   "gen": 7,
@@ -7151,6 +7277,37 @@
    }
   ]
  },
+ "Noland": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Noland",
+  "species": [
+   {
+    "const": "SPECIES_ARON",
+    "id": 304
+   },
+   {
+    "const": "SPECIES_NUMEL",
+    "id": 322
+   },
+   {
+    "const": "SPECIES_PSYDUCK",
+    "id": 54
+   },
+   {
+    "const": "SPECIES_SANDSHREW",
+    "id": 27
+   },
+   {
+    "const": "SPECIES_SHROOMISH",
+    "id": 285
+   },
+   {
+    "const": "SPECIES_TRAPINCH",
+    "id": 328
+   }
+  ]
+ },
  "Norman": {
   "category": "gymleader",
   "gen": 3,
@@ -7284,6 +7441,17 @@
    {
     "const": "SPECIES_TOGEPI",
     "id": 175
+   }
+  ]
+ },
+ "Palmer": {
+  "category": "frontier",
+  "gen": 4,
+  "page": "Palmer",
+  "species": [
+   {
+    "const": "SPECIES_DRATINI",
+    "id": 147
    }
   ]
  },
@@ -8776,6 +8944,33 @@
    }
   ]
  },
+ "Spenser": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Spenser",
+  "species": [
+   {
+    "const": "SPECIES_BALTOY",
+    "id": 343
+   },
+   {
+    "const": "SPECIES_DUSKULL",
+    "id": 355
+   },
+   {
+    "const": "SPECIES_GROWLITHE",
+    "id": 58
+   },
+   {
+    "const": "SPECIES_LAPRAS",
+    "id": 131
+   },
+   {
+    "const": "SPECIES_SUICUNE",
+    "id": 245
+   }
+  ]
+ },
  "Steven": {
   "category": "champion",
   "gen": 3,
@@ -8990,6 +9185,17 @@
    {
     "const": "SPECIES_TIMBURR",
     "id": 532
+   }
+  ]
+ },
+ "Tucker": {
+  "category": "frontier",
+  "gen": 3,
+  "page": "Tucker",
+  "species": [
+   {
+    "const": "SPECIES_GROWLITHE",
+    "id": 58
    }
   ]
  },

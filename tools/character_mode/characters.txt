@@ -225,3 +225,19 @@ Cerise | Professor Cerise | professor | 8
 # Tobias: roster pinned to Darkrai+Latios in rosters_raw.json (user spec 2026-07-23).
 # Do not blindly re-scrape him — his page's League sections leak opponents' mons.
 # TRIMMED (2026-07-23): Tobias | Tobias (Sinnoh) | anime | 4  — every roster species absent from Lazarus's curated dex (Darkrai/Latios/paradox mons not in this ROM); same category as the shipped Gloria/Hop/Victor trim
+
+# --- Frontier Brains (added 2026-07-24, user request: all Frontier Brains from
+# every game; rosters = union of game Frontier teams + anime teams, PINNED in
+# rosters_raw.json like Tobias -- a blind re-scrape credits them with their
+# opponents' Pokemon. Thorton/Argenta excluded: rental-facility Brains with no
+# team of their own and no anime appearance -> empty roster = unplayable.
+Anabel | Anabel | frontier | 3
+Brandon | Brandon + Brandon (anime) | frontier | 3
+Greta | Greta | frontier | 3
+Lucy | Lucy | frontier | 3
+Noland | Noland | frontier | 3
+Spenser | Spenser | frontier | 3
+Tucker | Tucker | frontier | 3
+Dahlia | Dahlia | frontier | 4
+Darach | Darach | frontier | 4
+Palmer | Palmer | frontier | 4

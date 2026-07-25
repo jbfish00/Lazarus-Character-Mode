@@ -53,6 +53,16 @@ Final-evolution rosters in National Pokédex order, sprites with names. [← bac
 <tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/700.png"><br><sub>Sylveon</sub></td></tr>
 </table>
 
+### Dahlia — Frontier Brain
+<table>
+<tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/257.png"><br><sub>Blaziken</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/308.png"><br><sub>Medicham</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/468.png"><br><sub>Togekiss</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/477.png"><br><sub>Dusknoir</sub></td></tr>
+</table>
+
+### Darach — Frontier Brain
+<table>
+<tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/229.png"><br><sub>Houndoom</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/244.png"><br><sub>Entei</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/282.png"><br><sub>Gardevoir</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/475.png"><br><sub>Gallade</sub></td></tr>
+</table>
+
 ### Dawn — Protagonist
 <table>
 <tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/26.png"><br><sub>Raichu</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/59.png"><br><sub>Arcanine</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/85.png"><br><sub>Dodrio</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/89.png"><br><sub>Muk</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/134.png"><br><sub>Vaporeon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/135.png"><br><sub>Jolteon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/136.png"><br><sub>Flareon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/149.png"><br><sub>Dragonite</sub></td></tr>
@@ -116,6 +126,11 @@ Final-evolution rosters in National Pokédex order, sprites with names. [← bac
 <table>
 <tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/134.png"><br><sub>Vaporeon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/135.png"><br><sub>Jolteon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/136.png"><br><sub>Flareon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/157.png"><br><sub>Typhlosion</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/196.png"><br><sub>Espeon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/197.png"><br><sub>Umbreon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/214.png"><br><sub>Heracross</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/334.png"><br><sub>Altariaᵃ</sub></td></tr>
 <tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/348.png"><br><sub>Armaldoᵃ</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/407.png"><br><sub>Roseradeᵃ</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/470.png"><br><sub>Leafeon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/471.png"><br><sub>Glaceon</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/700.png"><br><sub>Sylveon</sub></td></tr>
+</table>
+
+### Palmer — Frontier Brain
+<table>
+<tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/149.png"><br><sub>Dragonite</sub></td></tr>
 </table>
 
 ### Paul — Anime

@@ -50,18 +50,21 @@ ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 BUILD = ROOT / "build"
 CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
-NUM_CHARACTERS = 191  # 179 + 12 professors; Sada/Turo/Tobias trimmed (2026-07-23)
+NUM_CHARACTERS = 201  # 179 + 12 professors + 10 Frontier Brains (2026-07-24); Sada/Turo/Tobias trimmed
 BITMAP_STRIDE = 196
 CODE_LEN = 11
 
 # --- confirmed layout constants ---
 FREE_FILE_BASE = 0x15F0EA4          # big 0xFF block start (file offset)
 SHIM_ADDR      = 0x095F1000
-BITMAPS_ADDR   = 0x095F1800  # 191*196=37,436B -> ends 0x95FAA3C
-CODES_ADDR     = 0x095FB000  # rebased 2026-07-23 (bitmaps grew past old 0x95FA200)
-STARTERS_ADDR  = 0x095FBA00
+BITMAPS_ADDR   = 0x095F1800  # 201*196=39,396B -> ends 0x95FB1E4
+CODES_ADDR     = 0x09610800  # rebased 2026-07-24: 201-char bitmaps end 0x95FB1E4,
+                             # past the old 0x95FB000. Moved beyond the wildmon table
+                             # (ends 0x960F0F0) rather than squeezed before SCRIPT_ADDR,
+                             # which stays fixed. 201*11=2,211B -> ends 0x96110A3
+STARTERS_ADDR  = 0x09611200  # 201*2=402B -> ends 0x9611392
 SCRIPT_ADDR    = 0x095FBC00
-WILDMONS_ADDR  = 0x095FD000  # 191*368=70,288B -> ends 0x9610490
+WILDMONS_ADDR  = 0x095FD000  # 201*368=73,968B -> ends 0x960F0F0
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
 TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)

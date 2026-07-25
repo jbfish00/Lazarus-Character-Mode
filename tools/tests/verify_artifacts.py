@@ -72,7 +72,7 @@ CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
 ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 
-NUM_CHARACTERS = 191  # 179 + 12 professors (2026-07-23); Sada/Turo/Tobias trimmed (species absent)
+NUM_CHARACTERS = 201  # 179 + 12 professors + 10 Frontier Brains (2026-07-24); Sada/Turo/Tobias trimmed
 
 # Engine flag bookkeeping (the 0x945 daily-sweep bug, fixed 2026-07-24).
 SB1_FLAGS_OFF = 0x12E8           # SaveBlock1.flags (docs/ROUTINE_MAP.md)
@@ -85,8 +85,8 @@ CODE_LEN = 11
 
 SHIM_ADDR = 0x095F1000
 BITMAPS_ADDR = 0x095F1800
-CODES_ADDR = 0x095FB000
-STARTERS_ADDR = 0x095FBA00
+CODES_ADDR = 0x09610800
+STARTERS_ADDR = 0x09611200
 SCRIPT_ADDR = 0x095FBC00
 TRADE_SCRIPT_ADDR = 0x095FC800
 WILDMONS_ADDR = 0x095FD000
@@ -344,9 +344,9 @@ def main():
             if bad_starter <= 3:
                 print(f"    starter mismatch [{ci}] {c['character']}: "
                       f"{starter} (want {sig}, on-bitmap={bit(ci, starter)})")
-    check("all 179 codes decode to recomputed names, unique, no native clash",
+    check("all codes decode to recomputed names, unique, no native clash",
           bad_code == 0, f"{bad_code} bad")
-    check("all 179 starters == signature/roster[0] and on own bitmap",
+    check("all starters == signature/roster[0] and on own bitmap",
           bad_starter == 0, f"{bad_starter} bad")
 
     print("== 7. specials slot (selection hook) ==")
