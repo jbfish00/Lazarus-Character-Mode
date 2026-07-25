@@ -1549,12 +1549,20 @@
     "id": 95
    },
    {
+    "const": "SPECIES_SCYTHER",
+    "id": 123
+   },
+   {
     "const": "SPECIES_SHIELDON",
     "id": 410
    },
    {
     "const": "SPECIES_SKARMORY",
     "id": 227
+   },
+   {
+    "const": "SPECIES_WINGULL",
+    "id": 278
    }
   ]
  },
@@ -3007,12 +3015,24 @@
     "id": 436
    },
    {
+    "const": "SPECIES_CORPHISH",
+    "id": 341
+   },
+   {
+    "const": "SPECIES_DRATINI",
+    "id": 147
+   },
+   {
     "const": "SPECIES_DUSKULL",
     "id": 355
    },
    {
     "const": "SPECIES_GASTLY",
     "id": 92
+   },
+   {
+    "const": "SPECIES_NINCADA",
+    "id": 290
    },
    {
     "const": "SPECIES_NOSEPASS",
@@ -3101,6 +3121,10 @@
     "id": 133
    },
    {
+    "const": "SPECIES_ENTEI",
+    "id": 244
+   },
+   {
     "const": "SPECIES_GROWLITHE",
     "id": 58
    },
@@ -3119,6 +3143,10 @@
    {
     "const": "SPECIES_PONYTA",
     "id": 77
+   },
+   {
+    "const": "SPECIES_TORCHIC",
+    "id": 255
    },
    {
     "const": "SPECIES_VULPIX",
@@ -3168,6 +3196,10 @@
     "id": 187
    },
    {
+    "const": "SPECIES_LILEEP",
+    "id": 345
+   },
+   {
     "const": "SPECIES_PACHIRISU",
     "id": 417
    },
@@ -3182,6 +3214,10 @@
    {
     "const": "SPECIES_TROPIUS",
     "id": 357
+   },
+   {
+    "const": "SPECIES_VULPIX",
+    "id": 37
    }
   ]
  },
@@ -4661,6 +4697,10 @@
     "id": 92
    },
    {
+    "const": "SPECIES_LARVITAR",
+    "id": 246
+   },
+   {
     "const": "SPECIES_STUNKY",
     "id": 434
    }
@@ -5933,8 +5973,16 @@
     "id": 506
    },
    {
+    "const": "SPECIES_LITTEN",
+    "id": 725
+   },
+   {
     "const": "SPECIES_MUDBRAY",
     "id": 749
+   },
+   {
+    "const": "SPECIES_PICHU",
+    "id": 172
    },
    {
     "const": "SPECIES_POPPLIO",
@@ -5943,6 +5991,10 @@
    {
     "const": "SPECIES_ROCKRUFF",
     "id": 744
+   },
+   {
+    "const": "SPECIES_ROWLET",
+    "id": 722
    },
    {
     "const": "SPECIES_SALANDIT",
@@ -6253,12 +6305,20 @@
     "id": 436
    },
    {
+    "const": "SPECIES_EEVEE",
+    "id": 133
+   },
+   {
     "const": "SPECIES_MAGNEMITE",
     "id": 81
    },
    {
     "const": "SPECIES_STUNKY",
     "id": 434
+   },
+   {
+    "const": "SPECIES_TOGEPI",
+    "id": 175
    },
    {
     "const": "SPECIES_YANMA",
@@ -6433,6 +6493,10 @@
     "id": 420
    },
    {
+    "const": "SPECIES_DRATINI",
+    "id": 147
+   },
+   {
     "const": "SPECIES_HERACROSS",
     "id": 214
    },
@@ -6459,6 +6523,10 @@
    {
     "const": "SPECIES_SNORUNT",
     "id": 361
+   },
+   {
+    "const": "SPECIES_TORCHIC",
+    "id": 255
    }
   ]
  },
@@ -7857,6 +7925,10 @@
     "id": 410
    },
    {
+    "const": "SPECIES_TORKOAL",
+    "id": 324
+   },
+   {
     "const": "SPECIES_WURMPLE",
     "id": 265
    }
@@ -7868,8 +7940,32 @@
   "page": "Rosa (game) + Rosa (anime)",
   "species": [
    {
+    "const": "SPECIES_ARCHEN",
+    "id": 566
+   },
+   {
+    "const": "SPECIES_CUBCHOO",
+    "id": 613
+   },
+   {
+    "const": "SPECIES_GOTHITA",
+    "id": 574
+   },
+   {
     "const": "SPECIES_LILLIPUP",
     "id": 506
+   },
+   {
+    "const": "SPECIES_LITWICK",
+    "id": 607
+   },
+   {
+    "const": "SPECIES_MIENFOO",
+    "id": 619
+   },
+   {
+    "const": "SPECIES_MUNNA",
+    "id": 517
    },
    {
     "const": "SPECIES_PANPOUR",
@@ -7882,6 +7978,30 @@
    {
     "const": "SPECIES_PANSEAR",
     "id": 513
+   },
+   {
+    "const": "SPECIES_RUFFLET",
+    "id": 627
+   },
+   {
+    "const": "SPECIES_SANDILE",
+    "id": 551
+   },
+   {
+    "const": "SPECIES_SCRAGGY",
+    "id": 559
+   },
+   {
+    "const": "SPECIES_SOLOSIS",
+    "id": 577
+   },
+   {
+    "const": "SPECIES_TIMBURR",
+    "id": 532
+   },
+   {
+    "const": "SPECIES_VULLABY",
+    "id": 629
    }
   ]
  },
@@ -8627,6 +8747,10 @@
     "id": 725
    },
    {
+    "const": "SPECIES_MAGNEMITE",
+    "id": 81
+   },
+   {
     "const": "SPECIES_MAREEP",
     "id": 179
    },
@@ -8972,6 +9096,14 @@
    {
     "const": "SPECIES_HOUNDOUR",
     "id": 228
+   },
+   {
+    "const": "SPECIES_MAGIKARP",
+    "id": 129
+   },
+   {
+    "const": "SPECIES_MAGNEMITE",
+    "id": 81
    },
    {
     "const": "SPECIES_PACHIRISU",

@@ -10,7 +10,7 @@ H.onFrame(function(f)
             emu:read16(b1), emu:read16(b1 + 2),
             emu:read8(0x0201B95D)))
         H.log(string.format("flag945=%s varCHAR=%d varSTARTER=%d",
-            tostring(H.flagGet(0x945)), H.varGet(0x40E0), H.varGet(0x40E4)))
+            tostring(H.flagGet(0x2B0)), H.varGet(0x40E0), H.varGet(0x40E4)))
         emu:screenshot("tools/savestates/probe_where.png")
         H.finish()
     end

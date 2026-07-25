@@ -17,7 +17,7 @@ stub), with a synthetic Pokemon struct and a synthetic SaveBlock1, and checks
 which branch the shim takes for every case in the decision table.
 
 Lazarus differences from the Radical Red original of this test:
-  - Flag 0x945 / var 0x40E0 live inside SaveBlock1 (flags +0x12E8, vars
+  - Flag 0x2B0 / var 0x40E0 live inside SaveBlock1 (flags +0x12E8, vars
     +0x1414), reached through gSaveBlock1Ptr @ 0x03003664. The test builds a
     zeroed fake SaveBlock1 in scratch EWRAM and points the pointer at it, so
     FlagGet/GetVarPointer read controlled state without booting the game.
@@ -77,7 +77,7 @@ SB1_FAKE = 0x02030000    # scratch EWRAM fake SaveBlock1 (zeroed)
 SB1_SIZE = 0x1800
 FLAGS_OFF = 0x12E8
 VARS_OFF = 0x1414
-FLAG_CM = 0x945
+FLAG_CM = 0x2B0
 VAR_CM_CHAR = 0x40E0
 
 FLAG_BYTE = SB1_FAKE + FLAGS_OFF + (FLAG_CM >> 3)
@@ -116,6 +116,14 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
     lines = [
         "set pagination off",
         "set confirm off",
+        # mGBA's GDB stub answers the qXfer:memory-map probe one packet out of
+        # step, which desyncs the whole session on modern GDB (15.x here) --
+        # "Remote replied unexpectedly to 'vMustReplyEmpty'", with 0 stops
+        # collected. Skipping that one probe keeps the handshake in sync.
+        # Do NOT also disable target-features: the stub's register layout comes
+        # from it, and without it the 'g' packet parses as "Truncated register
+        # 16". (2026-07-24: this is why layer 1 could not run.)
+        "set remote memory-map-packet off",
         "target remote :2345",
         f'python gdb.selected_inferior().write_memory({TRAMP_ADDR:#x}, bytes.fromhex("{tramphex}"))',
         # zeroed fake SaveBlock1 + repoint gSaveBlock1Ptr at it

@@ -1729,9 +1729,11 @@
     95,
     172,
     77,
-    37
+    255,
+    37,
+    244
    ],
-   "starter_count": 8,
+   "starter_count": 9,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"
@@ -1741,7 +1743,7 @@
    "category": "elite4",
    "generation": 4,
    "name_offset": 421,
-   "roster_offset": 1902,
+   "roster_offset": 1906,
    "roster_species_ids": [
     436,
     418,
@@ -1762,7 +1764,7 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 428,
-   "roster_offset": 1920,
+   "roster_offset": 1924,
    "roster_species_ids": [
     408,
     142,
@@ -1776,9 +1778,10 @@
     77,
     369,
     410,
+    324,
     265
    ],
-   "starter_count": 13,
+   "starter_count": 14,
    "has_signature": true,
    "signature_id": 408,
    "sprite_asset_id": "TBD"
@@ -1788,7 +1791,7 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 434,
-   "roster_offset": 1948,
+   "roster_offset": 1954,
    "roster_species_ids": [
     406,
     190,
@@ -1798,12 +1801,14 @@
     781,
     133,
     187,
+    345,
     417,
     77,
     285,
-    357
+    357,
+    37
    ],
-   "starter_count": 12,
+   "starter_count": 14,
    "has_signature": true,
    "signature_id": 406,
    "sprite_asset_id": "TBD"
@@ -1813,19 +1818,21 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 443,
-   "roster_offset": 1974,
+   "roster_offset": 1984,
    "roster_species_ids": [
     190,
     420,
+    147,
     214,
     307,
     198,
     417,
     280,
     285,
-    361
+    361,
+    255
    ],
-   "starter_count": 9,
+   "starter_count": 11,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"
@@ -1835,7 +1842,7 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 451,
-   "roster_offset": 1994,
+   "roster_offset": 2008,
    "roster_species_ids": [
     418,
     347,
@@ -1859,17 +1866,20 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 464,
-   "roster_offset": 2018,
+   "roster_offset": 2032,
    "roster_species_ids": [
     436,
+    341,
+    147,
     355,
     92,
+    290,
     299,
     353,
     361,
     442
    ],
-   "starter_count": 7,
+   "starter_count": 10,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"
@@ -1879,7 +1889,7 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 472,
-   "roster_offset": 2034,
+   "roster_offset": 2054,
    "roster_species_ids": [
     410,
     347,
@@ -1892,9 +1902,11 @@
     81,
     138,
     95,
-    227
+    123,
+    227,
+    278
    ],
-   "starter_count": 12,
+   "starter_count": 14,
    "has_signature": true,
    "signature_id": 410,
    "sprite_asset_id": "TBD"
@@ -1904,7 +1916,7 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 478,
-   "roster_offset": 2060,
+   "roster_offset": 2084,
    "roster_species_ids": [
     361,
     84,
@@ -1926,13 +1938,15 @@
    "category": "gymleader",
    "generation": 4,
    "name_offset": 486,
-   "roster_offset": 2080,
+   "roster_offset": 2104,
    "roster_species_ids": [
     190,
     522,
     170,
     133,
     228,
+    129,
+    81,
     417,
     172,
     77,
@@ -1941,7 +1955,7 @@
     100,
     278
    ],
-   "starter_count": 12,
+   "starter_count": 14,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"
@@ -1951,7 +1965,7 @@
    "category": "rival",
    "generation": 4,
    "name_offset": 494,
-   "roster_offset": 2106,
+   "roster_offset": 2134,
    "roster_species_ids": [
     406,
     418,
@@ -1974,7 +1988,7 @@
    "category": "villain",
    "generation": 4,
    "name_offset": 500,
-   "roster_offset": 2128,
+   "roster_offset": 2156,
    "roster_species_ids": [
     215,
     147,
@@ -1997,14 +2011,16 @@
    "category": "villain",
    "generation": 4,
    "name_offset": 506,
-   "roster_offset": 2150,
+   "roster_offset": 2178,
    "roster_species_ids": [
     436,
+    133,
     81,
     434,
+    175,
     193
    ],
-   "starter_count": 4,
+   "starter_count": 6,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"
@@ -2014,15 +2030,16 @@
    "category": "villain",
    "generation": 4,
    "name_offset": 511,
-   "roster_offset": 2160,
+   "roster_offset": 2192,
    "roster_species_ids": [
     434,
     436,
     147,
     133,
-    92
+    92,
+    246
    ],
-   "starter_count": 5,
+   "starter_count": 6,
    "has_signature": true,
    "signature_id": 434,
    "sprite_asset_id": "TBD"
@@ -2032,7 +2049,7 @@
    "category": "villain",
    "generation": 4,
    "name_offset": 519,
-   "roster_offset": 2172,
+   "roster_offset": 2206,
    "roster_species_ids": [
     436,
     129,
@@ -2052,7 +2069,7 @@
    "category": "anime",
    "generation": 4,
    "name_offset": 526,
-   "roster_offset": 2188,
+   "roster_offset": 2222,
    "roster_species_ids": [
     304,
     207,
@@ -2075,7 +2092,7 @@
    "category": "anime",
    "generation": 4,
    "name_offset": 531,
-   "roster_offset": 2210,
+   "roster_offset": 2244,
    "roster_species_ids": [
     190,
     418,
@@ -2096,7 +2113,7 @@
    "category": "anime",
    "generation": 4,
    "name_offset": 536,
-   "roster_offset": 2228,
+   "roster_offset": 2262,
    "roster_species_ids": [
     406,
     347,
@@ -2115,7 +2132,7 @@
    "category": "protagonist",
    "generation": 5,
    "name_offset": 542,
-   "roster_offset": 2242,
+   "roster_offset": 2276,
    "roster_species_ids": [
     133,
     619
@@ -2130,7 +2147,7 @@
    "category": "protagonist",
    "generation": 5,
    "name_offset": 548,
-   "roster_offset": 2248,
+   "roster_offset": 2282,
    "roster_species_ids": [
     58,
     515,
@@ -2148,14 +2165,26 @@
    "category": "protagonist",
    "generation": 5,
    "name_offset": 553,
-   "roster_offset": 2260,
+   "roster_offset": 2294,
    "roster_species_ids": [
+    566,
+    613,
+    574,
     506,
+    607,
+    619,
+    517,
     515,
     511,
-    513
+    513,
+    627,
+    551,
+    559,
+    577,
+    532,
+    629
    ],
-   "starter_count": 4,
+   "starter_count": 16,
    "has_signature": false,
    "signature_id": null,
    "sprite_asset_id": "TBD"
@@ -2165,7 +2194,7 @@
    "category": "champion",
    "generation": 5,
    "name_offset": 558,
-   "roster_offset": 2270,
+   "roster_offset": 2328,
    "roster_species_ids": [
     566,
     506,
@@ -2188,7 +2217,7 @@
    "category": "champion",
    "generation": 5,
    "name_offset": 564,
-   "roster_offset": 2292,
+   "roster_offset": 2350,
    "roster_species_ids": [
     566,
     304,
@@ -2213,7 +2242,7 @@
    "category": "elite4",
    "generation": 5,
    "name_offset": 569,
-   "roster_offset": 2318,
+   "roster_offset": 2376,
    "roster_species_ids": [
     607,
     92,
@@ -2230,7 +2259,7 @@
    "category": "elite4",
    "generation": 5,
    "name_offset": 578,
-   "roster_offset": 2328,
+   "roster_offset": 2386,
    "roster_species_ids": [
     532,
     574,
@@ -2250,7 +2279,7 @@
    "category": "elite4",
    "generation": 5,
    "name_offset": 586,
-   "roster_offset": 2344,
+   "roster_offset": 2402,
    "roster_species_ids": [
     228,
     246,
@@ -2269,7 +2298,7 @@
    "category": "elite4",
    "generation": 5,
    "name_offset": 595,
-   "roster_offset": 2358,
+   "roster_offset": 2416,
    "roster_species_ids": [
     574,
     436,
@@ -2287,7 +2316,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 603,
-   "roster_offset": 2370,
+   "roster_offset": 2428,
    "roster_species_ids": [
     511,
     190,
@@ -2314,7 +2343,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 609,
-   "roster_offset": 2400,
+   "roster_offset": 2458,
    "roster_species_ids": [
     513,
     58,
@@ -2333,7 +2362,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 615,
-   "roster_offset": 2414,
+   "roster_offset": 2472,
    "roster_species_ids": [
     515,
     550,
@@ -2354,7 +2383,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 621,
-   "roster_offset": 2432,
+   "roster_offset": 2490,
    "roster_species_ids": [
     574,
     506,
@@ -2371,7 +2400,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 628,
-   "roster_offset": 2442,
+   "roster_offset": 2500,
    "roster_species_ids": [
     557,
     214,
@@ -2388,7 +2417,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 634,
-   "roster_offset": 2452,
+   "roster_offset": 2510,
    "roster_species_ids": [
     522,
     574,
@@ -2407,7 +2436,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 640,
-   "roster_offset": 2466,
+   "roster_offset": 2524,
    "roster_species_ids": [
     343,
     574,
@@ -2430,7 +2459,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 645,
-   "roster_offset": 2488,
+   "roster_offset": 2546,
    "roster_species_ids": [
     580,
     566,
@@ -2456,7 +2485,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 651,
-   "roster_offset": 2516,
+   "roster_offset": 2574,
    "roster_species_ids": [
     613,
     214,
@@ -2480,7 +2509,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 658,
-   "roster_offset": 2540,
+   "roster_offset": 2598,
    "roster_species_ids": [
     147,
     627,
@@ -2497,7 +2526,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 666,
-   "roster_offset": 2550,
+   "roster_offset": 2608,
    "roster_species_ids": [
     506,
     550,
@@ -2519,7 +2548,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 673,
-   "roster_offset": 2570,
+   "roster_offset": 2628,
    "roster_species_ids": [
     88,
     451
@@ -2534,7 +2563,7 @@
    "category": "gymleader",
    "generation": 5,
    "name_offset": 679,
-   "roster_offset": 2576,
+   "roster_offset": 2634,
    "roster_species_ids": [
     90,
     564,
@@ -2551,7 +2580,7 @@
    "category": "rival",
    "generation": 5,
    "name_offset": 686,
-   "roster_offset": 2586,
+   "roster_offset": 2644,
    "roster_species_ids": [
     522,
     557,
@@ -2575,7 +2604,7 @@
    "category": "rival",
    "generation": 5,
    "name_offset": 693,
-   "roster_offset": 2610,
+   "roster_offset": 2668,
    "roster_species_ids": [
     88,
     58,
@@ -2595,7 +2624,7 @@
    "category": "rival",
    "generation": 5,
    "name_offset": 698,
-   "roster_offset": 2626,
+   "roster_offset": 2684,
    "roster_species_ids": [
     570,
     347,
@@ -2635,7 +2664,7 @@
    "category": "villain",
    "generation": 5,
    "name_offset": 700,
-   "roster_offset": 2682,
+   "roster_offset": 2740,
    "roster_species_ids": [
     517,
     627,
@@ -2652,7 +2681,7 @@
    "category": "villain",
    "generation": 5,
    "name_offset": 708,
-   "roster_offset": 2692,
+   "roster_offset": 2750,
    "roster_species_ids": [
     613,
     147,
@@ -2676,7 +2705,7 @@
    "category": "anime",
    "generation": 5,
    "name_offset": 716,
-   "roster_offset": 2716,
+   "roster_offset": 2774,
    "roster_species_ids": [
     557,
     607,
@@ -2692,7 +2721,7 @@
    "category": "protagonist",
    "generation": 6,
    "name_offset": 721,
-   "roster_offset": 2724,
+   "roster_offset": 2782,
    "roster_species_ids": [
     650,
     133,
@@ -2709,7 +2738,7 @@
    "category": "protagonist",
    "generation": 6,
    "name_offset": 727,
-   "roster_offset": 2734,
+   "roster_offset": 2792,
    "roster_species_ids": [
     653,
     650,
@@ -2735,7 +2764,7 @@
    "category": "champion",
    "generation": 6,
    "name_offset": 734,
-   "roster_offset": 2762,
+   "roster_offset": 2820,
    "roster_species_ids": [
     280,
     698,
@@ -2759,7 +2788,7 @@
    "category": "elite4",
    "generation": 6,
    "name_offset": 742,
-   "roster_offset": 2786,
+   "roster_offset": 2844,
    "roster_species_ids": [
     653,
     679,
@@ -2781,7 +2810,7 @@
    "category": "elite4",
    "generation": 6,
    "name_offset": 748,
-   "roster_offset": 2806,
+   "roster_offset": 2864,
    "roster_species_ids": [
     692,
     129,
@@ -2797,7 +2826,7 @@
    "category": "elite4",
    "generation": 6,
    "name_offset": 756,
-   "roster_offset": 2814,
+   "roster_offset": 2872,
    "roster_species_ids": [
     679,
     702,
@@ -2817,7 +2846,7 @@
    "category": "elite4",
    "generation": 6,
    "name_offset": 765,
-   "roster_offset": 2830,
+   "roster_offset": 2888,
    "roster_species_ids": [
     690,
     333
@@ -2832,7 +2861,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 772,
-   "roster_offset": 2836,
+   "roster_offset": 2894,
    "roster_species_ids": [
     679,
     95,
@@ -2848,7 +2877,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 778,
-   "roster_offset": 2844,
+   "roster_offset": 2902,
    "roster_species_ids": [
     696,
     698,
@@ -2864,7 +2893,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 784,
-   "roster_offset": 2852,
+   "roster_offset": 2910,
    "roster_species_ids": [
     650,
     739,
@@ -2890,7 +2919,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 792,
-   "roster_offset": 2880,
+   "roster_offset": 2938,
    "roster_species_ids": [
     672,
     69,
@@ -2908,7 +2937,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 798,
-   "roster_offset": 2892,
+   "roster_offset": 2950,
    "roster_species_ids": [
     694,
     190,
@@ -2941,7 +2970,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 806,
-   "roster_offset": 2934,
+   "roster_offset": 2992,
    "roster_species_ids": [
     133,
     303
@@ -2956,7 +2985,7 @@
    "category": "gymleader",
    "generation": 6,
    "name_offset": 814,
-   "roster_offset": 2940,
+   "roster_offset": 2998,
    "roster_species_ids": [
     172,
     459
@@ -2971,7 +3000,7 @@
    "category": "rival",
    "generation": 6,
    "name_offset": 822,
-   "roster_offset": 2946,
+   "roster_offset": 3004,
    "roster_species_ids": [
     650,
     133,
@@ -2992,7 +3021,7 @@
    "category": "villain",
    "generation": 6,
    "name_offset": 829,
-   "roster_offset": 2964,
+   "roster_offset": 3022,
    "roster_species_ids": [
     129,
     650,
@@ -3016,7 +3045,7 @@
    "category": "anime",
    "generation": 6,
    "name_offset": 838,
-   "roster_offset": 2988,
+   "roster_offset": 3046,
    "roster_species_ids": [
     650,
     656,
@@ -3037,7 +3066,7 @@
    "category": "anime",
    "generation": 6,
    "name_offset": 844,
-   "roster_offset": 3006,
+   "roster_offset": 3064,
    "roster_species_ids": [
     692,
     656,
@@ -3057,7 +3086,7 @@
    "category": "protagonist",
    "generation": 7,
    "name_offset": 851,
-   "roster_offset": 3022,
+   "roster_offset": 3080,
    "roster_species_ids": [
     728,
     133,
@@ -3078,7 +3107,7 @@
    "category": "protagonist",
    "generation": 7,
    "name_offset": 856,
-   "roster_offset": 3040,
+   "roster_offset": 3098,
    "roster_species_ids": [
     722,
     133,
@@ -3096,7 +3125,7 @@
    "category": "champion",
    "generation": 7,
    "name_offset": 863,
-   "roster_offset": 3052,
+   "roster_offset": 3110,
    "roster_species_ids": [
     725,
     779,
@@ -3127,7 +3156,7 @@
    "category": "champion",
    "generation": 7,
    "name_offset": 869,
-   "roster_offset": 3090,
+   "roster_offset": 3148,
    "roster_species_ids": [
     172,
     739,
@@ -3149,7 +3178,7 @@
    "category": "elite4",
    "generation": 7,
    "name_offset": 873,
-   "roster_offset": 3110,
+   "roster_offset": 3168,
    "roster_species_ids": [
     736,
     725,
@@ -3170,7 +3199,7 @@
    "category": "elite4",
    "generation": 7,
    "name_offset": 881,
-   "roster_offset": 3128,
+   "roster_offset": 3186,
    "roster_species_ids": [
     731,
     701,
@@ -3190,7 +3219,7 @@
    "category": "elite4",
    "generation": 7,
    "name_offset": 888,
-   "roster_offset": 3144,
+   "roster_offset": 3202,
    "roster_species_ids": [
     104,
     781,
@@ -3212,7 +3241,7 @@
    "category": "gymleader",
    "generation": 7,
    "name_offset": 896,
-   "roster_offset": 3164,
+   "roster_offset": 3222,
    "roster_species_ids": [
     739,
     725,
@@ -3237,7 +3266,7 @@
    "category": "gymleader",
    "generation": 7,
    "name_offset": 901,
-   "roster_offset": 3190,
+   "roster_offset": 3248,
    "roster_species_ids": [
     744,
     347,
@@ -3259,7 +3288,7 @@
    "category": "gymleader",
    "generation": 7,
    "name_offset": 908,
-   "roster_offset": 3210,
+   "roster_offset": 3268,
    "roster_species_ids": [
     52,
     92,
@@ -3279,7 +3308,7 @@
    "category": "gymleader",
    "generation": 7,
    "name_offset": 913,
-   "roster_offset": 3226,
+   "roster_offset": 3284,
    "roster_species_ids": [
     749,
     222,
@@ -3301,7 +3330,7 @@
    "category": "rival",
    "generation": 7,
    "name_offset": 918,
-   "roster_offset": 3246,
+   "roster_offset": 3304,
    "roster_species_ids": [
     104,
     133,
@@ -3329,7 +3358,7 @@
    "category": "villain",
    "generation": 7,
    "name_offset": 926,
-   "roster_offset": 3278,
+   "roster_offset": 3336,
    "roster_species_ids": [
     767,
     736,
@@ -3351,7 +3380,7 @@
    "category": "villain",
    "generation": 7,
    "name_offset": 932,
-   "roster_offset": 3298,
+   "roster_offset": 3356,
    "roster_species_ids": [
     757,
     96,
@@ -3372,7 +3401,7 @@
    "category": "villain",
    "generation": 7,
    "name_offset": 941,
-   "roster_offset": 3316,
+   "roster_offset": 3374,
    "roster_species_ids": [
     759,
     104,
@@ -3380,14 +3409,17 @@
     736,
     131,
     506,
+    725,
     749,
+    172,
     728,
     744,
+    722,
     757,
     777,
     570
    ],
-   "starter_count": 12,
+   "starter_count": 15,
    "has_signature": true,
    "signature_id": 759,
    "sprite_asset_id": "TBD"
@@ -3397,7 +3429,7 @@
    "category": "anime",
    "generation": 7,
    "name_offset": 950,
-   "roster_offset": 3342,
+   "roster_offset": 3406,
    "roster_species_ids": [
     37,
     761,
@@ -3428,7 +3460,7 @@
    "category": "anime",
    "generation": 7,
    "name_offset": 957,
-   "roster_offset": 3380,
+   "roster_offset": 3444,
    "roster_species_ids": [
     341,
     104,
@@ -3452,7 +3484,7 @@
    "category": "anime",
    "generation": 7,
    "name_offset": 963,
-   "roster_offset": 3404,
+   "roster_offset": 3468,
    "roster_species_ids": [
     728,
     761,
@@ -3478,7 +3510,7 @@
    "category": "anime",
    "generation": 7,
    "name_offset": 968,
-   "roster_offset": 3432,
+   "roster_offset": 3496,
    "roster_species_ids": [
     761,
     131,
@@ -3502,7 +3534,7 @@
    "category": "anime",
    "generation": 7,
    "name_offset": 975,
-   "roster_offset": 3456,
+   "roster_offset": 3520,
    "roster_species_ids": [
     777,
     761,
@@ -3511,12 +3543,13 @@
     736,
     506,
     725,
+    81,
     179,
     172,
     128,
     320
    ],
-   "starter_count": 11,
+   "starter_count": 12,
    "has_signature": true,
    "signature_id": 777,
    "sprite_asset_id": "TBD"
@@ -3526,7 +3559,7 @@
    "category": "champion",
    "generation": 8,
    "name_offset": 985,
-   "roster_offset": 3480,
+   "roster_offset": 3546,
    "roster_species_ids": [
     698,
     650,
@@ -3555,7 +3588,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 990,
-   "roster_offset": 3514,
+   "roster_offset": 3580,
    "roster_species_ids": [
     840,
     761,
@@ -3573,7 +3606,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 995,
-   "roster_offset": 3526,
+   "roster_offset": 3592,
    "roster_species_ids": [
     129,
     767,
@@ -3590,7 +3623,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1001,
-   "roster_offset": 3536,
+   "roster_offset": 3602,
    "roster_species_ids": [
     850,
     1292,
@@ -3612,7 +3645,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1006,
-   "roster_offset": 3556,
+   "roster_offset": 3622,
    "roster_species_ids": [
     882,
     147,
@@ -3632,7 +3665,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1010,
-   "roster_offset": 3572,
+   "roster_offset": 3638,
    "roster_species_ids": [
     92,
     222,
@@ -3654,7 +3687,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1019,
-   "roster_offset": 3592,
+   "roster_offset": 3658,
    "roster_species_ids": [
     882,
     303,
@@ -3672,7 +3705,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1024,
-   "roster_offset": 3604,
+   "roster_offset": 3670,
    "roster_species_ids": [
     131,
     246,
@@ -3688,7 +3721,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1031,
-   "roster_offset": 3612,
+   "roster_offset": 3678,
    "roster_species_ids": [
     131,
     882,
@@ -3705,7 +3738,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1038,
-   "roster_offset": 3622,
+   "roster_offset": 3688,
    "roster_species_ids": [
     263,
     679,
@@ -3722,7 +3755,7 @@
    "category": "gymleader",
    "generation": 8,
    "name_offset": 1044,
-   "roster_offset": 3632,
+   "roster_offset": 3698,
    "roster_species_ids": [
     885,
     704,
@@ -3742,7 +3775,7 @@
    "category": "rival",
    "generation": 8,
    "name_offset": 1051,
-   "roster_offset": 3648,
+   "roster_offset": 3714,
    "roster_species_ids": [
     10,
     878,
@@ -3764,7 +3797,7 @@
    "category": "rival",
    "generation": 8,
    "name_offset": 1056,
-   "roster_offset": 3668,
+   "roster_offset": 3734,
    "roster_species_ids": [
     878,
     1356,
@@ -3783,7 +3816,7 @@
    "category": "villain",
    "generation": 8,
    "name_offset": 1063,
-   "roster_offset": 3682,
+   "roster_offset": 3748,
    "roster_species_ids": [
     878,
     52
@@ -3798,7 +3831,7 @@
    "category": "anime",
    "generation": 8,
    "name_offset": 1068,
-   "roster_offset": 3688,
+   "roster_offset": 3754,
    "roster_species_ids": [
     142,
     881,
@@ -3857,7 +3890,7 @@
    "category": "anime",
    "generation": 8,
    "name_offset": 1072,
-   "roster_offset": 3782,
+   "roster_offset": 3848,
    "roster_species_ids": [
     133,
     366,
@@ -3878,7 +3911,7 @@
    "category": "champion",
    "generation": 9,
    "name_offset": 1078,
-   "roster_offset": 3800,
+   "roster_offset": 3866,
    "roster_species_ids": [
     650,
     885,
@@ -3895,7 +3928,7 @@
    "category": "champion",
    "generation": 9,
    "name_offset": 1084,
-   "roster_offset": 3810,
+   "roster_offset": 3876,
    "roster_species_ids": [
     1305,
     742,
@@ -3929,7 +3962,7 @@
    "category": "elite4",
    "generation": 9,
    "name_offset": 1091,
-   "roster_offset": 3854,
+   "roster_offset": 3920,
    "roster_species_ids": [
     194,
     339,
@@ -3948,7 +3981,7 @@
    "category": "elite4",
    "generation": 9,
    "name_offset": 1096,
-   "roster_offset": 3868,
+   "roster_offset": 3934,
    "roster_species_ids": [
     1345,
     436,
@@ -3968,7 +4001,7 @@
    "category": "elite4",
    "generation": 9,
    "name_offset": 1102,
-   "roster_offset": 3884,
+   "roster_offset": 3950,
    "roster_species_ids": [
     840,
     147,
@@ -3986,7 +4019,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1109,
-   "roster_offset": 3896,
+   "roster_offset": 3962,
    "roster_species_ids": [
     214,
     172,
@@ -4003,7 +4036,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1114,
-   "roster_offset": 3906,
+   "roster_offset": 3972,
    "roster_species_ids": [
     840,
     761,
@@ -4022,7 +4055,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1123,
-   "roster_offset": 3920,
+   "roster_offset": 3986,
    "roster_species_ids": [
     1323,
     878,
@@ -4045,7 +4078,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1128,
-   "roster_offset": 3942,
+   "roster_offset": 4008,
    "roster_species_ids": [
     739,
     692,
@@ -4064,7 +4097,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1133,
-   "roster_offset": 3956,
+   "roster_offset": 4022,
    "roster_species_ids": [
     1362,
     775,
@@ -4089,7 +4122,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1139,
-   "roster_offset": 3982,
+   "roster_offset": 4048,
    "roster_species_ids": [
     1292,
     56,
@@ -4108,7 +4141,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1144,
-   "roster_offset": 3996,
+   "roster_offset": 4062,
    "roster_species_ids": [
     671,
     1323,
@@ -4128,7 +4161,7 @@
    "category": "gymleader",
    "generation": 9,
    "name_offset": 1150,
-   "roster_offset": 4012,
+   "roster_offset": 4078,
    "roster_species_ids": [
     613,
     54,
@@ -4149,7 +4182,7 @@
    "category": "rival",
    "generation": 9,
    "name_offset": 1157,
-   "roster_offset": 4030,
+   "roster_offset": 4096,
    "roster_species_ids": [
     133,
     1338,
@@ -4167,7 +4200,7 @@
    "category": "rival",
    "generation": 9,
    "name_offset": 1163,
-   "roster_offset": 4042,
+   "roster_offset": 4108,
    "roster_species_ids": [
     133,
     701,
@@ -4189,7 +4222,7 @@
    "category": "professor",
    "generation": 1,
    "name_offset": 1169,
-   "roster_offset": 4062,
+   "roster_offset": 4128,
    "roster_species_ids": [
     133,
     172
@@ -4204,7 +4237,7 @@
    "category": "professor",
    "generation": 2,
    "name_offset": 1173,
-   "roster_offset": 4068,
+   "roster_offset": 4134,
    "roster_species_ids": [
     69,
     152,
@@ -4226,7 +4259,7 @@
    "category": "professor",
    "generation": 3,
    "name_offset": 1177,
-   "roster_offset": 4088,
+   "roster_offset": 4154,
    "roster_species_ids": [
     304,
     152,
@@ -4254,7 +4287,7 @@
    "category": "professor",
    "generation": 4,
    "name_offset": 1183,
-   "roster_offset": 4120,
+   "roster_offset": 4186,
    "roster_species_ids": [
     190,
     155,
@@ -4272,7 +4305,7 @@
    "category": "professor",
    "generation": 5,
    "name_offset": 1189,
-   "roster_offset": 4132,
+   "roster_offset": 4198,
    "roster_species_ids": [
     566,
     557,
@@ -4289,7 +4322,7 @@
    "category": "professor",
    "generation": 6,
    "name_offset": 1197,
-   "roster_offset": 4142,
+   "roster_offset": 4208,
    "roster_species_ids": [
     650,
     653,
@@ -4310,7 +4343,7 @@
    "category": "professor",
    "generation": 7,
    "name_offset": 1206,
-   "roster_offset": 4160,
+   "roster_offset": 4226,
    "roster_species_ids": [
     779,
     782,
@@ -4326,7 +4359,7 @@
    "category": "professor",
    "generation": 7,
    "name_offset": 1213,
-   "roster_offset": 4168,
+   "roster_offset": 4234,
    "roster_species_ids": [
     436,
     104,
@@ -4353,7 +4386,7 @@
    "category": "professor",
    "generation": 8,
    "name_offset": 1224,
-   "roster_offset": 4198,
+   "roster_offset": 4264,
    "roster_species_ids": [
     436,
     882,
@@ -4370,7 +4403,7 @@
    "category": "professor",
    "generation": 8,
    "name_offset": 1233,
-   "roster_offset": 4208,
+   "roster_offset": 4274,
    "roster_species_ids": [
     761,
     765,
@@ -4386,7 +4419,7 @@
    "category": "professor",
    "generation": 8,
    "name_offset": 1239,
-   "roster_offset": 4216,
+   "roster_offset": 4282,
    "roster_species_ids": [
     155,
     722
@@ -4401,7 +4434,7 @@
    "category": "professor",
    "generation": 8,
    "name_offset": 1248,
-   "roster_offset": 4222,
+   "roster_offset": 4288,
    "roster_species_ids": [
     133,
     13,

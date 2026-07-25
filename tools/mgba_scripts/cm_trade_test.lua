@@ -24,7 +24,7 @@ local cfg = dofile("build/cm_trade_mode.lua")
 local DIR = "tools/savestates/"
 local K = H.KEY
 
-local FLAG_CM = 0x945
+local FLAG_CM = 0x2B0
 local PARTY_COUNT = 0x0201B95D
 local PARTY = 0x0201B960
 local MON_SIZE = 100
@@ -71,7 +71,7 @@ H.onFrame(function(f)
         local sb1 = emu:read32(H.gSaveBlock1Ptr)
         local b = sb1 + H.SB1_FLAGS_OFF + (FLAG_CM >> 3)
         emu:write8(b, emu:read8(b) & ~(1 << (FLAG_CM % 8)))
-        H.log("control: flag 0x945 cleared")
+        H.log("control: flag 0x2B0 cleared")
     end
     if f == 20 then injectRalts() end
     -- walk (7,9)->(8,9), face the (8,8) desk tile, talk. Cadence probed:

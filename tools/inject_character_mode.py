@@ -87,7 +87,7 @@ BRANCH0_PTR_OFF = 0x3287D7          # goto_if target when VAR_RESULT == 0
 ORIG_INVALID = 0x08328994           # original "invalid code" branch
 RECEIVED_MSG_SUB = 0x083289DB       # fanfare + "received!" script subroutine
 
-FLAG_CHARACTER_MODE = 0x945
+FLAG_CHARACTER_MODE = 0x2B0
 VAR_CM_CHAR    = 0x40E0
 VAR_CM_STARTER = 0x40E4
 

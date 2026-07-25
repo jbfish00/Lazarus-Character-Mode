@@ -125,7 +125,7 @@ sh tools/tests/run_live_suite.sh             # everything below, ~2 min
 | `catch_gate_off` | `battle_bag.ss` | control: stock catch, party grows |
 | `starter_on` | `spawn.ss` | Popplio delivered despite CM-Red (empty-party guard), nothing boxed |
 | `starter_off` | `spawn.ss` | control: stock starter flow |
-| `ui_activate_red` | `naming.ss` | real desk UI: type `red` → flag 0x945 + VAR_CM_CHAR=1 set, Pikachu starter delivered via retargeted native give, marker var reset; saves `cm_red_active.ss` |
+| `ui_activate_red` | `naming.ss` | real desk UI: type `red` → flag 0x2B0 + VAR_CM_CHAR=1 set, Pikachu starter delivered via retargeted native give, marker var reset; saves `cm_red_active.ss` |
 | `ui_give2_boxing` | `cm_red_active.ss` | real desk UI: type `cmdbggive2` (digit via others page) → native-give wrapper boxes the off-roster Ekans, party unchanged |
 | `save_load` | `cm_red_active.ss` | in-game save → hard reset → continue; flag/var/party survive (stale RAM sentinel-zeroed post-reset so the pass can't be fake) |
 | `trade e2e ×2` | `cm_red_active.ss` | real trade script → junction → `CM_TradeCheck`: CM-on shows "Character Mode: this trade is not in your roster." and keeps the party; CM-off control completes the trade (SEASOR the Horsea arrives) |

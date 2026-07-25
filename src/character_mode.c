@@ -58,7 +58,15 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
-#define FLAG_CHARACTER_MODE 0x945
+/* 0 script refs (audited: no setflag/clearflag/checkflag operand anywhere in
+   the ROM) AND outside every engine sweep range. The original pick, 0x945, was
+   inside DAILY_FLAGS (0x920-0x95F), which ClearDailyFlags() (here at
+   0x081143C2, memsetting SB1+0x140C for 8 bytes) wipes on every RTC day
+   rollover -- Character Mode silently switched itself off at midnight while
+   VAR_CM_CHAR stayed set. Any replacement must stay clear of the temp block
+   (0x000-0x01F, ClearTempFieldEventData) and the daily block. Seaglass had the
+   identical bug and took the identical fix. */
+#define FLAG_CHARACTER_MODE 0x2B0
 #define VAR_CM_CHAR         0x40E0
 #define VAR_CM_STARTER      0x40E4
 #define CM_STARTER_OFF_MARKER 0xFFFF

@@ -11,7 +11,7 @@ local H = dofile("tools/mgba_scripts/harness.lua")
 local cfg = dofile("build/cm_test_mode.lua")
 local DIR = "build/"
 
-local FLAG_CM = 0x945
+local FLAG_CM = 0x2B0
 local VAR_CM_CHAR = 0x40E0
 local RED = 1
 local ENDF = 8000

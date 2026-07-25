@@ -16,7 +16,7 @@
 -- before cursor moves register — probed empirically). Poking the code
 -- buffer does NOT work: the naming screen flushes its internal buffer over
 -- 0x0203CCE0 at commit.
---   activate_red: flag 0x945 on, var 0x40E0 == 1 (Red), party +1 (Pikachu 25
+--   activate_red: flag 0x2B0 on, var 0x40E0 == 1 (Red), party +1 (Pikachu 25
 --                 on-roster stays in party), box0 unchanged, 0x40E4 == 0.
 --   give2:        party unchanged, box0 +1 (off-roster boxed by the native
 --                 wrapper), 0x40E4 == 0.
@@ -27,7 +27,7 @@ local cfg = dofile("build/cm_ui_code.lua")
 local DIR = "tools/savestates/"
 local K = H.KEY
 
-local FLAG_CM, VAR_CHAR, VAR_STARTER = 0x945, 0x40E0, 0x40E4
+local FLAG_CM, VAR_CHAR, VAR_STARTER = 0x2B0, 0x40E0, 0x40E4
 local CODE_BUF = 0x0203CCE0
 
 -- lowercase keyboard page grid (calibrated from naming_960.png)
@@ -143,7 +143,7 @@ H.onFrame(function(f)
             party, box0, tostring(H.flagGet(FLAG_CM)), H.varGet(VAR_CHAR),
             H.varGet(VAR_STARTER)))
         if cfg.expect == "activate_red" then
-            H.assertTrue("flag 0x945 set", H.flagGet(FLAG_CM))
+            H.assertTrue("flag 0x2B0 set", H.flagGet(FLAG_CM))
             H.assertEq("VAR_CM_CHAR == Red(1)", H.varGet(VAR_CHAR), 1)
             H.assertEq("party grew (starter give)", party, before.party + 1)
             H.assertEq("box0 unchanged (on-roster)", box0, before.box0)

@@ -1,7 +1,7 @@
 -- Phase 6 e2e: save/load round-trip of the Character Mode state.
 -- From cm_red_active.ss (clean overworld at the University desk, CM on as
 -- Red, party = 2): in-game save via the START menu (Save = index 3), hard
--- reset, CONTINUE from the title, then assert flag 0x945 / VAR_CM_CHAR /
+-- reset, CONTINUE from the title, then assert flag 0x2B0 / VAR_CM_CHAR /
 -- party count all survived the flash round-trip.
 --
 -- Anti-false-positive: right after the reset (title barely up, save data
@@ -14,7 +14,7 @@ local H = dofile("tools/mgba_scripts/harness.lua")
 local DIR = "tools/savestates/"
 local K = H.KEY
 
-local FLAG_CM, VAR_CHAR = 0x945, 0x40E0
+local FLAG_CM, VAR_CHAR = 0x2B0, 0x40E0
 local PARTY_COUNT = 0x0201B95D
 
 local function flagByteAddr()
@@ -58,7 +58,7 @@ H.onFrame(function(f)
             emu:read8(PARTY_COUNT), tostring(H.flagGet(FLAG_CM)),
             H.varGet(VAR_CHAR)))
         H.assertEq("party count restored", emu:read8(PARTY_COUNT), 2)
-        H.assertTrue("flag 0x945 survived save/load", H.flagGet(FLAG_CM))
+        H.assertTrue("flag 0x2B0 survived save/load", H.flagGet(FLAG_CM))
         H.assertEq("VAR_CM_CHAR survived save/load", H.varGet(VAR_CHAR), 1)
         H.finish()
     end

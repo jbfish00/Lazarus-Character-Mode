@@ -73,6 +73,12 @@ CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 
 NUM_CHARACTERS = 191  # 179 + 12 professors (2026-07-23); Sada/Turo/Tobias trimmed (species absent)
+
+# Engine flag bookkeeping (the 0x945 daily-sweep bug, fixed 2026-07-24).
+SB1_FLAGS_OFF = 0x12E8           # SaveBlock1.flags (docs/ROUTINE_MAP.md)
+TEMP_FLAGS_START, TEMP_FLAGS_END = 0x000, 0x01F
+DAILY_FLAGS_START, DAILY_FLAGS_END = 0x920, 0x95F
+SCR_SETFLAG, SCR_CLEARFLAG, SCR_CHECKFLAG = 0x29, 0x2A, 0x2B
 NUM_SPECIES = 1561
 STRIDE = 196
 CODE_LEN = 11
@@ -603,6 +609,34 @@ def main():
                       (hook_native or 0) & ~1, (hook_trade or 0) & ~1, hook_wild & ~1}
     check("5 shim entry points are distinct", len(distinct_hooks) == 5,
           str([hex(x) for x in distinct_hooks]))
+
+    print("\n== CM flag id survives the engine's sweeps ==")
+    # ClearTempFieldEventData() wipes flags 0x000-0x01F on every map load;
+    # ClearDailyFlags() wipes 0x920-0x95F on every RTC day rollover. A flag in
+    # either range silently deactivates Character Mode mid-save -- that was the
+    # 0x945 bug (fixed 2026-07-24; Seaglass had it too). Re-derived from the
+    # ROM here rather than trusted as a constant.
+    src = (ROOT / "src" / "character_mode.c").read_text()
+    m = re.search(r"#define\s+FLAG_CHARACTER_MODE\s+(0x[0-9A-Fa-f]+)", src)
+    check("FLAG_CHARACTER_MODE parsed from src/character_mode.c", m is not None)
+    flag = int(m.group(1), 16) if m else -1
+    check(f"flag {flag:#x} outside the temp-flag sweep (0x0-0x1f)",
+          not (TEMP_FLAGS_START <= flag <= TEMP_FLAGS_END))
+    check(f"flag {flag:#x} outside the daily-flag sweep (0x920-0x95f)",
+          not (DAILY_FLAGS_START <= flag <= DAILY_FLAGS_END))
+    # ClearDailyFlags: `ldr r0,[gSaveBlock1Ptr]; ldr r3,=off; mov ip,r3;
+    # push {lr}; movs r2,#8; movs r1,#0; add r0,ip; bl memset`.
+    sig = bytes.fromhex("9c4600b5082200216044")
+    i = orig.find(sig)
+    check("ClearDailyFlags located in the original ROM", i != -1)
+    if i != -1:
+        swept = struct.unpack_from("<I", orig, i + 22)[0]
+        check(f"ClearDailyFlags wipes SB1+{swept:#x} == flags[{DAILY_FLAGS_START:#x}] (8 B); "
+              f"our flag byte is SB1+{SB1_FLAGS_OFF + flag // 8:#x}",
+              swept == SB1_FLAGS_OFF + DAILY_FLAGS_START // 8)
+    refs = sum(orig.count(bytes([op]) + struct.pack("<H", flag))
+               for op in (SCR_SETFLAG, SCR_CLEARFLAG, SCR_CHECKFLAG))
+    check(f"no script setflag/clearflag/checkflag references flag {flag:#x}", refs == 0, str(refs))
 
     print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
     return 1 if failures else 0
