@@ -4,7 +4,7 @@ An opt-in game mode where you play as an iconic Pokemon character — a
 protagonist, rival, gym leader, Elite Four member, champion, villain, or
 anime cast member — and are restricted to catching and keeping only that
 character's canon roster (as documented on Bulbapedia, expanded to full
-evolution families). 191 characters, Generations 1 through 9.
+evolution families). 201 characters, Generations 1 through 9.
 
 Ported from the original Character Mode built for Pokemon ROWE, following
 the Radical Red port.
@@ -114,7 +114,7 @@ Notes:
 | `Lorelei` | Lorelei | Elite Four | Lapras |
 | `LtSurge` | Lt. Surge | Gym Leader | Pikachu |
 | `Misty` | Misty | Gym Leader | Buizel |
-| `Oak` | Oak | Professor | Eevee |
+| `Oak` | Oak | Professor | Dratini |
 | `Red` | Red | protagonist | Pikachu |
 | `Ritchie` | Ritchie | anime | Pikachu |
 | `Sabrina` | Sabrina | Gym Leader | Chingling |
@@ -147,24 +147,31 @@ Notes:
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
+| `Anabel` | Anabel | Frontier Brain | Eevee |
 | `Archie` | Archie | villain | Dratini |
 | `Birch` | Birch | Professor | Aron |
+| `Brandon` | Brandon | Frontier Brain | Duskull |
 | `Brawly` | Brawly | Gym Leader | Heracross |
 | `Brendan` | Brendan | protagonist | Aron |
 | `Drake` | Drake | Elite Four | Pichu |
 | `Drew` | Drew | anime | Budew |
 | `Flannery` | Flannery | Gym Leader | Torkoal |
 | `Glacia` | Glacia | Elite Four | Spheal |
+| `Greta` | Greta | Frontier Brain | Eevee |
 | `Juan` | Juan | Gym Leader | Barboach |
 | `Liza` | Liza | Gym Leader | Baltoy |
+| `Lucy` | Lucy | Frontier Brain | Magikarp |
 | `Maxie` | Maxie | villain | Numel |
 | `May` | May | protagonist | Torchic |
+| `Noland` | Noland | Frontier Brain | Aron |
 | `Norman` | Norman | Gym Leader | Aipom |
 | `Phoebe` | Phoebe | Elite Four | Duskull |
 | `Roxanne` | Roxanne | Gym Leader | Nosepass |
 | `Sidney` | Sidney | Elite Four | Corphish |
+| `Spenser` | Spenser | Frontier Brain | Baltoy |
 | `Steven` | Steven | champion | Aerodactyl |
 | `Tate` | Tate | Gym Leader | Baltoy |
+| `Tucker` | Tucker | Frontier Brain | Growlithe |
 | `Wallace` | Wallace | champion | Barboach |
 | `Wally` | Wally | rival | Ralts |
 | `Wattson` | Wattson | Gym Leader | Magnemite |
@@ -182,6 +189,8 @@ Notes:
 | `CrasherWak` | Crasher Wake | Gym Leader | Buizel |
 | `Cynthia` | Cynthia | champion | Budew |
 | `Cyrus` | Cyrus | villain | Sneasel |
+| `Dahlia` | Dahlia | Frontier Brain | Duskull |
+| `Darach` | Darach | Frontier Brain | Houndour |
 | `Dawn` | Dawn | protagonist | Aipom |
 | `Fantina` | Fantina | Gym Leader | Bronzor |
 | `Flint` | Flint | Elite Four | Buizel |
@@ -192,6 +201,7 @@ Notes:
 | `Mars` | Mars | villain | Bronzor |
 | `Maylene` | Maylene | Gym Leader | Aipom |
 | `Nando` | Nando | anime | Budew |
+| `Palmer` | Palmer | Frontier Brain | Dratini |
 | `Paul` | Paul | anime | Aron |
 | `Roark` | Roark | Gym Leader | Cranidos |
 | `Rowan` | Rowan | Professor | Aipom |
@@ -227,7 +237,7 @@ Notes:
 | `Marshal` | Marshal | Elite Four | Timburr |
 | `N` | N | rival | Zorua |
 | `Nate` | Nate | protagonist | Growlithe |
-| `Rosa` | Rosa | protagonist | Lillipup |
+| `Rosa` | Rosa | protagonist | Archen |
 | `Roxie` | Roxie | Gym Leader | Grimer |
 | `Shauntal` | Shauntal | Elite Four | Litwick |
 | `Skyla` | Skyla | Gym Leader | Ducklett |
