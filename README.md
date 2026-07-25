@@ -33,6 +33,13 @@ flips --apply lazarus_cm.bps lazarus-v2.gba lazarus_cm.gba
 (The intermediate `lazarus-v2.gba` must have SHA-1
 `7dcdc7e280bc4631487e13dd37e6e0cea04adea6` — see `rom.sha1`.)
 
+> **Updating from an earlier build of this patch?** Character Mode now records
+> "mode is on" in a different save slot, because the old one sat in a block the
+> game wipes whenever the in-game day rolls over — which quietly switched the
+> mode off at midnight. Your save, party and boxes are untouched, but if you had
+> Character Mode active you'll find it reads as off: just re-enter your
+> character's code once at the university desk and it stays on for good.
+
 ## Activating Character Mode
 
 Lazarus's cheat codes are entered at the **desk in Acrisia University**
