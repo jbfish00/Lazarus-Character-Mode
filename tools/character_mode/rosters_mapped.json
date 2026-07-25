@@ -6060,12 +6060,20 @@
   "page": "Lucy",
   "species": [
    {
+    "const": "SPECIES_CYNDAQUIL",
+    "id": 155
+   },
+   {
     "const": "SPECIES_MAGIKARP",
     "id": 129
    },
    {
     "const": "SPECIES_ONIX",
     "id": 95
+   },
+   {
+    "const": "SPECIES_SWINUB",
+    "id": 220
    }
   ]
  },

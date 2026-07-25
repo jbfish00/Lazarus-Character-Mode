@@ -80,7 +80,7 @@ Final-evolution rosters in National Pokédex order, sprites with names. [← bac
 
 ### Lucy — Frontier Brain
 <table>
-<tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/130.png"><br><sub>Gyarados</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/208.png"><br><sub>Steelix</sub></td></tr>
+<tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/130.png"><br><sub>Gyarados</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/157.png"><br><sub>Typhlosion</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/208.png"><br><sub>Steelix</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/473.png"><br><sub>Mamoswine</sub></td></tr>
 </table>
 
 ### Maxie — Villain

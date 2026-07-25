@@ -285,6 +285,16 @@
     "SPECIES_PUMPKABOO_AVERAGE"
    ]
   },
+  "Anabel": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 4,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_SNEASEL"
+   ]
+  },
   "Archer": {
    "category": "villain",
    "gen": 2,
@@ -350,21 +360,41 @@
   "Ash": {
    "category": "anime",
    "gen": 1,
-   "roster_in_rom": 16,
-   "obtainable": 12,
+   "roster_in_rom": 37,
+   "obtainable": 32,
    "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_BUIZEL",
+    "SPECIES_CHIKORITA",
+    "SPECIES_CORPHISH",
+    "SPECIES_CYNDAQUIL",
     "SPECIES_DRATINI",
     "SPECIES_FROAKIE",
     "SPECIES_GASTLY",
+    "SPECIES_GLIGAR",
     "SPECIES_GOOMY",
+    "SPECIES_GRIMER",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_HERACROSS",
+    "SPECIES_HOOTHOOT",
     "SPECIES_HOPPIP",
+    "SPECIES_LAPRAS",
+    "SPECIES_LARVITAR",
     "SPECIES_LITTEN",
     "SPECIES_MAGIKARP",
+    "SPECIES_MANKEY",
     "SPECIES_MIMIKYU_DISGUISED",
     "SPECIES_MURKROW",
+    "SPECIES_PHANPY",
     "SPECIES_PICHU",
     "SPECIES_ROCKRUFF",
-    "SPECIES_SCRAGGY"
+    "SPECIES_ROWLET",
+    "SPECIES_SANDILE",
+    "SPECIES_SCRAGGY",
+    "SPECIES_SNORUNT",
+    "SPECIES_TAUROS",
+    "SPECIES_TORKOAL",
+    "SPECIES_TOTODILE"
    ]
   },
   "Barry": {
@@ -415,11 +445,13 @@
   "Bertha": {
    "category": "elite4",
    "gen": 4,
-   "roster_in_rom": 4,
-   "obtainable": 4,
+   "roster_in_rom": 6,
+   "obtainable": 6,
    "obtainable_consts": [
     "SPECIES_BARBOACH",
     "SPECIES_GLIGAR",
+    "SPECIES_ONIX",
+    "SPECIES_PHANPY",
     "SPECIES_SWINUB",
     "SPECIES_WOOPER"
    ]
@@ -441,6 +473,27 @@
     "SPECIES_PANSEAR",
     "SPECIES_TIMBURR",
     "SPECIES_ZORUA"
+   ]
+  },
+  "Birch": {
+   "category": "professor",
+   "gen": 3,
+   "roster_in_rom": 15,
+   "obtainable": 13,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_CHIKORITA",
+    "SPECIES_CLAMPERL",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_GRIMER",
+    "SPECIES_MAGIKARP",
+    "SPECIES_NINCADA",
+    "SPECIES_TOTODILE",
+    "SPECIES_TROPIUS",
+    "SPECIES_WAILMER",
+    "SPECIES_WINGULL",
+    "SPECIES_WURMPLE",
+    "SPECIES_ZIGZAGOON"
    ]
   },
   "Blaine": {
@@ -492,6 +545,16 @@
     "SPECIES_TAUROS",
     "SPECIES_TOTODILE",
     "SPECIES_VULPIX"
+   ]
+  },
+  "Brandon": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_DUSKULL",
+    "SPECIES_NINCADA"
    ]
   },
   "Brassius": {
@@ -647,11 +710,22 @@
     "SPECIES_TOGEPI"
    ]
   },
+  "Burnet": {
+   "category": "professor",
+   "gen": 7,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_BRUXISH",
+    "SPECIES_JANGMO_O",
+    "SPECIES_ROCKRUFF"
+   ]
+  },
   "Byron": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 12,
-   "obtainable": 9,
+   "roster_in_rom": 14,
+   "obtainable": 11,
    "obtainable_consts": [
     "SPECIES_ANORITH",
     "SPECIES_ARON",
@@ -661,7 +735,9 @@
     "SPECIES_LILEEP",
     "SPECIES_MAGNEMITE",
     "SPECIES_OMANYTE",
-    "SPECIES_ONIX"
+    "SPECIES_ONIX",
+    "SPECIES_SCYTHER",
+    "SPECIES_WINGULL"
    ]
   },
   "Caitlin": {
@@ -704,6 +780,16 @@
     "SPECIES_SNORUNT",
     "SPECIES_SNOVER",
     "SPECIES_SWINUB"
+   ]
+  },
+  "Cerise": {
+   "category": "professor",
+   "gen": 8,
+   "roster_in_rom": 4,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_YAMPER"
    ]
   },
   "Cheren": {
@@ -855,32 +941,37 @@
   "Colress": {
    "category": "villain",
    "gen": 5,
-   "roster_in_rom": 9,
-   "obtainable": 9,
+   "roster_in_rom": 11,
+   "obtainable": 11,
    "obtainable_consts": [
     "SPECIES_CUBCHOO",
     "SPECIES_DRATINI",
     "SPECIES_GOTHITA",
+    "SPECIES_GRIMER",
     "SPECIES_MAGNEMITE",
     "SPECIES_MIENFOO",
     "SPECIES_PICHU",
     "SPECIES_RALTS",
     "SPECIES_TIMBURR",
+    "SPECIES_VOLTORB",
     "SPECIES_WOOBAT"
    ]
   },
   "Crasher Wake": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 7,
-   "obtainable": 7,
+   "roster_in_rom": 11,
+   "obtainable": 10,
    "obtainable_consts": [
+    "SPECIES_ANORITH",
     "SPECIES_BUIZEL",
     "SPECIES_CLAMPERL",
     "SPECIES_FINNEON",
     "SPECIES_MAGIKARP",
     "SPECIES_PICHU",
     "SPECIES_POLIWAG",
+    "SPECIES_SCYTHER",
+    "SPECIES_WINGULL",
     "SPECIES_WOOPER"
    ]
   },
@@ -925,7 +1016,7 @@
   "Cyrus": {
    "category": "villain",
    "gen": 4,
-   "roster_in_rom": 9,
+   "roster_in_rom": 10,
    "obtainable": 8,
    "obtainable_consts": [
     "SPECIES_DRATINI",
@@ -938,13 +1029,35 @@
     "SPECIES_SNEASEL"
    ]
   },
+  "Dahlia": {
+   "category": "frontier",
+   "gen": 4,
+   "roster_in_rom": 4,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_DUSKULL",
+    "SPECIES_MEDITITE",
+    "SPECIES_TOGEPI"
+   ]
+  },
+  "Darach": {
+   "category": "frontier",
+   "gen": 4,
+   "roster_in_rom": 3,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_HOUNDOUR",
+    "SPECIES_RALTS"
+   ]
+  },
   "Dawn": {
    "category": "protagonist",
    "gen": 4,
-   "roster_in_rom": 18,
-   "obtainable": 18,
+   "roster_in_rom": 19,
+   "obtainable": 19,
    "obtainable_consts": [
     "SPECIES_AIPOM",
+    "SPECIES_BUIZEL",
     "SPECIES_CLAMPERL",
     "SPECIES_CYNDAQUIL",
     "SPECIES_DODUO",
@@ -1062,6 +1175,23 @@
     "SPECIES_ROWLET"
    ]
   },
+  "Elm": {
+   "category": "professor",
+   "gen": 2,
+   "roster_in_rom": 9,
+   "obtainable": 9,
+   "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
+    "SPECIES_CHIKORITA",
+    "SPECIES_CORSOLA",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_EKANS",
+    "SPECIES_GLIGAR",
+    "SPECIES_LARVITAR",
+    "SPECIES_TOGEPI",
+    "SPECIES_TOTODILE"
+   ]
+  },
   "Erika": {
    "category": "gymleader",
    "gen": 1,
@@ -1089,16 +1219,18 @@
   "Ethan": {
    "category": "protagonist",
    "gen": 2,
-   "roster_in_rom": 10,
-   "obtainable": 7,
+   "roster_in_rom": 12,
+   "obtainable": 9,
    "obtainable_consts": [
+    "SPECIES_CHIKORITA",
     "SPECIES_CYNDAQUIL",
     "SPECIES_EEVEE",
     "SPECIES_EKANS",
     "SPECIES_MAGNEMITE",
     "SPECIES_PHANPY",
     "SPECIES_PICHU",
-    "SPECIES_TAUROS"
+    "SPECIES_TAUROS",
+    "SPECIES_TOTODILE"
    ]
   },
   "Falkner": {
@@ -1127,12 +1259,15 @@
   "Fantina": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 7,
-   "obtainable": 6,
+   "roster_in_rom": 10,
+   "obtainable": 9,
    "obtainable_consts": [
     "SPECIES_BRONZOR",
+    "SPECIES_CORPHISH",
+    "SPECIES_DRATINI",
     "SPECIES_DUSKULL",
     "SPECIES_GASTLY",
+    "SPECIES_NINCADA",
     "SPECIES_NOSEPASS",
     "SPECIES_SHUPPET",
     "SPECIES_SNORUNT"
@@ -1158,7 +1293,7 @@
   "Flint": {
    "category": "elite4",
    "gen": 4,
-   "roster_in_rom": 8,
+   "roster_in_rom": 10,
    "obtainable": 8,
    "obtainable_consts": [
     "SPECIES_BUIZEL",
@@ -1174,8 +1309,8 @@
   "Gardenia": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 12,
-   "obtainable": 10,
+   "roster_in_rom": 14,
+   "obtainable": 12,
    "obtainable_consts": [
     "SPECIES_AIPOM",
     "SPECIES_BELLSPROUT",
@@ -1183,17 +1318,19 @@
     "SPECIES_DHELMISE",
     "SPECIES_EEVEE",
     "SPECIES_HOPPIP",
+    "SPECIES_LILEEP",
     "SPECIES_PACHIRISU",
     "SPECIES_PONYTA",
     "SPECIES_SHROOMISH",
-    "SPECIES_TROPIUS"
+    "SPECIES_TROPIUS",
+    "SPECIES_VULPIX"
    ]
   },
   "Gary": {
    "category": "anime",
    "gen": 1,
-   "roster_in_rom": 17,
-   "obtainable": 14,
+   "roster_in_rom": 19,
+   "obtainable": 15,
    "obtainable_consts": [
     "SPECIES_AERODACTYL",
     "SPECIES_DODUO",
@@ -1201,6 +1338,7 @@
     "SPECIES_GROWLITHE",
     "SPECIES_HERACROSS",
     "SPECIES_HOOTHOOT",
+    "SPECIES_HOUNDOUR",
     "SPECIES_LARVITAR",
     "SPECIES_MAGIKARP",
     "SPECIES_ONIX",
@@ -1300,18 +1438,49 @@
   "Goh": {
    "category": "anime",
    "gen": 8,
-   "roster_in_rom": 12,
-   "obtainable": 10,
+   "roster_in_rom": 46,
+   "obtainable": 41,
    "obtainable_consts": [
+    "SPECIES_AERODACTYL",
+    "SPECIES_BELLSPROUT",
+    "SPECIES_BRUXISH",
+    "SPECIES_CHINCHOU",
+    "SPECIES_CORSOLA",
     "SPECIES_CUBONE",
     "SPECIES_CYNDAQUIL",
+    "SPECIES_DROWZEE",
     "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_FALINKS",
     "SPECIES_FLABEBE_WHITE",
+    "SPECIES_FROAKIE",
+    "SPECIES_GRIMER",
     "SPECIES_HERACROSS",
+    "SPECIES_HOOTHOOT",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MANKEY",
+    "SPECIES_MURKROW",
+    "SPECIES_NINCADA",
+    "SPECIES_NUMEL",
+    "SPECIES_PANPOUR",
+    "SPECIES_PANSEAR",
+    "SPECIES_PARAS",
+    "SPECIES_PASSIMIAN",
     "SPECIES_PICHU",
+    "SPECIES_POLIWAG",
+    "SPECIES_SANDILE",
     "SPECIES_SCYTHER",
+    "SPECIES_SEEL",
     "SPECIES_SHELLDER",
+    "SPECIES_SPINARAK",
+    "SPECIES_STANTLER",
+    "SPECIES_SWABLU",
+    "SPECIES_TENTACOOL",
+    "SPECIES_TRAPINCH",
+    "SPECIES_VOLTORB",
     "SPECIES_VULPIX",
+    "SPECIES_WINGULL",
+    "SPECIES_WURMPLE",
     "SPECIES_ZIGZAGOON"
    ]
   },
@@ -1335,6 +1504,20 @@
     "SPECIES_AMAURA",
     "SPECIES_ONIX",
     "SPECIES_TYRUNT"
+   ]
+  },
+  "Greta": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_HERACROSS",
+    "SPECIES_MEDITITE",
+    "SPECIES_NINCADA",
+    "SPECIES_SHROOMISH"
    ]
   },
   "Grimsley": {
@@ -1370,12 +1553,13 @@
   "Guzma": {
    "category": "villain",
    "gen": 7,
-   "roster_in_rom": 8,
-   "obtainable": 8,
+   "roster_in_rom": 9,
+   "obtainable": 9,
    "obtainable_consts": [
     "SPECIES_GRUBBIN",
     "SPECIES_JANGMO_O",
     "SPECIES_LITTEN",
+    "SPECIES_MURKROW",
     "SPECIES_PICHU",
     "SPECIES_POPPLIO",
     "SPECIES_SCYTHER",
@@ -1513,12 +1697,14 @@
   "James": {
    "category": "anime",
    "gen": 1,
-   "roster_in_rom": 25,
-   "obtainable": 22,
+   "roster_in_rom": 27,
+   "obtainable": 24,
    "obtainable_consts": [
+    "SPECIES_ARON",
     "SPECIES_BELLSPROUT",
     "SPECIES_EKANS",
     "SPECIES_GASTLY",
+    "SPECIES_GROWLITHE",
     "SPECIES_HOPPIP",
     "SPECIES_LARVITAR",
     "SPECIES_MAGIKARP",
@@ -1583,8 +1769,8 @@
   "Jessie": {
    "category": "anime",
    "gen": 1,
-   "roster_in_rom": 25,
-   "obtainable": 23,
+   "roster_in_rom": 26,
+   "obtainable": 24,
    "obtainable_consts": [
     "SPECIES_AIPOM",
     "SPECIES_CYNDAQUIL",
@@ -1601,6 +1787,7 @@
     "SPECIES_PICHU",
     "SPECIES_PUMPKABOO_AVERAGE",
     "SPECIES_RALTS",
+    "SPECIES_SHELLDER",
     "SPECIES_SKORUPI",
     "SPECIES_SNEASEL",
     "SPECIES_STUFFUL",
@@ -1631,15 +1818,29 @@
     "SPECIES_WINGULL"
    ]
   },
+  "Juniper": {
+   "category": "professor",
+   "gen": 5,
+   "roster_in_rom": 4,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_ARCHEN",
+    "SPECIES_DWEBBLE",
+    "SPECIES_MUNNA",
+    "SPECIES_PICHU"
+   ]
+  },
   "Jupiter": {
    "category": "villain",
    "gen": 4,
-   "roster_in_rom": 4,
-   "obtainable": 4,
+   "roster_in_rom": 6,
+   "obtainable": 6,
    "obtainable_consts": [
     "SPECIES_BRONZOR",
     "SPECIES_DRATINI",
     "SPECIES_EEVEE",
+    "SPECIES_GASTLY",
+    "SPECIES_LARVITAR",
     "SPECIES_STUNKY"
    ]
   },
@@ -1885,6 +2086,16 @@
     "SPECIES_WOOPER_PALDEA"
    ]
   },
+  "Laventon": {
+   "category": "professor",
+   "gen": 8,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_ROWLET"
+   ]
+  },
   "Leaf": {
    "category": "protagonist",
    "gen": 1,
@@ -2048,20 +2259,33 @@
     "SPECIES_WURMPLE"
    ]
   },
+  "Lucy": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 2,
+   "obtainable": 2,
+   "obtainable_consts": [
+    "SPECIES_MAGIKARP",
+    "SPECIES_ONIX"
+   ]
+  },
   "Lusamine": {
    "category": "villain",
    "gen": 7,
-   "roster_in_rom": 12,
-   "obtainable": 12,
+   "roster_in_rom": 15,
+   "obtainable": 15,
    "obtainable_consts": [
     "SPECIES_CUBONE",
     "SPECIES_EEVEE",
     "SPECIES_GRUBBIN",
     "SPECIES_LAPRAS",
     "SPECIES_LILLIPUP",
+    "SPECIES_LITTEN",
     "SPECIES_MUDBRAY",
+    "SPECIES_PICHU",
     "SPECIES_POPPLIO",
     "SPECIES_ROCKRUFF",
+    "SPECIES_ROWLET",
     "SPECIES_SALANDIT",
     "SPECIES_STUFFUL",
     "SPECIES_TOGEDEMARU",
@@ -2071,8 +2295,8 @@
   "Lyra": {
    "category": "protagonist",
    "gen": 2,
-   "roster_in_rom": 9,
-   "obtainable": 7,
+   "roster_in_rom": 10,
+   "obtainable": 8,
    "obtainable_consts": [
     "SPECIES_CHIKORITA",
     "SPECIES_CYNDAQUIL",
@@ -2080,6 +2304,7 @@
     "SPECIES_GIRAFARIG",
     "SPECIES_IGGLYBUFF",
     "SPECIES_PHANPY",
+    "SPECIES_TAUROS",
     "SPECIES_TOTODILE"
    ]
   },
@@ -2099,6 +2324,17 @@
     "SPECIES_MURKROW",
     "SPECIES_RALTS",
     "SPECIES_SHUPPET"
+   ]
+  },
+  "Magnolia": {
+   "category": "professor",
+   "gen": 8,
+   "roster_in_rom": 4,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_PANCHAM",
+    "SPECIES_WIMPOD"
    ]
   },
   "Mallow (anime)": {
@@ -2164,12 +2400,14 @@
   "Mars": {
    "category": "villain",
    "gen": 4,
-   "roster_in_rom": 4,
-   "obtainable": 4,
+   "roster_in_rom": 6,
+   "obtainable": 6,
    "obtainable_consts": [
     "SPECIES_BRONZOR",
+    "SPECIES_EEVEE",
     "SPECIES_MAGNEMITE",
     "SPECIES_STUNKY",
+    "SPECIES_TOGEPI",
     "SPECIES_YANMA"
    ]
   },
@@ -2225,11 +2463,12 @@
   "Maylene": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 9,
-   "obtainable": 9,
+   "roster_in_rom": 11,
+   "obtainable": 10,
    "obtainable_consts": [
     "SPECIES_AIPOM",
     "SPECIES_CHERUBI",
+    "SPECIES_DRATINI",
     "SPECIES_HERACROSS",
     "SPECIES_MEDITITE",
     "SPECIES_MURKROW",
@@ -2266,12 +2505,13 @@
   "Misty": {
    "category": "gymleader",
    "gen": 1,
-   "roster_in_rom": 25,
-   "obtainable": 23,
+   "roster_in_rom": 26,
+   "obtainable": 24,
    "obtainable_consts": [
     "SPECIES_BUIZEL",
     "SPECIES_CHINCHOU",
     "SPECIES_CLAUNCHER",
+    "SPECIES_CORSOLA",
     "SPECIES_DRATINI",
     "SPECIES_DUCKLETT",
     "SPECIES_EEVEE",
@@ -2334,8 +2574,8 @@
   "N": {
    "category": "rival",
    "gen": 5,
-   "roster_in_rom": 26,
-   "obtainable": 26,
+   "roster_in_rom": 27,
+   "obtainable": 27,
    "obtainable_consts": [
     "SPECIES_ANORITH",
     "SPECIES_ARCHEN",
@@ -2344,6 +2584,7 @@
     "SPECIES_GROWLITHE",
     "SPECIES_KABUTO",
     "SPECIES_LILEEP",
+    "SPECIES_LILLIPUP",
     "SPECIES_NINCADA",
     "SPECIES_OMANYTE",
     "SPECIES_PICHU",
@@ -2443,6 +2684,20 @@
     "SPECIES_WOOPER"
    ]
   },
+  "Noland": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 6,
+   "obtainable": 6,
+   "obtainable_consts": [
+    "SPECIES_ARON",
+    "SPECIES_NUMEL",
+    "SPECIES_PSYDUCK",
+    "SPECIES_SANDSHREW",
+    "SPECIES_SHROOMISH",
+    "SPECIES_TRAPINCH"
+   ]
+  },
   "Norman": {
    "category": "gymleader",
    "gen": 3,
@@ -2459,11 +2714,22 @@
     "SPECIES_ZIGZAGOON"
    ]
   },
+  "Oak": {
+   "category": "professor",
+   "gen": 1,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_DRATINI",
+    "SPECIES_EEVEE",
+    "SPECIES_PICHU"
+   ]
+  },
   "Olivia": {
    "category": "gymleader",
    "gen": 7,
-   "roster_in_rom": 8,
-   "obtainable": 8,
+   "roster_in_rom": 9,
+   "obtainable": 9,
    "obtainable_consts": [
     "SPECIES_ANORITH",
     "SPECIES_FOMANTIS",
@@ -2472,6 +2738,7 @@
     "SPECIES_NOSEPASS",
     "SPECIES_RELICANTH",
     "SPECIES_ROCKRUFF",
+    "SPECIES_STUFFUL",
     "SPECIES_TAUROS"
    ]
   },
@@ -2485,6 +2752,15 @@
     "SPECIES_PICHU",
     "SPECIES_TIMBURR",
     "SPECIES_TOGEPI"
+   ]
+  },
+  "Palmer": {
+   "category": "frontier",
+   "gen": 4,
+   "roster_in_rom": 1,
+   "obtainable": 1,
+   "obtainable_consts": [
+    "SPECIES_DRATINI"
    ]
   },
   "Paul": {
@@ -2547,11 +2823,12 @@
   "Plumeria": {
    "category": "villain",
    "gen": 7,
-   "roster_in_rom": 7,
-   "obtainable": 7,
+   "roster_in_rom": 8,
+   "obtainable": 8,
    "obtainable_consts": [
     "SPECIES_DROWZEE",
     "SPECIES_EEVEE",
+    "SPECIES_FOMANTIS",
     "SPECIES_GASTLY",
     "SPECIES_GRIMER",
     "SPECIES_ORICORIO_BAILE",
@@ -2627,19 +2904,29 @@
   "Red": {
    "category": "protagonist",
    "gen": 1,
-   "roster_in_rom": 17,
-   "obtainable": 13,
+   "roster_in_rom": 27,
+   "obtainable": 23,
    "obtainable_consts": [
+    "SPECIES_BELLSPROUT",
     "SPECIES_CHIKORITA",
     "SPECIES_CYNDAQUIL",
+    "SPECIES_DODUO",
     "SPECIES_DRATINI",
     "SPECIES_EEVEE",
+    "SPECIES_EKANS",
+    "SPECIES_GASTLY",
     "SPECIES_GROWLITHE",
+    "SPECIES_KABUTO",
     "SPECIES_LAPRAS",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MEOWTH",
     "SPECIES_NOSEPASS",
     "SPECIES_PICHU",
+    "SPECIES_PONYTA",
+    "SPECIES_PSYDUCK",
     "SPECIES_SCYTHER",
     "SPECIES_TAUROS",
+    "SPECIES_TENTACOOL",
     "SPECIES_TOTODILE",
     "SPECIES_WAILMER",
     "SPECIES_WOOPER"
@@ -2678,8 +2965,8 @@
   "Roark": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 13,
-   "obtainable": 10,
+   "roster_in_rom": 14,
+   "obtainable": 11,
    "obtainable_consts": [
     "SPECIES_AERODACTYL",
     "SPECIES_ANORITH",
@@ -2690,19 +2977,32 @@
     "SPECIES_ONIX",
     "SPECIES_PONYTA",
     "SPECIES_RELICANTH",
+    "SPECIES_TORKOAL",
     "SPECIES_WURMPLE"
    ]
   },
   "Rosa": {
    "category": "protagonist",
    "gen": 5,
-   "roster_in_rom": 4,
-   "obtainable": 4,
+   "roster_in_rom": 16,
+   "obtainable": 16,
    "obtainable_consts": [
+    "SPECIES_ARCHEN",
+    "SPECIES_CUBCHOO",
+    "SPECIES_GOTHITA",
     "SPECIES_LILLIPUP",
+    "SPECIES_LITWICK",
+    "SPECIES_MIENFOO",
+    "SPECIES_MUNNA",
     "SPECIES_PANPOUR",
     "SPECIES_PANSAGE",
-    "SPECIES_PANSEAR"
+    "SPECIES_PANSEAR",
+    "SPECIES_RUFFLET",
+    "SPECIES_SANDILE",
+    "SPECIES_SCRAGGY",
+    "SPECIES_SOLOSIS",
+    "SPECIES_TIMBURR",
+    "SPECIES_VULLABY"
    ]
   },
   "Rose": {
@@ -2713,6 +3013,18 @@
    "obtainable_consts": [
     "SPECIES_CUFANT",
     "SPECIES_MEOWTH_GALAR"
+   ]
+  },
+  "Rowan": {
+   "category": "professor",
+   "gen": 4,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_AIPOM",
+    "SPECIES_CYNDAQUIL",
+    "SPECIES_ONIX",
+    "SPECIES_SPINARAK"
    ]
   },
   "Roxanne": {
@@ -2779,17 +3091,47 @@
     "SPECIES_WOOBAT"
    ]
   },
+  "Sada": {
+   "category": "professor",
+   "gen": 9,
+   "roster_in_rom": 0,
+   "obtainable": 0,
+   "obtainable_consts": []
+  },
+  "Samson Oak": {
+   "category": "professor",
+   "gen": 7,
+   "roster_in_rom": 14,
+   "obtainable": 14,
+   "obtainable_consts": [
+    "SPECIES_BRONZOR",
+    "SPECIES_CUBONE",
+    "SPECIES_CUTIEFLY",
+    "SPECIES_FOMANTIS",
+    "SPECIES_GRIMER",
+    "SPECIES_GRUBBIN",
+    "SPECIES_JANGMO_O",
+    "SPECIES_KOMALA",
+    "SPECIES_MEOWTH",
+    "SPECIES_MIMIKYU_DISGUISED",
+    "SPECIES_PICHU",
+    "SPECIES_SALANDIT",
+    "SPECIES_TOGEDEMARU",
+    "SPECIES_VULPIX"
+   ]
+  },
   "Saturn": {
    "category": "villain",
    "gen": 4,
-   "roster_in_rom": 6,
-   "obtainable": 5,
+   "roster_in_rom": 7,
+   "obtainable": 6,
    "obtainable_consts": [
     "SPECIES_BRONZOR",
     "SPECIES_MAGIKARP",
     "SPECIES_ONIX",
     "SPECIES_RALTS",
-    "SPECIES_REMORAID"
+    "SPECIES_REMORAID",
+    "SPECIES_STUNKY"
    ]
   },
   "Sawyer": {
@@ -2927,11 +3269,22 @@
     "SPECIES_WOOBAT"
    ]
   },
+  "Sonia": {
+   "category": "professor",
+   "gen": 8,
+   "roster_in_rom": 3,
+   "obtainable": 3,
+   "obtainable_consts": [
+    "SPECIES_BOUNSWEET",
+    "SPECIES_ORANGURU",
+    "SPECIES_YAMPER"
+   ]
+  },
   "Sophocles": {
    "category": "anime",
    "gen": 7,
-   "roster_in_rom": 11,
-   "obtainable": 11,
+   "roster_in_rom": 12,
+   "obtainable": 12,
    "obtainable_consts": [
     "SPECIES_BOUNSWEET",
     "SPECIES_CORPHISH",
@@ -2939,11 +3292,24 @@
     "SPECIES_GRUBBIN",
     "SPECIES_LILLIPUP",
     "SPECIES_LITTEN",
+    "SPECIES_MAGNEMITE",
     "SPECIES_MAREEP",
     "SPECIES_PICHU",
     "SPECIES_TAUROS",
     "SPECIES_TOGEDEMARU",
     "SPECIES_WAILMER"
+   ]
+  },
+  "Spenser": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 5,
+   "obtainable": 4,
+   "obtainable_consts": [
+    "SPECIES_BALTOY",
+    "SPECIES_DUSKULL",
+    "SPECIES_GROWLITHE",
+    "SPECIES_LAPRAS"
    ]
   },
   "Steven": {
@@ -2966,6 +3332,21 @@
     "SPECIES_WAILMER"
    ]
   },
+  "Sycamore": {
+   "category": "professor",
+   "gen": 6,
+   "roster_in_rom": 8,
+   "obtainable": 7,
+   "obtainable_consts": [
+    "SPECIES_CHESPIN",
+    "SPECIES_FENNEKIN",
+    "SPECIES_FROAKIE",
+    "SPECIES_HAWLUCHA",
+    "SPECIES_RALTS",
+    "SPECIES_SKIDDO",
+    "SPECIES_SKORUPI"
+   ]
+  },
   "Tate": {
    "category": "gymleader",
    "gen": 3,
@@ -2982,6 +3363,13 @@
     "SPECIES_RALTS",
     "SPECIES_SOLOSIS"
    ]
+  },
+  "Tobias": {
+   "category": "anime",
+   "gen": 4,
+   "roster_in_rom": 0,
+   "obtainable": 0,
+   "obtainable_consts": []
   },
   "Tracey": {
    "category": "anime",
@@ -3006,6 +3394,15 @@
     "SPECIES_TIMBURR"
    ]
   },
+  "Tucker": {
+   "category": "frontier",
+   "gen": 3,
+   "roster_in_rom": 1,
+   "obtainable": 1,
+   "obtainable_consts": [
+    "SPECIES_GROWLITHE"
+   ]
+  },
   "Tulip": {
    "category": "gymleader",
    "gen": 9,
@@ -3020,6 +3417,13 @@
     "SPECIES_RALTS",
     "SPECIES_WOOPER_PALDEA"
    ]
+  },
+  "Turo": {
+   "category": "professor",
+   "gen": 9,
+   "roster_in_rom": 0,
+   "obtainable": 0,
+   "obtainable_consts": []
   },
   "Valerie": {
    "category": "gymleader",
@@ -3045,14 +3449,16 @@
   "Volkner": {
    "category": "gymleader",
    "gen": 4,
-   "roster_in_rom": 12,
-   "obtainable": 12,
+   "roster_in_rom": 14,
+   "obtainable": 14,
    "obtainable_consts": [
     "SPECIES_AIPOM",
     "SPECIES_BLITZLE",
     "SPECIES_CHINCHOU",
     "SPECIES_EEVEE",
     "SPECIES_HOUNDOUR",
+    "SPECIES_MAGIKARP",
+    "SPECIES_MAGNEMITE",
     "SPECIES_PACHIRISU",
     "SPECIES_PICHU",
     "SPECIES_PONYTA",

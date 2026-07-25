@@ -243,8 +243,8 @@ Poliwrath, Tentacruel, Lapras, Lanturn, Politoed, Corsola, Pelipper, Wailord, Wh
 Raichu, Hypno, Xatu, Blaziken, Gardevoir, Crawdaunt, Claydol, Chimecho, Kyogre, Groudon, Bronzong, Gallade, Gothitelle, Reuniclus
 
 ### Lucy — Frontier Brain
-**Final evolutions (2):**
-Gyarados, Steelix
+**Final evolutions (4):**
+Gyarados, Typhlosion, Steelix, Mamoswine
 
 ### Maxie — Villain
 **Final evolutions (5):**
