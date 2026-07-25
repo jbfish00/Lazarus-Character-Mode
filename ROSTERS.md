@@ -93,8 +93,8 @@ Raichu, Poliwrath, Victreebel, Dodrio, Dewgong, Gengar, Electrode, Gyarados, Vap
 Butterfree, Arbok, Wigglytuff, Golduck, Poliwrath, Tentacruel, Dewgongᵍ, Cloyster, Gyaradosᵍ, Lapras, Vaporeonᵍ, Jolteon, Flareon, Omastar, Dragonite, Noctowl, Lanturnᵍ, Ampharos, Politoedᵃ, Quagsire, Espeon, Umbreon, Corsola, Suicune, Wailord, Banette, Floatzelᵍ, Togekissᵃ, Leafeon, Glaceon, Carracosta, Swanna, Clawitzerᵃ, Sylveon
 
 ### Oak — Professor
-**Final evolutions (9):**
-Raichu, Vaporeon, Jolteon, Flareon, Espeon, Umbreon, Leafeon, Glaceon, Sylveon
+**Final evolutions (10):**
+Raichu, Vaporeon, Jolteon, Flareon, Dragonite, Espeon, Umbreon, Leafeon, Glaceon, Sylveon
 
 ### Red — Protagonist
 **Final evolutions (35):**

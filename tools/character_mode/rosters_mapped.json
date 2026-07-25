@@ -7200,6 +7200,10 @@
   "page": "Professor Oak + Oak (anime)",
   "species": [
    {
+    "const": "SPECIES_DRATINI",
+    "id": 147
+   },
+   {
     "const": "SPECIES_EEVEE",
     "id": 133
    },
