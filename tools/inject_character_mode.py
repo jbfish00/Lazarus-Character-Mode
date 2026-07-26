@@ -67,6 +67,14 @@ SCRIPT_ADDR    = 0x095FBC00
 WILDMONS_ADDR  = 0x095FD000  # 201*368=73,968B -> ends 0x960F0F0
 CM_SPRITE_PTRS_ADDR  = 0x09620000   # Phase 3, separate free run; additive table
 CM_SPRITE_BLOBS_ADDR = 0x09620800
+# Mugshot renderer (src/character_sprite.c). A SEPARATE compile unit from the
+# main shim, which is already 1771 B in the 2048 B window before BITMAPS_ADDR
+# -- adding to it would overflow into the bitmaps. Placed past the sprite blobs
+# (which end ~0x09643384) in the same free run; the 0xFF precondition in
+# splice() is what actually proves it clear. No BL-reach constraint: every
+# engine call it makes goes through a function pointer, and the script reaches
+# it by an absolute `callnative` operand.
+CM_MUGSHOT_ADDR = 0x09644000
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
 TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
@@ -158,6 +166,7 @@ def op_bufferspecies(buf, sp): return bytes([0x7D, buf]) + struct.pack("<H", sp)
 def op_loadword(addr):      return bytes([0x0F, 0x00]) + struct.pack("<I", addr)
 def op_callstd(n):          return bytes([0x09, n])
 def op_delay(n):            return bytes([0x28]) + struct.pack("<H", n)
+def op_callnative(fn_thumb): return bytes([0x23]) + struct.pack("<I", fn_thumb)
 def op_releaseall():        return bytes([0x6B])
 def op_end():               return bytes([0x02])
 def op_callnative_give(fn_thumb, species, level):
@@ -260,6 +269,40 @@ def main():
                  "CM_GiveMonNativeGated", "CM_TradeCheck", "CM_CreateWildMonGated"):
         assert need in syms, f"missing symbol {need}"
     assert len(shim) <= BITMAPS_ADDR - SHIM_ADDR, f"shim too big: {len(shim)}"
+
+    # --- 1b. compile the mugshot renderer (separate unit + link address; see
+    # the CM_MUGSHOT_ADDR comment). Both entry points are resolved from the
+    # linked ELF rather than assumed to be in source order -- gcc is free to
+    # emit them either way and the `callnative` operands must be exact. ---
+    mobj = BUILD / "character_sprite.o"
+    melf = BUILD / "character_sprite.elf"
+    mbin = BUILD / "character_sprite.bin"
+    subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
+                    "-O2", "-ffreestanding", "-fno-builtin", "-Wall", "-Wextra",
+                    f"-DSPRITE_PTRS_ADDR={CM_SPRITE_PTRS_ADDR:#x}",
+                    "-o", str(mobj), str(ROOT / "src" / "character_sprite.c")],
+                   check=True)
+    subprocess.run(["arm-none-eabi-ld", "-Ttext", f"{CM_MUGSHOT_ADDR:#x}",
+                    "--entry", "CM_ShowCharacterMugshot",
+                    "-o", str(melf), str(mobj)], check=True)
+    subprocess.run(["arm-none-eabi-objcopy", "-O", "binary", str(melf), str(mbin)],
+                   check=True)
+    mugshot = mbin.read_bytes()
+    msym = subprocess.run(["arm-none-eabi-nm", str(melf)], check=True,
+                          capture_output=True, text=True).stdout
+
+    def mugshot_sym(name):
+        m = re.search(rf"^([0-9a-f]+) [Tt] {name}$", msym, re.M)
+        assert m, f"{name} not found in:\n{msym}"
+        a = int(m.group(1), 16)
+        assert CM_MUGSHOT_ADDR <= a < CM_MUGSHOT_ADDR + len(mugshot), \
+            f"{name} at {a:#x} outside the spliced blob"
+        return a | 1                    # callnative operands carry the Thumb bit
+
+    SHOW_MUGSHOT = mugshot_sym("CM_ShowCharacterMugshot")
+    HIDE_MUGSHOT = mugshot_sym("CM_HideCharacterMugshot")
+    print(f"mugshot renderer: {len(mugshot)} bytes @ {CM_MUGSHOT_ADDR:#x} "
+          f"(show {SHOW_MUGSHOT:#x}, hide {HIDE_MUGSHOT:#x})")
     print(f"shim: {len(shim)} bytes @ {SHIM_ADDR:#x}; entries: "
           + ", ".join(f"{k}={v:#x}" for k, v in syms.items() if k.startswith("CM_")))
 
@@ -278,9 +321,17 @@ def main():
     # NOTE: RECEIVED_MSG_SUB is a goto-only tail (every path ends in
     # releaseall/end, target 0x083289D9 IS releaseall/end) — it never returns,
     # so everything must happen BEFORE we enter it, and we goto, not call.
+    # The mugshot bracket: show before the message, hide after callstd 4
+    # returns (it blocks until the player presses A, so the sprite is up for
+    # exactly as long as the text). Both are 5 bytes and shift every fixup
+    # offset below, so MUG is used there rather than a second literal.
+    MUG = len(op_callnative(0))
     act = (op_compare(VAR_CM_STARTER, 0xFFFF) + op_goto_if(1, 0)  # ptr fixed below
-           + op_delay(2) + op_loadword(0)  # txt_on ptr fixed below
+           + op_delay(2)
+           + op_callnative(SHOW_MUGSHOT)
+           + op_loadword(0)  # txt_on ptr fixed below
            + op_callstd(4)
+           + op_callnative(HIDE_MUGSHOT)
            + op_copyvar(0x8000, VAR_CM_STARTER)
            + op_bufferspecies(0, 0x8000)
            + op_setvar(0x4001, 0x8000)
@@ -310,8 +361,9 @@ def main():
         struct.pack_into("<I", script, needle_off, addr)
     # goto_if EQ ptr inside act: entry_sz + 5(compare) + 2 -> u32
     fixup(entry_sz + 5 + 2, off_addr)
-    # loadword ptr inside act: after compare(5) + goto_if(6) + delay(3), skip "0F 00"
-    lw_on_off = entry_sz + 5 + 6 + 3 + 2
+    # loadword ptr inside act: after compare(5) + goto_if(6) + delay(3)
+    # + callnative show(MUG), skip "0F 00"
+    lw_on_off = entry_sz + 5 + 6 + 3 + MUG + 2
     fixup(lw_on_off, txt_on_addr)
     lw_off_off = entry_sz + len(act) + len(off_h) - (len(op_callstd(4)) + 1 + 1) - 4
     fixup(lw_off_off, txt_off_addr)
@@ -331,6 +383,7 @@ def main():
     splice(STARTERS_ADDR, starters_blob, "starters")
     splice(SCRIPT_ADDR, bytes(script), "script")
     splice(WILDMONS_ADDR, wildmons, "wildmons")
+    splice(CM_MUGSHOT_ADDR, mugshot, "mugshot renderer")
 
     # --- Phase 3 character sprites (2026-07-25) ---
     # Additive: this never touches the engine's own trainer-pic table, so

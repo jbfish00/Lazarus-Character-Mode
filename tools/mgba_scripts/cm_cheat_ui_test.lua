@@ -40,6 +40,36 @@ local function findKey(ch)
     error("char not on lowercase page: " .. ch)
 end
 
+-- ---- character mugshot (Phase 3 render surface) ----
+-- The confirm script brackets its "Character Mode is now active!" message with
+-- callnative show/hide, so the mugshot must be on screen while that box is up.
+-- The template is located by scanning the renderer blob for its tag pair
+-- rather than hardcoding an address the build could move.
+local MUG_BASE, MUG_SPAN = 0x09644000, 0x300
+local GSPRITES, SPRITE_COUNT, SPRITE_STRIDE = 0x0203B5CC, 64, 0x44
+local OFF_TEMPLATE, OFF_INUSE = 0x14, 0x3E
+
+local function findMugshotTemplate()
+    for a = MUG_BASE, MUG_BASE + MUG_SPAN, 4 do
+        if emu:read16(a) == 0xC0DE and emu:read16(a + 2) == 0xC0DF then return a end
+    end
+    return nil
+end
+local MUG_TEMPLATE = findMugshotTemplate()
+
+local function countMugshot()
+    if not MUG_TEMPLATE then return -1 end
+    local n = 0
+    for i = 0, SPRITE_COUNT - 1 do
+        local s = GSPRITES + i * SPRITE_STRIDE
+        if (emu:read8(s + OFF_INUSE) & 1) ~= 0
+           and emu:read32(s + OFF_TEMPLATE) == MUG_TEMPLATE then
+            n = n + 1
+        end
+    end
+    return n
+end
+
 local function storageBox0Count()
     local base = emu:read32(H.gPokemonStoragePtr)
     if base < 0x02000000 or base >= 0x02040000 then return -1 end
@@ -114,6 +144,31 @@ for _, st in ipairs(steps) do
     at = at + st[2]
 end
 local tEnd = at
+-- Sample the mugshot BEFORE the A-mash starts (tEnd+60): the confirm script's
+-- callstd 4 blocks until A, so this window is exactly when it is on screen.
+-- The window is wide because the naming screen's commit-to-script-resume delay
+-- is not fixed; the screenshot is taken the frame the sprite first appears
+-- rather than at a guessed offset (a fixed offset caught a frame before the
+-- message had even opened, and the picture showed a bare overworld).
+local mugSeen, mugSampled, mugShot = 0, false, false
+H.onFrame(function(f)
+    if f >= tEnd + 20 and f <= tEnd + 1400 then
+        local n = countMugshot()
+        mugSampled = true
+        if n > mugSeen then mugSeen = n end
+        if n > 0 and not mugShot then
+            mugShot = f
+            H.log("mugshot present at frame " .. (f - tEnd) .. " past commit")
+        end
+        -- +40, not the detection frame itself: the sprite is created while the
+        -- screen is still redrawing out of the naming screen, so a shot at +0
+        -- shows a bare overworld and reads as a failure when it is not one.
+        if mugShot and f == mugShot + 40 then
+            emu:screenshot(DIR .. "ui_mugshot.png")
+            H.log(string.format("mugshot screenshot at +40: sprites=%d", n))
+        end
+    end
+end)
 -- A-mash through confirm-script dialogue (fanfare + "give nickname?" yes/no —
 -- A-mash lands on YES and opens the nickname naming screen)
 H.mash(K.A, tEnd + 60, tEnd + 1400, 40)
@@ -148,6 +203,14 @@ H.onFrame(function(f)
             H.assertEq("party grew (starter give)", party, before.party + 1)
             H.assertEq("box0 unchanged (on-roster)", box0, before.box0)
             H.assertEq("VAR_CM_STARTER reset", H.varGet(VAR_STARTER), 0)
+            -- Report the sampling separately from the result: a window that
+            -- never ran would otherwise read as "0 sprites" and pass as if the
+            -- mugshot had simply been torn down.
+            H.assertTrue("mugshot template located in the renderer blob",
+                         MUG_TEMPLATE ~= nil)
+            H.assertTrue("confirm message was sampled", mugSampled)
+            H.assertEq("mugshot drawn during the confirm message", mugSeen, 1)
+            H.assertEq("mugshot torn down afterwards", countMugshot(), 0)
             emu:saveStateFile(DIR .. "cm_red_active.ss")
             H.log("saved cm_red_active.ss")
         elseif cfg.expect == "give2" then

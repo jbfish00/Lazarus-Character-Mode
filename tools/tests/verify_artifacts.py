@@ -89,6 +89,7 @@ CODES_ADDR = 0x09610800
 STARTERS_ADDR = 0x09611200
 SCRIPT_ADDR = 0x095FBC00
 TRADE_SCRIPT_ADDR = 0x095FC800
+CM_MUGSHOT_ADDR = 0x09644000   # mugshot renderer (src/character_sprite.c)
 WILDMONS_ADDR = 0x095FD000
 CM_SPRITE_PTRS_ADDR  = 0x09620000   # Phase 3 (keep in sync with the injector)
 CM_SPRITE_BLOBS_ADDR = 0x09620800
@@ -223,6 +224,13 @@ def main():
         _spr_ptrs += (struct.pack("<II", 0, 0) if _gof == 0xFFFFFFFF else
                       struct.pack("<II", CM_SPRITE_BLOBS_ADDR + _gof,
                                         CM_SPRITE_BLOBS_ADDR + _pof))
+    # renderer blob length: scan forward from its base to the next 0xFF run
+    _m = CM_MUGSHOT_ADDR - 0x08000000
+    _mend = _m
+    while not all(b == 0xFF for b in patched[_mend:_mend + 32]):
+        _mend += 32
+    _mugshot_len = _mend - _m
+
     intended = [
         (SHIM_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000),
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
@@ -233,6 +241,7 @@ def main():
         (WILDMONS_ADDR - 0x08000000, WILDMONS_ADDR - 0x08000000 + len(wildmons)),
         (CM_SPRITE_BLOBS_ADDR - 0x08000000, CM_SPRITE_BLOBS_ADDR - 0x08000000 + len(_spr_blobs)),
         (CM_SPRITE_PTRS_ADDR - 0x08000000, CM_SPRITE_PTRS_ADDR - 0x08000000 + len(_spr_ptrs)),
+        (CM_MUGSHOT_ADDR - 0x08000000, CM_MUGSHOT_ADDR - 0x08000000 + _mugshot_len),
         (TRAMPOLINE_ADDR - 0x08000000, TRAMPOLINE_ADDR - 0x08000000 + 8),
         (WILD_TRAMPOLINE_ADDR - 0x08000000, WILD_TRAMPOLINE_ADDR - 0x08000000 + 8),
         *[(s, s + 4) for s in BL_SITES],
@@ -430,9 +439,16 @@ def main():
     ok &= expect("goto_if 1 (EQ)", bytes([0x06, 1]))
     off_addr = take_u32()
     ok &= expect("delay", bytes([0x28]) + struct.pack("<H", 2))
+    # The mugshot bracket: show before the message, hide after callstd 4
+    # returns (it blocks until A). Operands are checked below rather than here,
+    # since nothing in this file should know the renderer's internal layout.
+    ok &= expect("callnative show-mugshot", bytes([0x23]))
+    show_mugshot = take_u32()
     ok &= expect("loadword", bytes([0x0F, 0x00]))
     txt_on_addr = take_u32()
     ok &= expect("callstd 4 (mode msgbox)", bytes([0x09, 4]))
+    ok &= expect("callnative hide-mugshot", bytes([0x23]))
+    hide_mugshot = take_u32()
     ok &= expect("copyvar(0x8000, VAR_CM_STARTER)",
                  bytes([0x19]) + struct.pack("<HH", 0x8000, VAR_CM_STARTER))
     ok &= expect("bufferspecies(0, var 0x8000)",
@@ -650,6 +666,56 @@ def main():
     refs = sum(orig.count(bytes([op]) + struct.pack("<H", flag))
                for op in (SCR_SETFLAG, SCR_CLEARFLAG, SCR_CHECKFLAG))
     check(f"no script setflag/clearflag/checkflag references flag {flag:#x}", refs == 0, str(refs))
+
+    print("\n== mugshot renderer (Phase 3 render surface) ==")
+    mb = ROOT / "build" / "character_sprite.bin"
+    if mb.is_file():
+        blob = mb.read_bytes()
+        check("renderer blob in ROM == build/character_sprite.bin",
+              patched[_m:_m + len(blob)] == blob, f"{len(blob)} bytes")
+    check("renderer starts with push {..,lr}", patched[_m + 1] == 0xB5)
+
+    # The two callnative operands the confirm script names are re-derived here
+    # from the ROM alone -- no build artifact says what they should be.
+    check("mugshot callnative operands are Thumb pointers into the renderer",
+          all(a & 1 and CM_MUGSHOT_ADDR <= (a & ~1) < CM_MUGSHOT_ADDR + _mugshot_len
+              for a in (show_mugshot, hide_mugshot)),
+          f"show={show_mugshot:#x} hide={hide_mugshot:#x} "
+          f"blob=[{CM_MUGSHOT_ADDR:#x},{CM_MUGSHOT_ADDR + _mugshot_len:#x})")
+    check("show and hide are distinct entry points", show_mugshot != hide_mugshot,
+          f"both {show_mugshot:#x}")
+
+    # Re-locate the SpriteTemplate in the ROM and check every pointer it hands
+    # the engine. A template that assembles cleanly but names a wrong address
+    # draws garbage rather than crashing, so it is worth pinning here.
+    GDUMMY_ANIM, GDUMMY_AFFINE = 0x08E68F18, 0x08E68F1C
+    SPRITE_CB_DUMMY = 0x08004141
+    tmpl = None
+    for o in range(_m, _mend - 24, 4):
+        w = struct.unpack_from("<5I", patched, o + 4)
+        if w[1] == GDUMMY_ANIM and w[3] == GDUMMY_AFFINE and w[4] == SPRITE_CB_DUMMY:
+            tmpl = o
+            break
+    check("SpriteTemplate located in the renderer blob", tmpl is not None)
+    if tmpl is not None:
+        tile_tag, pal_tag = struct.unpack_from("<HH", patched, tmpl)
+        oam_ptr, _a, images, _b, _c = struct.unpack_from("<5I", patched, tmpl + 4)
+        check("template tile/palette tags are distinct and non-TAG_NONE",
+              tile_tag != pal_tag and 0xFFFF not in (tile_tag, pal_tag),
+              f"{tile_tag:#x}/{pal_tag:#x}")
+        check("template images == NULL (required when tileTag != TAG_NONE)",
+              images == 0, hex(images))
+        check("template oam pointer lands inside the renderer blob",
+              CM_MUGSHOT_ADDR <= oam_ptr < CM_MUGSHOT_ADDR + _mugshot_len, hex(oam_ptr))
+        if CM_MUGSHOT_ADDR <= oam_ptr < CM_MUGSHOT_ADDR + _mugshot_len:
+            attr0, attr1, attr2, _d = struct.unpack_from("<4H", patched,
+                                                         oam_ptr - 0x08000000)
+            # 64x64 = square shape (attr0 bits 14-15 == 0) + size 3 (attr1 bits
+            # 14-15 == 3), 4bpp, priority 0.
+            check("OAM describes a 64x64 4bpp square sprite at priority 0",
+                  (attr0 >> 14) == 0 and ((attr0 >> 13) & 1) == 0
+                  and (attr1 >> 14) == 3 and ((attr2 >> 10) & 3) == 0,
+                  f"attr0={attr0:#06x} attr1={attr1:#06x} attr2={attr2:#06x}")
 
     print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
     return 1 if failures else 0
