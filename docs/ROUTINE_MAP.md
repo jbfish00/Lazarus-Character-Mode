@@ -235,3 +235,67 @@ within BL range of every site — span between farthest sites is only
   `hasBreakpoints`); with breakpoints armed the core single-steps — set the
   env var only for trace runs. Watchpoints (`emu:setWatchpoint`) go through
   the same path and should now work too (not yet exercised).
+
+---
+
+## CONFIRMED — OAM sprite API (Phase 3 mugshot renderer, 2026-07-25)
+
+Derived by `tools/find_sprite_api.py` and confirmed **byte-exact by disassembly**,
+one at a time. Radical Red and Unbound got this set for free (their low-ROM
+vanilla region is untouched, so CFRU's `BPRE.ld` addresses hold); Lazarus is a
+full pokeemerald-expansion rebuild, so every symbol had to be mined out of this
+binary.
+
+| symbol | address | how it was confirmed |
+|---|---|---|
+| `gSprites` | **`0x0203B5CC`** | pool word behind the 0x44-stride index in `CreateSprite`; 360 indexing sites across the ROM, all clustered in the sprite.c region |
+| `CreateSprite` | **`0x08003A40`** | loop `cmp r0,#64` over `gSprites`, tests inUse, tail-calls `CreateSpriteAt` |
+| `CreateSpriteAt` | **`0x08003B24`** | `movs r2,#68` memset of the struct, then fills it from the template |
+| `SpriteCallbackDummy` | **`0x08004140`** | `bx lr`; named by 236 templates pointing at it |
+| `gDummySpriteAnimTable` | **`0x08E68F18`** | → `0x08E68F9C` = `0x0000FFFF` (ANIMCMD_END); 693 templates |
+| `gDummySpriteAffineAnimTable` | **`0x08E68F1C`** | → `0x08E68FA0` = `0x00007FFF`; 1047 templates |
+| `LZ77UnCompWram` | **`0x083E5EC0`** | `svc 17; bx lr` |
+| `LZ77UnCompVram` | **`0x083E5EC4`** | `svc 18; bx lr` |
+| `LoadCompressedSpriteSheet` | **`0x080FCEE4`** | decompresses `src->data` to `0x02000B8C`, builds `{buf, <src+4 word>}`, calls `LoadSpriteSheet` |
+| `LoadCompressedSpritePalette` | **`0x080FCF9C`** | same shape but copies only `ldrh [src,#4]` (the tag), calls `LoadSpritePalette` |
+| `LoadSpriteSheet` | **`0x08005410`** | |
+| `LoadSpritePalette` | **`0x080056C4`** | loops the 16-entry palette tag table at `0x03004B38` against `palette->tag` |
+| `IndexOfSpritePaletteTag` | **`0x080057E8`** | 16-entry loop, returns index or `0xFF` |
+| `GetSpriteTileStartByTag` | **`0x080055B8`** | 64-entry loop over the tile tag table, returns start or `0xFFFF` |
+| `IndexOfSpriteTileTag` | **`0x080055E8`** | 64-entry loop, returns index or `0xFF` |
+| `FreeSpritePaletteByTag` | **`0x08005828`** | finds the tag then stores `-1` (TAG_NONE) into the table — the store is what identifies it |
+| `AllocSpriteTileRange` | **`0x0800564C`** | writes tag/start/count into the parallel tables |
+| `gDecompressionBuffer` | **`0x02000B8C`** | destination both compressed loaders decompress into |
+| tile tag table | `0x03004838` (64 × u16) | IWRAM |
+| tile range table | `0x030048B8` | IWRAM |
+| palette tag table | `0x03004B38` (16 × u16) | IWRAM |
+
+**struct layouts are identical to the FireRed family** — verified in
+`CreateSpriteAt`'s own code, not assumed: `struct Sprite` stride **`0x44`**,
+`inUse` at **`+0x3E` bit 0**, `template` at **`+0x14`** (`str r3,[r4,#20]`),
+`callback` at `+0x1C`, `pos` at `+0x20`/`+0x22`. `struct SpriteTemplate` =
+`{u16 tileTag, u16 paletteTag, ptr oam, ptr anims, ptr images, ptr affineAnims,
+ptr callback}`. `CompressedSpriteSheet` = `{ptr data, u16 size, u16 tag}` with
+size **decompressed**; `CompressedSpritePalette` = `{ptr data, u16 tag}`.
+
+**⚠️ Two codegen traps, each of which made a working fingerprint find nothing:**
+1. FireRed's build reads the inUse byte as `adds rA,#62; ldrb rA,[rA,#0]`; this
+   build emits `adds rA,#60; ldrb rA,[rA,#2]` (LDRB's imm5 only reaches 31, so
+   where the offset is split is the compiler's choice). Matching only the
+   FireRed form returns zero hits and reads as "this engine is different".
+2. FireRed's `LoadCompressedSpriteSheet` merges `size | tag << 16` with
+   ldrh/lsls/orrs — a beautiful fingerprint this build does not use, because it
+   copies the struct's second word wholesale. Fingerprint the **callee**
+   (`LZ77UnCompWram`, a two-instruction BIOS thunk) rather than the arithmetic.
+
+**OPEN: `FreeSpriteTilesByTag` is not yet located.** `IndexOfSpriteTileTag` and
+`GetSpriteTileStartByTag` are both confirmed, but the function that writes
+TAG_NONE back into the tile tag table has not been pinned — it does not use the
+`movs #1; negs` idiom its palette counterpart does, so the obvious scan misses
+it. Two ways forward, both viable without it: reuse the allocation across shows
+via `GetSpriteTileStartByTag` + `LZ77UnCompVram` into `0x06010000 + start*32`,
+or accept a single permanent 64-tile allocation. Do not free tiles by poking the
+table directly — the allocator's own bitmap would go out of sync with it.
+
+`callnative` (script command **`0x23`**) is already proven in this ROM: the
+injector retargets 112 inline `callnative` script pointers.
