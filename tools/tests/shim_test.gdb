@@ -74,10 +74,10 @@ set $lr = 0x95f1181
 set $pc = 0x95f1180
 continue
 printf "STOPPED_AT=%08x\n", $pc
-echo \n=== CASE 6: char 202 out of range -> give ===\n
+echo \n=== CASE 6: char 203 out of range -> give ===\n
 python gdb.selected_inferior().write_memory(0x2033000, bytes.fromhex("000000000000000000000000000000000000000200000000000000008e0000008e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
 set *(unsigned char*)0x203133e = 0x1
-set *(unsigned short*)0x20315d4 = 202
+set *(unsigned short*)0x20315d4 = 203
 set *(unsigned char*)0x201b95d = 1
 set $r0 = 0x2033000
 set $sp = 0x03007F00
