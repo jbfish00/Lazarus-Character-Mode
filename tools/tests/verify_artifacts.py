@@ -211,7 +211,7 @@ def main():
     bitmaps = (ROOT / "tools" / "character_mode" / "rosters_expanded.bin").read_bytes()
     check("rosters_expanded.bin is 179 x 196", len(bitmaps) == NUM_CHARACTERS * STRIDE)
     wildmons = (ROOT / "tools" / "character_mode" / "wildmons.bin").read_bytes()
-    check("wildmons.bin length is a multiple of 179", len(wildmons) % NUM_CHARACTERS == 0)
+    check(f"wildmons.bin length is a multiple of {NUM_CHARACTERS}", len(wildmons) % NUM_CHARACTERS == 0)
     wildmon_stride = len(wildmons) // NUM_CHARACTERS if len(wildmons) % NUM_CHARACTERS == 0 else 0
 
     print("== 3. diff confined to intended regions ==")
@@ -314,7 +314,14 @@ def main():
     with open(ROOT / "tools" / "character_mode" / "characters_manifest.json") as f:
         manifest = json.load(f)
     chars = manifest["characters"]
-    check("179 characters in manifest", len(chars) == NUM_CHARACTERS, str(len(chars)))
+    # NOT `len(chars) == NUM_CHARACTERS` -- NUM_CHARACTERS is DERIVED from this
+    # very manifest at the top of this file, so that comparison is a tautology
+    # that cannot fail. The drift actually worth catching is manifest vs the
+    # INJECTOR's own hardcoded count, so check against that.
+    _inj = (ROOT / "tools" / "inject_character_mode.py").read_text()
+    _inj_n = int(re.search(r"^NUM_CHARACTERS\s*=\s*(\d+)", _inj, re.M).group(1))
+    check(f"injector's NUM_CHARACTERS ({_inj_n}) matches the manifest ({len(chars)})",
+          _inj_n == len(chars))
 
     def bit(ci, sp):
         return (patched[boff + ci * STRIDE + (sp >> 3)] >> (sp & 7)) & 1
@@ -598,6 +605,11 @@ def main():
     legendary_leaks = []
     window_bad = 0
     zero_entry_chars = 0
+    # A zero stride means wildmons.bin is malformed. Guarding the scan on it
+    # made the two guarantees below ("no legendary anywhere", "windows gapless")
+    # report success having examined ZERO bytes. Fail loudly instead, then skip.
+    check("wildmon stride is usable (a 0 stride would silently void the two "
+          "wild-encounter guarantees below)", wildmon_stride > 0, str(wildmon_stride))
     if wildmon_stride:
         woff = WILDMONS_ADDR - 0x08000000
         for ci in range(NUM_CHARACTERS):

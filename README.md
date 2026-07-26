@@ -4,7 +4,7 @@ An opt-in game mode where you play as an iconic Pokemon character — a
 protagonist, rival, gym leader, Elite Four member, champion, villain, or
 anime cast member — and are restricted to catching and keeping only that
 character's canon roster (as documented on Bulbapedia, expanded to full
-evolution families). 201 characters, Generations 1 through 9.
+evolution families). 202 characters, Generations 1 through 9.
 
 Ported from the original Character Mode built for Pokemon ROWE, following
 the Radical Red port.
@@ -80,7 +80,7 @@ Notes:
 |---|---|
 | `CMDbgOff` | Turn Character Mode off (clears the flag and character selection) |
 | `CMDbgGive1` | Test code: gives your character's own starter (on-roster -> joins party) |
-| `CMDbgGive2` | Test code: gives a Lv. 5 Ekans (off-roster for most -> goes to PC) |
+| `CMDbgGive2` | Test code: gives a Lv. 5 Pokemon that is **off the first character's roster** -> goes to the PC. The species is derived from that character's own allow-bitmap at build time, so do not expect a specific one (it was documented as Ekans long after the build started deriving it). |
 
 ## Known limitations
 
@@ -207,6 +207,7 @@ Notes:
 | `Rowan` | Rowan | Professor | Aipom |
 | `Saturn` | Saturn | villain | Bronzor |
 | `Volkner` | Volkner | Gym Leader | Aipom |
+| `Volo` | Volo | villain | Budew |
 | `Zoey` | Zoey | anime | Aipom |
 
 ### Generation 5

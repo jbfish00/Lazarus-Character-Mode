@@ -115,3 +115,8 @@ Final-evolution rosters in National Pokédex order, sprites with names. [← bac
 <table>
 <tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/763.png"><br><sub>Tsareena</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/765.png"><br><sub>Oranguru</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/836.png"><br><sub>Boltund</sub></td></tr>
 </table>
+
+### Volo — Villain
+<table>
+<tr><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/59.png"><br><sub>Arcanine</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/407.png"><br><sub>Roserade</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/442.png"><br><sub>Spiritomb</sub></td><td align="center" width="80"><img width="56" src="https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/468.png"><br><sub>Togekiss</sub></td></tr>
+</table>
