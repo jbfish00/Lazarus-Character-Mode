@@ -90,6 +90,8 @@ STARTERS_ADDR = 0x09611200
 SCRIPT_ADDR = 0x095FBC00
 TRADE_SCRIPT_ADDR = 0x095FC800
 WILDMONS_ADDR = 0x095FD000
+CM_SPRITE_PTRS_ADDR  = 0x09620000   # Phase 3 (keep in sync with the injector)
+CM_SPRITE_BLOBS_ADDR = 0x09620800
 
 TRAMPOLINE_ADDR = 0x08470A64
 WILD_TRAMPOLINE_ADDR = 0x08470A6C
@@ -212,6 +214,15 @@ def main():
     wildmon_stride = len(wildmons) // NUM_CHARACTERS if len(wildmons) % NUM_CHARACTERS == 0 else 0
 
     print("== 3. diff confined to intended regions ==")
+
+    _spr_blobs = (ROOT / "tools" / "character_mode" / "cm_sprite_blobs.bin").read_bytes() if (ROOT / "tools" / "character_mode" / "cm_sprite_blobs.bin").is_file() else b""
+    _spr_offs = (ROOT / "tools" / "character_mode" / "cm_sprite_offsets.bin").read_bytes() if (ROOT / "tools" / "character_mode" / "cm_sprite_offsets.bin").is_file() else b""
+    _spr_ptrs = bytearray()
+    for _i in range(len(_spr_offs) // 8):
+        _gof, _pof = struct.unpack_from("<II", _spr_offs, _i * 8)
+        _spr_ptrs += (struct.pack("<II", 0, 0) if _gof == 0xFFFFFFFF else
+                      struct.pack("<II", CM_SPRITE_BLOBS_ADDR + _gof,
+                                        CM_SPRITE_BLOBS_ADDR + _pof))
     intended = [
         (SHIM_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000),
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
@@ -220,6 +231,8 @@ def main():
         (SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000),
         (TRADE_SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000 + 0x400),
         (WILDMONS_ADDR - 0x08000000, WILDMONS_ADDR - 0x08000000 + len(wildmons)),
+        (CM_SPRITE_BLOBS_ADDR - 0x08000000, CM_SPRITE_BLOBS_ADDR - 0x08000000 + len(_spr_blobs)),
+        (CM_SPRITE_PTRS_ADDR - 0x08000000, CM_SPRITE_PTRS_ADDR - 0x08000000 + len(_spr_ptrs)),
         (TRAMPOLINE_ADDR - 0x08000000, TRAMPOLINE_ADDR - 0x08000000 + 8),
         (WILD_TRAMPOLINE_ADDR - 0x08000000, WILD_TRAMPOLINE_ADDR - 0x08000000 + 8),
         *[(s, s + 4) for s in BL_SITES],

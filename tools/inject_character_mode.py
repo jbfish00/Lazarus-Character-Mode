@@ -65,6 +65,8 @@ CODES_ADDR     = 0x09610800  # rebased 2026-07-24: 201-char bitmaps end 0x95FB1E
 STARTERS_ADDR  = 0x09611200  # 201*2=402B -> ends 0x9611392
 SCRIPT_ADDR    = 0x095FBC00
 WILDMONS_ADDR  = 0x095FD000  # 201*368=73,968B -> ends 0x960F0F0
+CM_SPRITE_PTRS_ADDR  = 0x09620000   # Phase 3, separate free run; additive table
+CM_SPRITE_BLOBS_ADDR = 0x09620800
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
 TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
@@ -162,6 +164,9 @@ def op_callnative_give(fn_thumb, species, level):
     # exact idiom of the ROM's own MONO/starter gives (docs/SELECTION_MECHANISM.md)
     return (bytes([0x23]) + struct.pack("<I", fn_thumb)
             + bytes([0x00, 0x06]) + struct.pack("<HHI", species, level, 0))
+
+
+CM = HERE / "character_mode"
 
 
 def main():
@@ -326,6 +331,32 @@ def main():
     splice(STARTERS_ADDR, starters_blob, "starters")
     splice(SCRIPT_ADDR, bytes(script), "script")
     splice(WILDMONS_ADDR, wildmons, "wildmons")
+
+    # --- Phase 3 character sprites (2026-07-25) ---
+    # Additive: this never touches the engine's own trainer-pic table, so
+    # nothing the game already draws changes, and locating that table is not a
+    # prerequisite. Blobs first, then a table of absolute ROM pointers.
+    _spr_b = CM / "cm_sprite_blobs.bin"
+    _spr_o = CM / "cm_sprite_offsets.bin"
+    if _spr_b.is_file() and _spr_o.is_file():
+        _blobs = _spr_b.read_bytes()
+        _offs = _spr_o.read_bytes()
+        assert len(_offs) == NUM_CHARACTERS * 8, (len(_offs), NUM_CHARACTERS)
+        _ptrs = bytearray()
+        _wired = 0
+        for _i in range(NUM_CHARACTERS):
+            _g, _p = struct.unpack_from("<II", _offs, _i * 8)
+            if _g == 0xFFFFFFFF:
+                _ptrs += struct.pack("<II", 0, 0)
+            else:
+                _ptrs += struct.pack("<II", CM_SPRITE_BLOBS_ADDR + _g,
+                                            CM_SPRITE_BLOBS_ADDR + _p)
+                _wired += 1
+        splice(CM_SPRITE_BLOBS_ADDR, _blobs, "character sprite blobs")
+        splice(CM_SPRITE_PTRS_ADDR, bytes(_ptrs), "character sprite pointers")
+        print(f"character sprites: {_wired}/{NUM_CHARACTERS} wired, "
+              f"{len(_blobs):,} B @ {CM_SPRITE_BLOBS_ADDR:#x}, table @ {CM_SPRITE_PTRS_ADDR:#x}")
+
 
     # trampoline: ldr r3,[pc,#0]; bx r3; .word gate|1
     tramp = struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_gate)
