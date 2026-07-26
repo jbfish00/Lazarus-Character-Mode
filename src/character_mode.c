@@ -71,7 +71,7 @@ typedef unsigned int u32;
 #define VAR_CM_STARTER      0x40E4
 #define CM_STARTER_OFF_MARKER 0xFFFF
 
-#define NUM_CHARACTERS 201  /* 179 + 12 professors + 10 Frontier Brains (2026-07-24); Sada/Turo/Tobias trimmed */
+#define NUM_CHARACTERS 202  /* 179 + 12 professors + 10 Frontier Brains + Volo (2026-07-25); Sada/Turo/Tobias trimmed */
 #define TOBIAS_CHAR_ID 0     /* Tobias TRIMMED from Lazarus (Darkrai/Latios not in this ROM's dex) — id 0 never matches; branch kept for parity with RR/Seaglass */
 #define NUM_SPECIES    1561
 #define BITMAP_STRIDE  196

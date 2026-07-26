@@ -72,7 +72,7 @@ CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
 ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 
-NUM_CHARACTERS = 201  # 179 + 12 professors + 10 Frontier Brains (2026-07-24); Sada/Turo/Tobias trimmed
+NUM_CHARACTERS = len(__import__("json").loads((Path(__file__).parent.parent.parent / "tools" / "character_mode" / "characters_manifest.json").read_text())["characters"])  # derived (2026-07-25, Volo); was a hardcoded literal
 
 # Engine flag bookkeeping (the 0x945 daily-sweep bug, fixed 2026-07-24).
 SB1_FLAGS_OFF = 0x12E8           # SaveBlock1.flags (docs/ROUTINE_MAP.md)

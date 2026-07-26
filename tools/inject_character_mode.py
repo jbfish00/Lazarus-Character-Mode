@@ -50,7 +50,7 @@ ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 BUILD = ROOT / "build"
 CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
-NUM_CHARACTERS = 201  # 179 + 12 professors + 10 Frontier Brains (2026-07-24); Sada/Turo/Tobias trimmed
+NUM_CHARACTERS = 202  # 179 + 12 professors + 10 Frontier Brains + Volo (2026-07-25); Sada/Turo/Tobias trimmed
 BITMAP_STRIDE = 196
 CODE_LEN = 11
 

@@ -1,6 +1,6 @@
 {
  "mode": "final",
- "record_count": 201,
+ "record_count": 202,
  "record_size_bytes": 12,
  "skipped_empty_roster": [],
  "warnings": [],
@@ -4448,11 +4448,28 @@
    "sprite_asset_id": "TBD"
   },
   {
+   "character": "Volo",
+   "category": "villain",
+   "generation": 8,
+   "name_offset": 1255,
+   "roster_offset": 4300,
+   "roster_species_ids": [
+    406,
+    58,
+    442,
+    175
+   ],
+   "starter_count": 4,
+   "has_signature": false,
+   "signature_id": null,
+   "sprite_asset_id": "TBD"
+  },
+  {
    "character": "Anabel",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1255,
-   "roster_offset": 4300,
+   "name_offset": 1260,
+   "roster_offset": 4310,
    "roster_species_ids": [
     133,
     215,
@@ -4468,8 +4485,8 @@
    "character": "Brandon",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1262,
-   "roster_offset": 4310,
+   "name_offset": 1267,
+   "roster_offset": 4320,
    "roster_species_ids": [
     355,
     290
@@ -4483,8 +4500,8 @@
    "character": "Greta",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1270,
-   "roster_offset": 4316,
+   "name_offset": 1275,
+   "roster_offset": 4326,
    "roster_species_ids": [
     133,
     92,
@@ -4502,8 +4519,8 @@
    "character": "Lucy",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1276,
-   "roster_offset": 4330,
+   "name_offset": 1281,
+   "roster_offset": 4340,
    "roster_species_ids": [
     155,
     129,
@@ -4519,8 +4536,8 @@
    "character": "Noland",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1281,
-   "roster_offset": 4340,
+   "name_offset": 1286,
+   "roster_offset": 4350,
    "roster_species_ids": [
     304,
     322,
@@ -4538,8 +4555,8 @@
    "character": "Spenser",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1288,
-   "roster_offset": 4354,
+   "name_offset": 1293,
+   "roster_offset": 4364,
    "roster_species_ids": [
     343,
     355,
@@ -4556,8 +4573,8 @@
    "character": "Tucker",
    "category": "frontier",
    "generation": 3,
-   "name_offset": 1296,
-   "roster_offset": 4366,
+   "name_offset": 1301,
+   "roster_offset": 4376,
    "roster_species_ids": [
     58
    ],
@@ -4570,8 +4587,8 @@
    "character": "Dahlia",
    "category": "frontier",
    "generation": 4,
-   "name_offset": 1303,
-   "roster_offset": 4370,
+   "name_offset": 1308,
+   "roster_offset": 4380,
    "roster_species_ids": [
     355,
     307,
@@ -4587,8 +4604,8 @@
    "character": "Darach",
    "category": "frontier",
    "generation": 4,
-   "name_offset": 1310,
-   "roster_offset": 4380,
+   "name_offset": 1315,
+   "roster_offset": 4390,
    "roster_species_ids": [
     228,
     280,
@@ -4603,8 +4620,8 @@
    "character": "Palmer",
    "category": "frontier",
    "generation": 4,
-   "name_offset": 1317,
-   "roster_offset": 4388,
+   "name_offset": 1322,
+   "roster_offset": 4398,
    "roster_species_ids": [
     147
    ],
