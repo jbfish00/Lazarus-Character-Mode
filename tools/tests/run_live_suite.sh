@@ -29,6 +29,21 @@ run() { # name savestate script [pre-command]
     fi
 }
 
+# Injection addresses the Lua tests need, parsed from the injector rather than
+# copied into them. build/ is gitignored, so this must be regenerated per run.
+mkdir -p build
+python3 - > build/cm_layout.lua <<'PYEOF'
+import pathlib, re
+src = pathlib.Path("tools/inject_character_mode.py").read_text()
+def addr(name):
+    m = re.search(r"^%s\s*=\s*(0x[0-9A-Fa-f]+)" % name, src, re.M)
+    if not m:
+        raise SystemExit("could not parse %s out of the injector" % name)
+    return int(m.group(1), 16)
+print("return {mugshot_addr=%d, bitmaps_addr=%d, hidden_addr=%d}"
+      % (addr("CM_MUGSHOT_ADDR"), addr("BITMAPS_ADDR"), addr("HIDDEN_ADDR")))
+PYEOF
+
 run boot_smoke "" tools/mgba_scripts/boot_smoke.lua
 
 echo 'return {cm_on=true}'  > build/cm_test_mode.lua

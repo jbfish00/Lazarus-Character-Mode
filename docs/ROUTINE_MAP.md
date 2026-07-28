@@ -53,6 +53,91 @@ Phase-4-relevant handlers already located: `setvar` `0x08208689` (0x16), `addvar
 
 Note: SB1 pointer relocates on new game (0x0200E580 → 0x0200E55C observed) — always deref `0x03003664` fresh, never cache across a new-game boundary.
 
+## Pokedex bitmaps (CONFIRMED 2026-07-26 — controlled before/after, 3 species)
+
+Needed by the 1% legendary encounter rule (`game_plans/legendary_encounters.md`
+§1.3), whose "offered until caught" filter reads the caught bitmap.
+
+| Field | Offset | Size |
+|---|---|---|
+| `dexSeen` | **SB1 `+0x32A8`** | 129 bytes |
+| `dexCaught` | **SB1 `+0x3329`** | 129 bytes |
+
+129 = `ceil(1025/8)`, i.e. a Gen 1-9 national dex. Bit index is **`natdex - 1`**
+— the standard `GetSetPokedexFlag` convention. Read it as
+`dexCaught[(n-1)/8] & (1 << ((n-1)%8))`; it is a bare load/AND from EWRAM, no
+writes and no reentrancy, so it is safe to call from the encounter hook.
+
+**Evidence.** Catching sets exactly one bit in each array, 129 apart. Three
+species were isolated by set-differencing savestates, each cross-checked against
+a checksum-validated party decrypt:
+
+| species | id | seen bit | derived natdex |
+|---|---|---|---|
+| Pikachu | 25 | `+0x32AB` b0 | 25 ✓ |
+| Hoppip | 187 | `+0x32BF` b2 | 187 ✓ |
+| Popplio | 728 | `+0x3303` b0 | **729** ⚠ |
+
+The base is pinned by Pikachu and Hoppip *independently of each other*: their bit
+indices differ by exactly 162, which is exactly 187-25. The cleanest single pair
+is `wild_battle.ss -> after_catch.ss`, whose only game event is catching that
+Hoppip.
+
+⚠️ **SPECIES ID != NATIONAL DEX NUMBER in this ROM, but the divergence is
+narrow.** Identity holds at species 25 and 187 and fails at 728:
+
+| species | derived natdex | identity? |
+|---|---|---|
+| 25 (Pikachu) | 25 | ✓ |
+| 187 (Hoppip) | 187 | ✓ (confirmed twice — caught-bit diff, and seen-bit vs `gEnemyParty`) |
+| 728 | 729 | ✗ |
+
+Checked directly: natdex 728 is **clear** in every save whose party holds species
+728, while 729 is set. So there is **exactly one dex slot inserted somewhere in
+(187, 728]**.
+
+**That insertion is above 384** — established live (`tools/mgba_scripts/dex_natdex_probe.lua`),
+which forces a chosen species into `CreateWildMon` and reads back which bit the
+game itself sets:
+
+| species forced | registers at | identity? |
+|---|---|---|
+| 243 Raikou | 243 | ✓ |
+| 251 Celebi | 251 | ✓ |
+| 384 Rayquaza | 384 | ✓ |
+
+So **identity holds across 25..384 and fails by +1 at 728**, and every species
+the 1% legendary encounter feature needs (243-251, 382-384) can use its species
+id as its dex number directly. Anything above 384 must still be checked.
+
+⚠️ **The dex bit is set part-way INTO the battle, not when the mon is created.**
+`wild_battle.ss` (early in a Hoppip battle) does NOT have Hoppip's seen bit;
+`battle_menu.ss` and `battle_bag.ss`, the same battle further along, do. A probe
+that creates an encounter and then only presses movement keys registers nothing
+and reads as "the dex was never touched" — the battle intro has to be advanced.
+
+The conversion is NOT a lookup table in any obvious form. Zero candidates from:
+a contiguous `u16` table satisfying T[25]=25, T[187]=187, T[728]=729 under both
+`[species]` and `[species-1]` indexing; any run of >=120 consecutive ascending
+`u16` anywhere in the ROM; and a strided `u16` field (stride 2..128 bytes,
+i.e. a `gSpeciesInfo[].natDexNum`-style member) satisfying the same three points.
+
+The three savestate species (25, 187, 728) are the only ones any state in
+`tools/savestates/` contains, so the range 188..727 cannot be resolved from
+existing data — it needs one new controlled observation in that range.
+
+Anything that feeds a species id straight to a dex lookup will silently flag the
+WRONG Pokemon, and the symptom is "the feature never fires", which is
+indistinguishable from the feature being dead.
+
+**Savestate parsing recipe** (this is how the above was obtained, reuse it): a
+`.ss` is a PNG; its `gbAs` chunk zlib-decompresses to 0x61000 bytes of core
+state, within which **IWRAM is at offset `0x019000`** (0x8000 B -> 0x03000000)
+and **EWRAM at `0x021000`** (0x40000 B -> 0x02000000). Validated by dereferencing
+`gSaveBlock1Ptr` (IWRAM `+0x3664`) and confirming the documented SB1 landmarks —
+flags at `+0x12E8` came out 49-54 nonzero bytes, vars at `+0x1414` 4-11, matching
+this file's own Phase 1d figures.
+
 ## Party globals (CONFIRMED 2026-07-16, Phase 1e — live + ref-count)
 
 | Symbol | Address | Evidence |

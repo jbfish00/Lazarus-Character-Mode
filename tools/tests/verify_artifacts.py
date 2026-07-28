@@ -83,16 +83,35 @@ NUM_SPECIES = 1561
 STRIDE = 196
 CODE_LEN = 11
 
-SHIM_ADDR = 0x095F1000
-BITMAPS_ADDR = 0x095F1800
-CODES_ADDR = 0x09610800
-STARTERS_ADDR = 0x09611200
-SCRIPT_ADDR = 0x095FBC00
-TRADE_SCRIPT_ADDR = 0x095FC800
-CM_MUGSHOT_ADDR = 0x09644000   # mugshot renderer (src/character_sprite.c)
-WILDMONS_ADDR = 0x095FD000
-CM_SPRITE_PTRS_ADDR  = 0x09620000   # Phase 3 (keep in sync with the injector)
-CM_SPRITE_BLOBS_ADDR = 0x09620800
+# Data placement is PARSED out of the injector, not copied. These are choices,
+# not findings, and they move whenever the character count grows -- the 238-char
+# audit rebase moved five of them at once. A copy here would not fail as "the
+# addresses moved": it fails as "stray modified bytes outside the intended
+# regions", which reads like a corrupt build. (The RE-derived addresses below
+# are findings about the ROM and stay written down.)
+_INJ_SRC = (Path(__file__).parent.parent / "inject_character_mode.py").read_text()
+
+
+def _inj_addr(name):
+    m = re.search(r"^%s\s*=\s*(0x[0-9A-Fa-f]+)" % name, _INJ_SRC, re.M)
+    if not m:
+        raise SystemExit("verify_artifacts: could not parse %s out of "
+                         "inject_character_mode.py" % name)
+    return int(m.group(1), 16)
+
+
+SHIM_ADDR = _inj_addr("SHIM_ADDR")
+BITMAPS_ADDR = _inj_addr("BITMAPS_ADDR")
+CODES_ADDR = _inj_addr("CODES_ADDR")
+STARTERS_ADDR = _inj_addr("STARTERS_ADDR")
+HIDDEN_ADDR = _inj_addr("HIDDEN_ADDR")
+SCRIPT_ADDR = _inj_addr("SCRIPT_ADDR")
+TRADE_SCRIPT_ADDR = _inj_addr("TRADE_SCRIPT_ADDR")
+CM_MUGSHOT_ADDR = _inj_addr("CM_MUGSHOT_ADDR")   # src/character_sprite.c
+WILDMONS_ADDR = _inj_addr("WILDMONS_ADDR")
+LEGENDARY_ADDR = _inj_addr("LEGENDARY_ADDR")
+CM_SPRITE_PTRS_ADDR = _inj_addr("CM_SPRITE_PTRS_ADDR")
+CM_SPRITE_BLOBS_ADDR = _inj_addr("CM_SPRITE_BLOBS_ADDR")
 
 TRAMPOLINE_ADDR = 0x08470A64
 WILD_TRAMPOLINE_ADDR = 0x08470A6C
@@ -212,6 +231,9 @@ def main():
     check("rosters_expanded.bin is 179 x 196", len(bitmaps) == NUM_CHARACTERS * STRIDE)
     wildmons = (ROOT / "tools" / "character_mode" / "wildmons.bin").read_bytes()
     check(f"wildmons.bin length is a multiple of {NUM_CHARACTERS}", len(wildmons) % NUM_CHARACTERS == 0)
+    legendaries = (ROOT / "tools" / "character_mode" / "legendaries.bin").read_bytes()
+    check(f"legendaries.bin length is a multiple of {NUM_CHARACTERS}",
+          len(legendaries) % NUM_CHARACTERS == 0)
     wildmon_stride = len(wildmons) // NUM_CHARACTERS if len(wildmons) % NUM_CHARACTERS == 0 else 0
 
     print("== 3. diff confined to intended regions ==")
@@ -236,9 +258,12 @@ def main():
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
         (CODES_ADDR - 0x08000000, CODES_ADDR - 0x08000000 + NUM_CHARACTERS * CODE_LEN),
         (STARTERS_ADDR - 0x08000000, STARTERS_ADDR - 0x08000000 + NUM_CHARACTERS * 2),
+        (HIDDEN_ADDR - 0x08000000,
+         HIDDEN_ADDR - 0x08000000 + (NUM_CHARACTERS + 7) // 8),
         (SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000),
         (TRADE_SCRIPT_ADDR - 0x08000000, TRADE_SCRIPT_ADDR - 0x08000000 + 0x400),
         (WILDMONS_ADDR - 0x08000000, WILDMONS_ADDR - 0x08000000 + len(wildmons)),
+        (LEGENDARY_ADDR - 0x08000000, LEGENDARY_ADDR - 0x08000000 + len(legendaries)),
         (CM_SPRITE_BLOBS_ADDR - 0x08000000, CM_SPRITE_BLOBS_ADDR - 0x08000000 + len(_spr_blobs)),
         (CM_SPRITE_PTRS_ADDR - 0x08000000, CM_SPRITE_PTRS_ADDR - 0x08000000 + len(_spr_ptrs)),
         (CM_MUGSHOT_ADDR - 0x08000000, CM_MUGSHOT_ADDR - 0x08000000 + _mugshot_len),
@@ -316,12 +341,41 @@ def main():
     chars = manifest["characters"]
     # NOT `len(chars) == NUM_CHARACTERS` -- NUM_CHARACTERS is DERIVED from this
     # very manifest at the top of this file, so that comparison is a tautology
-    # that cannot fail. The drift actually worth catching is manifest vs the
-    # INJECTOR's own hardcoded count, so check against that.
-    _inj = (ROOT / "tools" / "inject_character_mode.py").read_text()
-    _inj_n = int(re.search(r"^NUM_CHARACTERS\s*=\s*(\d+)", _inj, re.M).group(1))
-    check(f"injector's NUM_CHARACTERS ({_inj_n}) matches the manifest ({len(chars)})",
-          _inj_n == len(chars))
+    # that cannot fail. What is worth checking is that nothing in the build
+    # chain has REINTRODUCED a hardcoded count: the injector and both C shims
+    # must derive it (the injector from the manifest, the shims from the
+    # injector's -DNUM_CHARACTERS). A stale literal is this workspace's most
+    # repeated bug and never presents as a count error.
+    check("injector derives NUM_CHARACTERS from the manifest",
+          re.search(r"^NUM_CHARACTERS\s*=\s*\d+", _INJ_SRC, re.M) is None
+          and "_derive_num_characters()" in _INJ_SRC)
+    for _src in ("character_mode.c", "character_sprite.c"):
+        _txt = (ROOT / "src" / _src).read_text()
+        check(f"{_src} takes NUM_CHARACTERS from the injector",
+              re.search(r"^#define\s+NUM_CHARACTERS\s+\d+", _txt, re.M) is None
+              and "#ifndef NUM_CHARACTERS" in _txt)
+    check(f"injector passes -DNUM_CHARACTERS to both shims",
+          _INJ_SRC.count('f"-DNUM_CHARACTERS={NUM_CHARACTERS}"') == 2)
+
+    # --- the playability threshold, read back out of the built ROM ---------
+    with open(ROOT / "tools" / "character_mode" / "character_drops.json") as f:
+        _drops = set(json.load(f)["unselectable"])
+    _hoff = HIDDEN_ADDR - 0x08000000
+    _hbits = patched[_hoff:_hoff + (NUM_CHARACTERS + 7) // 8]
+    _rom_hidden = {chars[i]["character"] for i in range(NUM_CHARACTERS)
+                   if _hbits[i >> 3] & (1 << (i & 7))}
+    _man_hidden = {c["character"] for c in chars if c.get("hidden")}
+    check(f"hidden bitmap in ROM matches the manifest ({len(_man_hidden)} hidden)",
+          _rom_hidden == _man_hidden)
+    check("hidden bitmap in ROM matches character_drops.json",
+          {re.sub(r"\s*\(anime\)$", "", c) for c in _rom_hidden} == _drops)
+    # Hiding must not disable enforcement: a save already on one of these
+    # characters keeps loading, and its bitmap must still be there to enforce.
+    check("hidden characters still carry a non-empty allow-bitmap where their "
+          "roster is non-empty",
+          all(any(patched[boff + i * STRIDE:boff + (i + 1) * STRIDE])
+              for i, c in enumerate(chars)
+              if c.get("hidden") and c["roster_species_ids"]))
 
     def bit(ci, sp):
         return (patched[boff + ci * STRIDE + (sp >> 3)] >> (sp & 7)) & 1
@@ -366,8 +420,20 @@ def main():
             if bad_code <= 3:
                 print(f"    code mismatch [{ci}] {c['character']}: {decoded!r} != {want!r}")
         starter = struct.unpack_from("<H", patched, soff + ci * 2)[0]
-        sig = (c["signature_id"] if c.get("has_signature") and c.get("signature_id")
-               else c["roster_species_ids"][0])
+        if c.get("has_signature") and c.get("signature_id"):
+            sig = c["signature_id"]
+        elif c["roster_species_ids"]:
+            sig = c["roster_species_ids"][0]
+        else:
+            # Empty roster: the record exists only to hold its index stable and
+            # the threshold hides it, so the injector writes SPECIES_NONE, which
+            # is correctly OFF the bitmap. Checking `bit(ci, 0)` would demand
+            # the opposite.
+            if starter != 0 or not c.get("hidden"):
+                bad_starter += 1
+                print(f"    empty roster [{ci}] {c['character']}: starter "
+                      f"{starter} (want 0), hidden={c.get('hidden')}")
+            continue
         if starter != sig or not bit(ci, starter):
             bad_starter += 1
             if bad_starter <= 3:
@@ -577,6 +643,87 @@ def main():
     check("wildmons.bin in ROM == pipeline output",
           patched[WILDMONS_ADDR - 0x08000000: WILDMONS_ADDR - 0x08000000 + len(wildmons)]
           == wildmons)
+
+    # ---- the 1% legendary pool (game_plans/legendary_encounters.md) ---------
+    print("== the 1% legendary wild pool ==")
+
+    check("legendaries.bin in ROM == pipeline output",
+          patched[LEGENDARY_ADDR - 0x08000000: LEGENDARY_ADDR - 0x08000000 + len(legendaries)]
+          == legendaries)
+
+    leg_stride = len(legendaries) // NUM_CHARACTERS
+
+    # THE CHECK SEAGLASS DOES NOT HAVE. Its WILDPOOL_STRIDE is 104 in the shim
+    # and 176 in the data, so every character but the first reads a misaligned
+    # slice of someone else's pool -- and it shipped precisely because its
+    # verifier validates the .bin and never the COMPILED constant. The shim
+    # materialises LEGENDARY_ADDR in a literal pool, so its presence proves the
+    # shim in the ROM was built against the address the data was spliced to.
+    _shim = (ROOT / "build" / "character_mode.bin").read_bytes()
+    check("the compiled shim carries the LEGENDARY_ADDR literal "
+          "(shim and data agree on placement)",
+          struct.pack("<I", LEGENDARY_ADDR) in _shim,
+          f"{LEGENDARY_ADDR:#x} not found in the {len(_shim)} B shim")
+
+    # Every entry has to decode, or the shim walks garbage.
+    _bad, _fams, _species = [], 0, set()
+    for c in range(NUM_CHARACTERS):
+        base = c * leg_stride
+        for off in range(0, leg_stride, 4):
+            raw = int.from_bytes(legendaries[base + off: base + off + 2], "little")
+            lo, hi = legendaries[base + off + 2], legendaries[base + off + 3]
+            if raw == 0:
+                # the rest of this character's region must be zero padding
+                if any(legendaries[base + off: base + leg_stride]):
+                    _bad.append(f"char {c}: data after terminator")
+                break
+            sp = raw & 0x7FFF
+            if raw & 0x8000:
+                _fams += 1
+            if not (0 < sp < NUM_SPECIES):
+                _bad.append(f"char {c}: species {sp} out of range")
+            if not (1 <= lo <= hi <= 100):
+                _bad.append(f"char {c}: bad level window {lo}-{hi}")
+            _species.add(sp)
+    check("every legendary entry decodes (species in range, lo<=hi, padded)",
+          not _bad, "; ".join(_bad[:5]))
+    check("the legendary pool is not empty", _fams > 0)
+
+    # The pool must describe exactly the manifest's legendary slice -- the same
+    # cross-check emit_legendaries.py makes, re-made here against the ROM.
+    _man = __import__("json").loads(
+        (ROOT / "tools" / "character_mode" / "characters_manifest.json").read_text())
+    _mismatch = []
+    for c, rec in enumerate(_man["characters"]):
+        has_blob = any(legendaries[c * leg_stride: c * leg_stride + 2])
+        has_man = bool(rec.get("roster_species_ids", [])[rec.get("starter_count", 0):])
+        if has_blob != has_man:
+            _mismatch.append(rec.get("character", str(c)))
+    check("blob agrees with the manifest on who has a legendary",
+          not _mismatch, f"disagree: {_mismatch[:5]}")
+
+    # Every species in the pool must be one emit_characters calls legendary --
+    # otherwise the 1% roll is quietly handing out ordinary Pokemon.
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location(
+        "_ec", ROOT / "tools" / "character_mode" / "emit_characters.py")
+    _ec = _ilu.module_from_spec(_spec)
+    try:
+        _spec.loader.exec_module(_ec)
+    except SystemExit:
+        pass
+    _rom_tbl = __import__("json").loads(
+        (ROOT / "tools" / "character_mode" / "rom_species_table.json").read_text())["species"]
+    _legend_names = {n.replace("SPECIES_", "").replace("_", "").lower()
+                     for n in getattr(_ec, "LEGENDARY_BASES", set())}
+    check("emit_characters.LEGENDARY_BASES extracted (not silently empty)",
+          len(_legend_names) > 90, f"got {len(_legend_names)}")
+    _not_legend = [sp for sp in sorted(_species)
+                   if _rom_tbl.get(str(sp), "?").replace(" ", "").replace("-", "").replace(".", "").lower()
+                   not in _legend_names]
+    check("every species in the legendary pool is actually a legendary",
+          not _not_legend,
+          f"non-legendary: {[(sp, _rom_tbl.get(str(sp))) for sp in _not_legend[:5]]}")
 
     sys.path.insert(0, str(ROOT / "tools" / "character_mode"))
     import emit_characters  # noqa: E402

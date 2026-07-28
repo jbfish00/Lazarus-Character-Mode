@@ -37,7 +37,13 @@ typedef unsigned int u32;
 typedef signed short s16;
 
 #define VAR_CM_CHAR    0x40E0
-#define NUM_CHARACTERS 202
+
+/* Supplied by the injector, derived from characters_manifest.json. A stale
+ * literal here would let an out-of-range id index past the end of the pointer
+ * table and draw whatever follows it. */
+#ifndef NUM_CHARACTERS
+#error "compile with -DNUM_CHARACTERS= (derived from characters_manifest.json)"
+#endif
 
 /* Supplied by the injector (-DSPRITE_PTRS_ADDR=<CM_SPRITE_PTRS_ADDR>):
  * NUM_CHARACTERS x {u32 gfx, u32 pal} absolute ROM pointers in character-index

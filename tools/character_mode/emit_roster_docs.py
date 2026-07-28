@@ -123,6 +123,63 @@ def dex_numbers():
     return nums
 
 
+class FinalIndex:
+    """Donor topology reduced to the one question the docs ask of it: which
+    allowed species are final evolutions, and which doc row does each collapse
+    onto.
+
+    A class rather than closures inside main() because `derive_drops.py` counts
+    the very same finals to decide who falls under the six-fully-evolved
+    playability threshold. Sharing this is what keeps the threshold, the docs
+    and the injected bitmaps from disagreeing about how many finals a character
+    really has."""
+
+    def __init__(self):
+        self.donor = donor_species()
+        self.dexnum = dex_numbers()
+        # normalized display name -> donor consts (a ROM species id resolves to
+        # its donor entries by name, the same bridge emit_bitmaps.py uses)
+        self.consts_by_name = defaultdict(list)
+        for const, rec in self.donor.items():
+            if rec["name"]:
+                self.consts_by_name[normalize(rec["name"])].append(const)
+        # canonical const per national dex number = the base-form entry
+        self.canonical = {}
+        for const in sorted(self.donor):
+            d = self.donor[const]["dex"]
+            if d:
+                self.canonical.setdefault(d, const)
+
+    def dex_of(self, const):
+        d = self.donor[const]["dex"]
+        if d:
+            return self.dexnum.get(d, 0)
+        # Last resort: derive the constant from the display name. Needed for
+        # oddities like this donor's Eternal Floette, which carries the name
+        # "Florges" and no .natDexNum of its own.
+        name = (self.donor[const]["name"] or "").upper()
+        return self.dexnum.get("NATIONAL_DEX_" + re.sub(r"[^A-Z0-9]", "", name), 0)
+
+    def is_final(self, const):
+        if self.donor[const]["children"]:
+            return False
+        base = self.canonical.get(self.donor[const]["dex"], const)
+        return not self.donor[base]["children"]
+
+    def finals_for_names(self, names):
+        """Display names of allowed species -> the set of doc rows (canonical
+        consts) their final evolutions collapse onto."""
+        finals = set()
+        for name in names:
+            for const in self.consts_by_name.get(normalize(name), ()):
+                if self.is_final(const):
+                    finals.add(self.canonical.get(self.donor[const]["dex"], const))
+        return finals
+
+    def ordered(self, finals):
+        return sorted(finals, key=lambda c: (self.dex_of(c), self.donor[c]["name"]))
+
+
 TAG_MARKER = {"anime-only": "ᵃ", "single-game": "ᵍ"}
 
 
@@ -160,55 +217,33 @@ def main():
                          "of records for %d characters - re-run emit_bitmaps.py"
                          % (len(bitmaps), len(manifest)))
 
-    donor = donor_species()
-    dexnum = dex_numbers()
+    # Docs describe what the ROM OFFERS. A character under the playability
+    # threshold keeps its record (saves store the index) and keeps its bitmap
+    # slot, but its code is refused at the naming screen, so documenting it
+    # would promise something the game declines. The bitmaps are still indexed
+    # by the full character list -- hidden characters are skipped, not removed,
+    # or every later character would read the wrong record.
+    if any("hidden" not in rec for rec in manifest):
+        raise SystemExit("characters_manifest.json predates the playability "
+                         "threshold (no 'hidden' field) - re-run "
+                         "derive_drops.py then emit_characters.py --final")
+    hidden_total = sum(1 for rec in manifest if rec["hidden"])
 
-    # normalized display name -> donor consts (a ROM species id resolves to its
-    # donor entries by name, the same bridge emit_bitmaps.py uses)
-    consts_by_name = defaultdict(list)
-    for const, rec in donor.items():
-        if rec["name"]:
-            consts_by_name[normalize(rec["name"])].append(const)
-
-    # canonical const per national dex number = the base-form entry
-    canonical = {}
-    for const in sorted(donor):
-        d = donor[const]["dex"]
-        if d:
-            canonical.setdefault(d, const)
-
-    def dex_of(const):
-        d = donor[const]["dex"]
-        if d:
-            return dexnum.get(d, 0)
-        # Last resort: derive the constant from the display name. Needed for
-        # oddities like this donor's Eternal Floette, which carries the name
-        # "Florges" and no .natDexNum of its own.
-        name = (donor[const]["name"] or "").upper()
-        return dexnum.get("NATIONAL_DEX_" + re.sub(r"[^A-Z0-9]", "", name), 0)
-
-    def is_final(const):
-        if donor[const]["children"]:
-            return False
-        base = canonical.get(donor[const]["dex"], const)
-        return not donor[base]["children"]
+    index = FinalIndex()
 
     chars = []
     for i, rec in enumerate(manifest):
+        if rec["hidden"]:
+            continue
         bits = bitmaps[i * stride:(i + 1) * stride]
-        finals = set()
-        for sid, name in rom_names.items():
-            if sid >= stride * 8 or not (bits[sid >> 3] & (1 << (sid & 7))):
-                continue
-            for const in consts_by_name.get(normalize(name), ()):
-                if is_final(const):
-                    finals.add(canonical.get(donor[const]["dex"], const))
-        ordered = sorted(finals, key=lambda c: (dex_of(c), donor[c]["name"]))
+        allowed = [name for sid, name in rom_names.items()
+                   if sid < stride * 8 and (bits[sid >> 3] & (1 << (sid & 7)))]
+        ordered = index.ordered(index.finals_for_names(allowed))
         chars.append({
             "name": rec["character"],
             "gen": rec["generation"],
             "label": CATEGORY_LABEL.get(rec["category"], rec["category"].title()),
-            "finals": [(donor[c]["name"], dex_of(c)) for c in ordered],
+            "finals": [(index.donor[c]["name"], index.dex_of(c)) for c in ordered],
         })
 
     def marked(char, name):
@@ -240,7 +275,13 @@ def main():
            "**curated dex** (see `docs/SPECIES_CAP.md`), so canon roster members the "
            "binary simply does not have are omitted rather than promised.",
            "", prov_note, "",
-           "**%d characters.** Sprite version: `ROSTERS_SPRITES.md`." % len(chars),
+           "**%d selectable characters.** %d more keep a table slot but are not "
+           "offered: this game's curated dex cannot field six fully-evolved "
+           "Pokémon for them, so their code is refused at the naming screen. "
+           "(A save already on one of those still loads and is still enforced — "
+           "saves store the character index, so the records stay.)"
+           % (len(chars), hidden_total),
+           "", "Sprite version: `ROSTERS_SPRITES.md`.",
            "", generated_note, "", "## Contents"]
     for g in gens:
         out.append("- [Generation %d](#generation-%d)" % (g, g))
@@ -260,7 +301,7 @@ def main():
            "order**, with sprites and names. Split by generation to keep pages "
            "fast. Regional/cosmetic forms show as base species. Sprites via "
            "[PokéAPI](https://github.com/PokeAPI/sprites). Text: `ROSTERS.md`.",
-           "", "**%d characters.**" % len(chars), "", generated_note,
+           "", "**%d selectable characters.**" % len(chars), "", generated_note,
            "", "## Generations", ""]
     for g in gens:
         idx.append("- [Generation %d](sprites/gen_%d.md) — %d characters"

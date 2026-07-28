@@ -38,9 +38,15 @@ def norm(s):
     return re.sub(r"[^a-z0-9]", "", s.lower())
 
 
-def main():
+def load_expansion_tables():
+    """The ROM-id -> donor-family -> ROM-ids crosswalk, built once.
+
+    Module-level (rather than inline in main) so `derive_drops.py` can expand a
+    roster through the EXACT code path that builds the injected allow-bitmaps.
+    The playability threshold counts fully-evolved species in the expanded
+    roster; if it expanded rosters its own way, the threshold and the bitmaps
+    could disagree about what a character actually gets."""
     rom_table = json.load(open(HERE / "rom_species_table.json"))["species"]
-    manifest = json.load(open(HERE / "characters_manifest.json"))
 
     name_to_const, parent = load_donor()
     for nm, c in MACRO_FORM_CONST_OVERRIDES.items():
@@ -64,26 +70,46 @@ def main():
         rom_ids_by_norm.setdefault(n, set()).add(int(idx_str))
         id_to_norm[int(idx_str)] = n
 
+    return {"base_of": base_of, "donor_by_norm": donor_by_norm,
+            "name_of_const": name_of_const, "family": family,
+            "rom_ids_by_norm": rom_ids_by_norm, "id_to_norm": id_to_norm,
+            "rom_table": rom_table}
+
+
+def expand_roster(species_ids, tbl, unresolved=None):
+    """Roster base ids -> every ROM id the character is allowed to own."""
+    base_of = tbl["base_of"]
+    allowed = set()
+    for sid in species_ids:
+        if not (0 < sid < NUM_SPECIES):
+            continue
+        allowed.add(sid)
+        n = tbl["id_to_norm"].get(sid)
+        c = tbl["donor_by_norm"].get(n) if n else None
+        if c is None:
+            if unresolved is not None:
+                unresolved.append((sid, n))
+            continue
+        for member in tbl["family"].get(base_of.get(c, c), {c}):
+            mnorm = norm(tbl["name_of_const"][member])
+            allowed.update(i for i in tbl["rom_ids_by_norm"].get(mnorm, ())
+                           if 0 < i < NUM_SPECIES)
+    return allowed
+
+
+def main():
+    manifest = json.load(open(HERE / "characters_manifest.json"))
+    tbl = load_expansion_tables()
+
     out = bytearray()
     report = []
     unresolved = []
     for rec in manifest["characters"]:
         if "roster_species_ids" not in rec:
             continue  # warning-only entries
-        allowed = set()
-        for sid in rec["roster_species_ids"]:
-            if not (0 < sid < NUM_SPECIES):
-                continue
-            allowed.add(sid)
-            n = id_to_norm.get(sid)
-            c = donor_by_norm.get(n) if n else None
-            if c is None:
-                unresolved.append((rec["character"], sid, n))
-                continue
-            for member in family.get(base_of.get(c, c), {c}):
-                mnorm = norm(name_of_const[member])
-                allowed.update(i for i in rom_ids_by_norm.get(mnorm, ())
-                               if 0 < i < NUM_SPECIES)
+        misses = []
+        allowed = expand_roster(rec["roster_species_ids"], tbl, misses)
+        unresolved += [(rec["character"], sid, n) for sid, n in misses]
         bm = bytearray(STRIDE)
         for s in allowed:
             bm[s >> 3] |= 1 << (s & 7)

@@ -50,21 +50,49 @@ ROM_SHA1 = "7dcdc7e280bc4631487e13dd37e6e0cea04adea6"
 BUILD = ROOT / "build"
 CHARMAP = Path("/home/jbfish00/Documents/Pokemon Rowe Alteration/charmap.txt")
 
-NUM_CHARACTERS = 202  # 179 + 12 professors + 10 Frontier Brains + Volo (2026-07-25); Sada/Turo/Tobias trimmed
 BITMAP_STRIDE = 196
 CODE_LEN = 11
 
+
+def _derive_num_characters():
+    """DERIVED, never a literal. A stale hardcoded character count is the most
+    repeated bug in this workspace and it never presents as a count error -- on
+    the 2026-07-26 Radical Red pass it fired six times, twice reading as a bug
+    in the test shim itself because a hardcoded out-of-range index had quietly
+    become a real character."""
+    with open(HERE / "character_mode" / "characters_manifest.json") as f:
+        return len(json.load(f)["characters"])
+
+
+NUM_CHARACTERS = _derive_num_characters()
+
 # --- confirmed layout constants ---
 FREE_FILE_BASE = 0x15F0EA4          # big 0xFF block start (file offset)
-SHIM_ADDR      = 0x095F1000
-BITMAPS_ADDR   = 0x095F1800  # 201*196=39,396B -> ends 0x95FB1E4
-CODES_ADDR     = 0x09610800  # rebased 2026-07-24: 201-char bitmaps end 0x95FB1E4,
-                             # past the old 0x95FB000. Moved beyond the wildmon table
-                             # (ends 0x960F0F0) rather than squeezed before SCRIPT_ADDR,
-                             # which stays fixed. 201*11=2,211B -> ends 0x96110A3
-STARTERS_ADDR  = 0x09611200  # 201*2=402B -> ends 0x9611392
-SCRIPT_ADDR    = 0x095FBC00
-WILDMONS_ADDR  = 0x095FD000  # 201*368=73,968B -> ends 0x960F0F0
+# Moved down 0x140 on 2026-07-27 to fit the 1% legendary roll. The free block
+# starts at FREE_FILE_BASE (0x095F0EA4) and the shim used to start 0x15C into
+# it, wasting that head room while the window up to BITMAPS_ADDR was only
+# 2048 B -- which the legendary picker overflowed by 43 B. This reclaims it and
+# gives the shim 2368 B. splice() asserts the whole target range is still 0xFF,
+# so a mistake here fails the build rather than corrupting the ROM.
+SHIM_ADDR      = 0x095F0EC0
+# Rebased 2026-07-26 for the 238-character roster audit. The 202-char layout
+# interleaved blobs (script at 0x95FBC00, wildmons at 0x95FD000, codes way up at
+# 0x9610800) and 238-char bitmaps run straight through all three. Everything
+# downstream of the bitmaps is now laid out in one ascending, non-interleaved
+# order with slack, so the next growth moves one constant instead of three.
+# splice() asserts every target is still 0xFF in the working copy, which is what
+# actually proves these do not overlap -- keep it that way.
+BITMAPS_ADDR   = 0x095F1800  # 238*196=46,648B -> ends 0x095FCE38
+CODES_ADDR     = 0x095FD000  # 238*11=2,618B   -> ends 0x095FDA3A
+STARTERS_ADDR  = 0x095FDC00  # 238*2=476B      -> ends 0x095FDDDC
+HIDDEN_ADDR    = 0x095FDE00  # (238+7)/8=30B   -> ends 0x095FDE1E
+SCRIPT_ADDR    = 0x095FE000
+WILDMONS_ADDR  = 0x09600000  # 238*stride      -> must end before LEGENDARY_ADDR
+# The 1% legendary wild pool (../game_plans/legendary_encounters.md). Sits in
+# the same free run, immediately after wildmons: at 238 chars x stride 16 it is
+# 3,808 B, and wildmons currently ends at 0x09613FD0, so this has ~49 KB of
+# clearance before the sprite table. Both ends are asserted below.
+LEGENDARY_ADDR = 0x09614000  # 238*stride      -> must end before 0x09620000
 CM_SPRITE_PTRS_ADDR  = 0x09620000   # Phase 3, separate free run; additive table
 CM_SPRITE_BLOBS_ADDR = 0x09620800
 # Mugshot renderer (src/character_sprite.c). A SEPARATE compile unit from the
@@ -74,7 +102,11 @@ CM_SPRITE_BLOBS_ADDR = 0x09620800
 # splice() is what actually proves it clear. No BL-reach constraint: every
 # engine call it makes goes through a function pointer, and the script reaches
 # it by an absolute `callnative` operand.
-CM_MUGSHOT_ADDR = 0x09644000
+# Moved 0x09644000 -> 0x09648000 on 2026-07-26: the 238-character sprite table
+# grew the blobs from 142,156 B to 146,896 B and they now end at 0x096445D0,
+# past where the renderer used to sit. Keep it clear of the blob end -- the
+# assert below says so in words rather than as a bare "target not 0xFF".
+CM_MUGSHOT_ADDR = 0x09648000
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
 TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
@@ -112,7 +144,7 @@ TRADE_JUNCTIONS = (0x2B61E5, 0x2C8442, 0x2C8E00, 0x319684)
 TRADE_JUNCTION_BYTES = bytes([0x19, 0x04, 0x80, 0x08, 0x80,
                               0x19, 0x05, 0x80, 0x0A, 0x80,
                               0x25, 0x00, 0x01, 0x25, 0x01, 0x01, 0x27])
-TRADE_SCRIPT_ADDR = 0x095FC800
+TRADE_SCRIPT_ADDR = 0x095FE800
 
 # --- helpers ---
 
@@ -188,12 +220,21 @@ def main():
     with open(HERE / "character_mode" / "characters_manifest.json") as f:
         manifest = json.load(f)
     chars = manifest["characters"]
-    assert len(chars) == NUM_CHARACTERS, len(chars)
+    assert len(chars) == NUM_CHARACTERS, len(chars)  # derived from this file
     bitmaps = (HERE / "character_mode" / "rosters_expanded.bin").read_bytes()
     assert len(bitmaps) == NUM_CHARACTERS * BITMAP_STRIDE, len(bitmaps)
+    hidden_bits = (HERE / "character_mode" / "hidden.bin").read_bytes()
+    assert len(hidden_bits) == (NUM_CHARACTERS + 7) // 8, len(hidden_bits)
     wildmons = (HERE / "character_mode" / "wildmons.bin").read_bytes()
     assert len(wildmons) % NUM_CHARACTERS == 0, len(wildmons)
     wildmon_stride = len(wildmons) // NUM_CHARACTERS
+    assert WILDMONS_ADDR + len(wildmons) <= LEGENDARY_ADDR, \
+        f"wildmons run into the legendary pool: {WILDMONS_ADDR + len(wildmons):#x}"
+    legendaries = (HERE / "character_mode" / "legendaries.bin").read_bytes()
+    assert len(legendaries) % NUM_CHARACTERS == 0, len(legendaries)
+    legendary_stride = len(legendaries) // NUM_CHARACTERS
+    assert LEGENDARY_ADDR + len(legendaries) <= CM_SPRITE_PTRS_ADDR, \
+        f"legendary pool runs into the sprite table: {LEGENDARY_ADDR + len(legendaries):#x}"
 
     # --- code + starter tables ---
     codes = bytearray()
@@ -220,7 +261,18 @@ def main():
         enc = enc_text(code, cm)
         assert len(enc) <= CODE_LEN
         codes += enc + b"\xFF" * (CODE_LEN - len(enc))
-        sig = c["signature_id"] if c.get("has_signature") and c.get("signature_id") else c["roster_species_ids"][0]
+        if c.get("has_signature") and c.get("signature_id"):
+            sig = c["signature_id"]
+        elif c["roster_species_ids"]:
+            sig = c["roster_species_ids"][0]
+        else:
+            # Empty roster (the 2026-07-25 audit produced 17 of them once this
+            # ROM's curated dex was applied). The record exists only to keep
+            # every later character's index stable, and the threshold hides it,
+            # so no code can select it. SPECIES_NONE also reads as "nothing to
+            # give" to the confirm script, which branches on VAR_CM_STARTER == 0.
+            assert c["hidden"], f"{c['character']}: empty roster but selectable"
+            sig = 0
         starters.append(sig)
     starters_blob = b"".join(struct.pack("<H", s) for s in starters)
 
@@ -247,8 +299,12 @@ def main():
                     f"-DCODES_ADDR={CODES_ADDR:#x}",
                     f"-DSTARTERS_ADDR={STARTERS_ADDR:#x}",
                     f"-DBITMAPS_ADDR={BITMAPS_ADDR:#x}",
+                    f"-DHIDDEN_ADDR={HIDDEN_ADDR:#x}",
+                    f"-DNUM_CHARACTERS={NUM_CHARACTERS}",
                     f"-DDBG_GIVE2_SPECIES={dbg_give2}",
                     f"-DWILDMONS_ADDR={WILDMONS_ADDR:#x}",
+                    f"-DLEGENDARY_ADDR={LEGENDARY_ADDR:#x}",
+                    f"-DLEGENDARY_STRIDE={legendary_stride}",
                     f"-DWILDMON_STRIDE={wildmon_stride}",
                     "-o", str(obj), str(ROOT / "src" / "character_mode.c")],
                    check=True)
@@ -280,6 +336,7 @@ def main():
     subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
                     "-O2", "-ffreestanding", "-fno-builtin", "-Wall", "-Wextra",
                     f"-DSPRITE_PTRS_ADDR={CM_SPRITE_PTRS_ADDR:#x}",
+                    f"-DNUM_CHARACTERS={NUM_CHARACTERS}",
                     "-o", str(mobj), str(ROOT / "src" / "character_sprite.c")],
                    check=True)
     subprocess.run(["arm-none-eabi-ld", "-Ttext", f"{CM_MUGSHOT_ADDR:#x}",
@@ -381,8 +438,10 @@ def main():
     splice(BITMAPS_ADDR, bitmaps, "bitmaps")
     splice(CODES_ADDR, bytes(codes), "codes")
     splice(STARTERS_ADDR, starters_blob, "starters")
+    splice(HIDDEN_ADDR, hidden_bits, "hidden bitmap")
     splice(SCRIPT_ADDR, bytes(script), "script")
     splice(WILDMONS_ADDR, wildmons, "wildmons")
+    splice(LEGENDARY_ADDR, legendaries, "legendary pool")
     splice(CM_MUGSHOT_ADDR, mugshot, "mugshot renderer")
 
     # --- Phase 3 character sprites (2026-07-25) ---
@@ -395,6 +454,9 @@ def main():
         _blobs = _spr_b.read_bytes()
         _offs = _spr_o.read_bytes()
         assert len(_offs) == NUM_CHARACTERS * 8, (len(_offs), NUM_CHARACTERS)
+        assert CM_SPRITE_BLOBS_ADDR + len(_blobs) <= CM_MUGSHOT_ADDR, (
+            f"sprite blobs end at {CM_SPRITE_BLOBS_ADDR + len(_blobs):#x}, past "
+            f"the mugshot renderer at {CM_MUGSHOT_ADDR:#x} -- move it up")
         _ptrs = bytearray()
         _wired = 0
         for _i in range(NUM_CHARACTERS):
@@ -495,7 +557,8 @@ def main():
           f"branch-0 ptr, {len(TRADE_JUNCTIONS)} trade junctions "
           f"(wrappers @ {TRADE_SCRIPT_ADDR:#x}, {len(trade_blob)} B), "
           f"{len(BL_SITES_WILD)} wild-encounter BL sites "
-          f"(wildmons @ {WILDMONS_ADDR:#x}, stride {wildmon_stride}, {len(wildmons)} B)")
+          f"(wildmons @ {WILDMONS_ADDR:#x}, stride {wildmon_stride}, {len(wildmons)} B; "
+          f"legendaries @ {LEGENDARY_ADDR:#x}, stride {legendary_stride}, {len(legendaries)} B)")
 
     # --- 5. outputs ---
     out_rom = BUILD / "lazarus_cm.gba"
@@ -510,10 +573,15 @@ def main():
     if bps.exists():
         print(f"patch: {bps} ({bps.stat().st_size} bytes)")
 
+    # Selectable characters only: a hidden character's code is refused at the
+    # naming screen, so listing it would promise something the ROM declines.
+    _sel = [(code, c, s) for code, c, s in zip(typed_codes, chars, starters)
+            if not c.get("hidden")]
     (BUILD / "codes.txt").write_text(
         "\n".join(f"{code}\t{c['character']}\tstarter={s}"
-                  for code, c, s in zip(typed_codes, chars, starters)) + "\n")
-    print(f"code list: {BUILD/'codes.txt'} ({len(typed_codes)} characters)")
+                  for code, c, s in _sel) + "\n")
+    print(f"code list: {BUILD/'codes.txt'} ({len(_sel)} selectable of "
+          f"{len(typed_codes)} characters)")
     print("Debug codes: CMDBGOFF, CMDBGGIVE1, CMDBGGIVE2 (case-insensitive)")
 
 

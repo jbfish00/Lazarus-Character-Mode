@@ -84,13 +84,26 @@ FLAG_BYTE = SB1_FAKE + FLAGS_OFF + (FLAG_CM >> 3)
 FLAG_MASK = 1 << (FLAG_CM & 7)
 VAR_ADDR = SB1_FAKE + VARS_OFF + 2 * (VAR_CM_CHAR - 0x4000)
 
+VAR_CM_STARTER = 0x40E4
+STARTER_VAR_ADDR = SB1_FAKE + VARS_OFF + 2 * (VAR_CM_STARTER - 0x4000)
+CODE_BUFFER = 0x0203CCE0     # the naming screen's 10-char buffer (sCodeBuffer)
+SPECIALS_SLOT_222 = 0x28D47C  # specials-table entry the naming screen calls
+
 PARTY_COUNT = 0x0201B95D
 MON_ADDR = 0x02033000    # scratch EWRAM for the synthetic mon
 TRAMP_ADDR = 0x02032F00  # scratch EWRAM for the ARM->Thumb entry trampoline
 
-NUM_CHARACTERS = 202  # 2026-07-25 rebuild (+Volo)
+# DERIVED, never a literal. A stale count here does not fail as a count error:
+# the "out of range -> give" case below picks NUM_CHARACTERS + 1, and once the
+# roster grows past the literal that index is a REAL character, so the test
+# fails as an apparent shim bug. That exact confusion cost real time on the
+# 2026-07-26 Radical Red pass.
+NUM_CHARACTERS = len(json.loads(
+    (ROOT / "tools" / "character_mode" / "characters_manifest.json").read_text()
+)["characters"])
 NUM_SPECIES = 1561
 STRIDE = 196
+CODE_LEN = 11
 
 
 def build_mon(species, is_egg=False):
@@ -107,7 +120,8 @@ def build_mon(species, is_egg=False):
 
 
 def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
-               var8004_addr, wild_cases, wild_entry_thumb):
+               var8004_addr, wild_cases, wild_entry_thumb,
+               select_cases, select_entry_thumb):
     # ARM->Thumb entry trampoline in scratch EWRAM: the stub ignores manual
     # CPSR T-bit writes, so the first entry goes through a real BX. Later
     # cases re-enter from Thumb context and can set $pc directly.
@@ -181,6 +195,28 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
             f'set $pc = {wild_entry_thumb & ~1:#x}',
             "continue",
             'printf "WILD_RESULT=%d,%d\\n", $r0, $r1',
+        ]
+    # selection gate: drive the REAL shipped entry (the specials-table slot the
+    # naming screen calls) with the REAL shipped code bytes, and read back what
+    # it decided. The naming screen itself cannot be typed to an arbitrary
+    # character from a test -- Unbound proved that the hard way -- but the code
+    # buffer is exactly what it hands the matcher, so filling it in is driving
+    # the same gate with the same input.
+    for i, c in enumerate(select_cases):
+        lines += [
+            f'echo \\n=== SELECT {i}: {c["name"]} ===\\n',
+            f'python gdb.selected_inferior().write_memory({CODE_BUFFER:#x}, bytes.fromhex("{c["code"]}"))',
+            f'set *(unsigned char*){FLAG_BYTE:#x} = 0',
+            f'set *(unsigned short*){VAR_ADDR:#x} = 0',
+            f'set *(unsigned short*){STARTER_VAR_ADDR:#x} = 0xBEEF',
+            f'set *(unsigned short*){SPECIAL_RESULT:#x} = 0',
+            'set $r0 = 0',
+            'set $sp = 0x03007F00',
+            f'set $lr = {GIVEMON | 1:#x}',
+            f'set $pc = {select_entry_thumb & ~1:#x}',
+            "continue",
+            f'printf "SELECT_RESULT=%d,%d\\n", *(unsigned short*){VAR_ADDR:#x},'
+            f' (*(unsigned char*){FLAG_BYTE:#x} & {FLAG_MASK:#x}) != 0',
         ]
     lines += ["disconnect", "quit"]
     return "\n".join(lines) + "\n"
@@ -308,6 +344,22 @@ def main():
         red_wild_species.add(raw & 0x7FFF)
         i += 4
     assert red_wild_species, "Red's wildmons table must not be empty"
+
+    # Red's 1% legendary pool (game_plans/legendary_encounters.md). Same entry
+    # format, separate blob -- an override may legitimately come from either.
+    legendaries = (ROOT / "tools" / "character_mode" / "legendaries.bin").read_bytes()
+    legendary_stride = len(legendaries) // len(chars)
+    red_legendary_species = set()
+    _b = red0 * legendary_stride
+    _i = 0
+    while _i + 4 <= legendary_stride:
+        _raw, _lo, _hi = struct.unpack_from("<HBB", legendaries, _b + _i)
+        if _raw == 0:
+            break
+        red_legendary_species.add(_raw & 0x7FFF)
+        _i += 4
+    assert red_legendary_species, \
+        "Red must have a legendary pool, or the positive assertion below is vacuous"
     assert not (red_wild_species & set(chars[red0]["roster_species_ids"][chars[red0]["starter_count"]:])), \
         "Red's wildmons table must never contain a legendary roster id"
     print(f"Red's wild-override pool: {len(red_wild_species)} species")
@@ -323,9 +375,51 @@ def main():
             "level": wild_input_level} for _ in range(WILD_TRIALS_ON)]
     )
 
+    # --- selection gate (the playability threshold, 2026-07-26) -------------
+    # Entry and code bytes both come out of the SHIPPED ROM: the entry from the
+    # specials slot the naming screen dispatches through, the codes from the
+    # injected code table. Nothing here re-encodes a name, so the test cannot
+    # pass against a build whose table says something else.
+    select_entry = struct.unpack_from("<I", romdata, SPECIALS_SLOT_222)[0]
+    assert select_entry & 1 and 0x08000000 < (select_entry & ~1) < 0x0A000000
+    codes_off = int(re.search(r"^CODES_ADDR\s*=\s*(0x[0-9A-Fa-f]+)",
+                              (ROOT / "tools" / "inject_character_mode.py").read_text(),
+                              re.M).group(1), 16) - 0x08000000
+
+    def code_bytes(i):
+        return romdata[codes_off + i * CODE_LEN:codes_off + (i + 1) * CODE_LEN]
+
+    hidden0 = next((i for i, c in enumerate(chars) if c.get("hidden")), None)
+    assert hidden0 is not None, "no hidden characters -- did derive_drops.py run?"
+    select_cases = [
+        {"name": f"{chars[red0]['character']} (offered) -> selected",
+         "code": code_bytes(red0).hex(), "expect": (red_id, 1)},
+        {"name": f"{chars[hidden0]['character']} (under threshold) -> refused",
+         "code": code_bytes(hidden0).hex(), "expect": (0, 0)},
+        {"name": "unknown code -> refused",
+         "code": (b"\xBB" * 4 + b"\xFF" * (CODE_LEN - 4)).hex(), "expect": (0, 0)},
+    ]
+    # A second hidden character, chosen as the LAST one in the table: an
+    # off-by-one in the hidden bitmap's indexing shows up at the ends first.
+    hiddenN = next((i for i in range(len(chars) - 1, -1, -1)
+                    if chars[i].get("hidden")), None)
+    if hiddenN is not None and hiddenN != hidden0:
+        select_cases.append(
+            {"name": f"{chars[hiddenN]['character']} (last hidden) -> refused",
+             "code": code_bytes(hiddenN).hex(), "expect": (0, 0)})
+    # ...and the last OFFERED character, for the same reason in the other
+    # direction: a bitmap read that drifts high would refuse a real character.
+    lastok = next((i for i in range(len(chars) - 1, -1, -1)
+                   if not chars[i].get("hidden")), None)
+    if lastok is not None and lastok != red0:
+        select_cases.append(
+            {"name": f"{chars[lastok]['character']} (last offered) -> selected",
+             "code": code_bytes(lastok).hex(), "expect": (lastok + 1, 1)})
+
     script = HERE / "shim_test.gdb"
     script.write_text(gdb_script(cases, gate, trade_cases, trade_entry, var8004,
-                                  wild_cases, wild_gate))
+                                  wild_cases, wild_gate,
+                                  select_cases, select_entry))
 
     launcher = ["mgba-qt", "-g", str(rom)]
     if not os.environ.get("DISPLAY"):
@@ -351,11 +445,17 @@ def main():
     wresults = [(int(a), int(b) & 0xFF) for a, b in
                 (m.split(",") for m in re.findall(r"WILD_RESULT=(-?\d+,-?\d+)", out))]
     wresults = [(a & 0xFFFF, b) for a, b in wresults]
+    sresults = [(int(a) & 0xFFFF, int(b)) for a, b in
+                (m.split(",") for m in
+                 re.findall(r"SELECT_RESULT=(-?\d+,-?\d+)", out))]
     print(out[-3000:] if len(out) > 3000 else out)
-    if len(stops) != len(cases) or len(tresults) != len(trade_cases) or len(wresults) != len(wild_cases):
+    if (len(stops) != len(cases) or len(tresults) != len(trade_cases)
+            or len(wresults) != len(wild_cases)
+            or len(sresults) != len(select_cases)):
         print(f"FATAL: expected {len(cases)} stops + {len(trade_cases)} trade "
-              f"+ {len(wild_cases)} wild results, got {len(stops)} + {len(tresults)} "
-              f"+ {len(wresults)}")
+              f"+ {len(wild_cases)} wild + {len(select_cases)} select results, "
+              f"got {len(stops)} + {len(tresults)} + {len(wresults)} + "
+              f"{len(sresults)}")
         print(r.stderr[-2000:])
         return 1
 
@@ -391,12 +491,44 @@ def main():
     print(f"  [{'PASS' if rate_ok else 'FAIL'}] wild: CM on, {len(wild_on)} trials -> "
           f"{len(on_overridden)} overridden ({rate:.1%}, expected ~10%)")
 
-    exclusion_bad = [sp for sp, lvl in on_overridden if sp not in red_wild_species]
+    # An override may come from EITHER pool now. Checking only wildmons.bin was
+    # correct until the 1% legendary roll existed; left as-is it rejects exactly
+    # the species the new feature is supposed to produce.
+    exclusion_bad = [sp for sp, lvl in on_overridden
+                     if sp not in red_wild_species and sp not in red_legendary_species]
     excl_ok = not exclusion_bad
     failures += not excl_ok
-    print(f"  [{'PASS' if excl_ok else 'FAIL'}] wild: every overridden species is a "
-          f"non-legendary member of Red's roster ({len(exclusion_bad)} bad, "
+    print(f"  [{'PASS' if excl_ok else 'FAIL'}] wild: every overridden species is on "
+          f"Red's roster, from either pool ({len(exclusion_bad)} bad, "
           f"e.g. {exclusion_bad[:5]})")
+
+    # ---- THE POSITIVE ASSERTION (the spec's biggest risk) -------------------
+    #
+    # Every other wild assertion here is of the form "an override never produced
+    # a legendary". Once the dex filter exists that is satisfied BOTH by correct
+    # suppression AND by the legendary path being completely dead, so on its own
+    # it can never show the feature works. These trials run with no legendary
+    # caught, so the pool is full and the roll must fire. ~1% of 200 is ~2.
+    legendary_hits = [sp for sp, lvl in on_overridden if sp in red_legendary_species]
+    pos_ok = len(legendary_hits) > 0
+    failures += not pos_ok
+    print(f"  [{'PASS' if pos_ok else 'FAIL'}] wild: the 1% legendary roll ACTUALLY "
+          f"FIRED ({len(legendary_hits)} of {len(wild_on)} trials, "
+          f"e.g. {sorted(set(legendary_hits))[:3]})")
+
+    # ...and stays rare. 12+ would mean it is leaking into the 10% path.
+    rare_ok = len(legendary_hits) < 12
+    failures += not rare_ok
+    print(f"  [{'PASS' if rare_ok else 'FAIL'}] wild: legendaries stay rare "
+          f"({len(legendary_hits)} < 12 in {len(wild_on)} trials)")
+
+    # The ordinary override must still dominate; if the legendary roll had
+    # swallowed the 10% path, this collapses.
+    ordinary = len(on_overridden) - len(legendary_hits)
+    dom_ok = ordinary > len(legendary_hits)
+    failures += not dom_ok
+    print(f"  [{'PASS' if dom_ok else 'FAIL'}] wild: the 10% roster override still "
+          f"dominates ({ordinary} ordinary vs {len(legendary_hits)} legendary)")
 
     level_bad = [lvl for _, lvl in on_overridden if not (1 <= lvl <= 100)]
     lvl_ok = not level_bad
@@ -404,7 +536,15 @@ def main():
     print(f"  [{'PASS' if lvl_ok else 'FAIL'}] wild: every overridden level stays in "
           f"[1,100] ({len(level_bad)} bad)")
 
-    total = len(cases) + len(trade_cases) + 4  # 4 wild-trial aggregate checks
+    for c, got in zip(select_cases, sresults):
+        ok = got == tuple(c["expect"])
+        failures += not ok
+        print(f"  [{'PASS' if ok else 'FAIL'}] select: {c['name']}: "
+              f"(char={got[0]}, flag={got[1]}) (expected char={c['expect'][0]}, "
+              f"flag={c['expect'][1]})")
+
+    total = (len(cases) + len(trade_cases) + len(select_cases)
+             + 7)  # 7 wild-trial aggregate checks (3 are the legendary roll)
     print(f"\n{total - failures}/{total} passed")
     return 1 if failures else 0
 

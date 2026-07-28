@@ -24,6 +24,18 @@ ARE RELATIVE TO THE START OF THEIR OWN BLOB, not final ROM addresses:
                              Seaglass's OW/trainer-pic tables
     u8  generation
     u8  flags             -- bit0: hasSignature: signature ace is roster[0]
+                             bit1: hidden: under the six-fully-evolved
+                                   playability threshold in this game's curated
+                                   dex, so the code is refused at the naming
+                                   screen. The RECORD STAYS -- a save stores the
+                                   character index, so an existing save on a
+                                   now-hidden character keeps loading and keeps
+                                   being enforced. See character_drops.json.
+
+hidden.bin is emitted alongside: one bit per character (LSB-first), bit i set =
+character i is hidden. characters.bin itself is never injected into this ROM --
+the shim reads codes/starters/bitmaps as separate blobs -- so the flag needs its
+own blob to reach the code-matching loop.
 
 TWO MODES, unlike Unbound's single-pass emitter, because map_species.py's
 Stage A deliberately does NOT borrow untrustworthy donor numeric ids (see
@@ -129,17 +141,40 @@ def _signature_base_map():
 
 def build_rosters(mapped, order):
     """Compute starter/legendary split + signature placement per character.
-    Returns (per-character dict, skipped-empty list, warnings list) -- pure
+    Returns (per-character dict, empty-roster list, warnings list) -- pure
     function of consts, independent of whether numeric ids exist yet."""
     base_of = _signature_base_map()
     built = {}
-    skipped = []
+    empty = []          # emitted, but with no species -- see the note below
     warnings = []
     for disp in order:
         info = mapped[disp]
         species = info["species"]
         if not species:
-            skipped.append(disp)
+            # An empty roster used to SKIP the character, emitting no record at
+            # all. That is a save-corrupting bug the moment it happens to a
+            # character that already shipped: a save stores the character INDEX,
+            # so dropping a record renumbers everyone after it. The 2026-07-25
+            # audit made it happen for real -- Viola (index 117), Rowan (182),
+            # Burnet (185) and Magnolia (187) all emptied, because the audit
+            # correctly removed other trainers' Pokemon from them and everything
+            # genuinely theirs is absent from this ROM's curated dex.
+            #
+            # So: emit a record, keep the index, and let the playability
+            # threshold hide the character from the menu. That is exactly the
+            # case the threshold exists for, and it is the only option that
+            # keeps existing saves valid.
+            empty.append(disp)
+            built[disp] = {
+                "category": info.get("category"),
+                "generation": info.get("gen", 0) or 1,
+                "ordered_consts": [],
+                "starter_count": 0,
+                "has_signature": False,
+                "signature_const": None,
+            }
+            warnings.append("%s: empty roster in this game -- record kept for "
+                            "index stability, must be hidden by the threshold" % disp)
             continue
 
         consts = [s["const"] for s in species]
@@ -181,18 +216,87 @@ def build_rosters(mapped, order):
             "has_signature": bool(has_signature),
             "signature_const": sig_const,
         }
-    return built, skipped, warnings
+    return built, empty, warnings
+
+
+def load_hidden(order):
+    """Resolve character_drops.json's names onto this build's character list.
+
+    derive_drops.py writes names with a trailing " (anime)" stripped, because
+    that is the name the ROM shows and the code the player types; characters.txt
+    keeps the suffix. Resolving through display_name() bridges the two.
+
+    Every dropped name MUST resolve, and no two characters may share a display
+    name. A name that matched nothing would silently leave that character
+    selectable -- the exact failure this pass exists to close, and one no
+    downstream test can tell apart from "the threshold said keep". So both are
+    assertions, not skips.
+    """
+    path = os.path.join(HERE, "character_drops.json")
+    if not os.path.isfile(path):
+        return set()
+    with open(path, encoding="utf-8") as f:
+        names = json.load(f).get("unselectable", [])
+    by_display = {}
+    collisions = []
+    for disp in order:
+        d = display_name(disp)
+        if d in by_display:
+            collisions.append(d)
+        by_display[d] = disp
+    if collisions:
+        raise SystemExit(
+            "%d display name(s) are shared by more than one character (%s) -- "
+            "character_drops.json could not say which one it means"
+            % (len(collisions), ", ".join(sorted(set(collisions)))))
+    hidden, unresolved = set(), []
+    for n in names:
+        if n in by_display:
+            hidden.add(by_display[n])
+        else:
+            unresolved.append(n)
+    if unresolved:
+        raise SystemExit(
+            "character_drops.json names %d character(s) this build does not "
+            "have: %s -- re-run derive_drops.py"
+            % (len(unresolved), ", ".join(unresolved)))
+    return hidden
+
+
+def const_id_map(mapped):
+    """SPECIES_* const -> this ROM's numeric id, from rosters_mapped.json's
+    per-species "id" field. Fails loudly if anything is still PENDING_PHASE1,
+    i.e. if Stage B has not run. Shared with derive_drops.py so the threshold
+    counts the same species the binaries carry."""
+    const_to_id = {}
+    unresolved = set()
+    for info in mapped.values():
+        for s in info["species"]:
+            if s["id"] == "PENDING_PHASE1":
+                unresolved.add(s["const"])
+            else:
+                const_to_id[s["const"]] = s["id"]
+        sig = info.get("signature")
+        if sig:
+            if sig["id"] == "PENDING_PHASE1":
+                unresolved.add(sig["const"])
+            else:
+                const_to_id[sig["const"]] = sig["id"]
+    if unresolved:
+        raise SystemExit(
+            "real species ids required for all species; %d still "
+            "PENDING_PHASE1 (e.g. %s). Run Stage B first."
+            % (len(unresolved), ", ".join(sorted(unresolved)[:5])))
+    return const_to_id
 
 
 def cmd_dry_run(mapped, order):
     charmap = load_charmap(CHARMAP_PATH)
-    built, skipped, warnings = build_rosters(mapped, order)
+    built, empty, warnings = build_rosters(mapped, order)
 
     names_blob = bytearray()
     manifest = []
     for disp in order:
-        if disp in skipped:
-            continue
         b = built[disp]
         name_off = len(names_blob)
         names_blob += encode_text(display_name(disp), charmap)
@@ -212,12 +316,12 @@ def cmd_dry_run(mapped, order):
         f.write(names_blob)
     with open(os.path.join(HERE, "characters_manifest.json"), "w") as f:
         json.dump({"mode": "dry_run_names_topology_only",
-                   "record_count": len(order) - len(skipped),
-                   "skipped_empty_roster": skipped,
+                   "record_count": len(order),
+                   "empty_roster": empty,
                    "warnings": warnings,
                    "characters": manifest}, f, indent=1)
 
-    print("[dry-run] validated %d characters (%d skipped empty)" % (len(order) - len(skipped), len(skipped)))
+    print("[dry-run] validated %d characters (%d with an empty roster, kept for index stability)" % (len(order), len(empty)))
     print("  names.bin: %d bytes (real, final content)" % len(names_blob))
     print("  characters.bin / rosters.bin: NOT written -- species ids are all")
     print("  PENDING_PHASE1; run with --final once Stage B fills in real ids.")
@@ -229,38 +333,18 @@ def cmd_dry_run(mapped, order):
 
 def cmd_final(mapped, order):
     charmap = load_charmap(CHARMAP_PATH)
-    built, skipped, warnings = build_rosters(mapped, order)
+    built, empty, warnings = build_rosters(mapped, order)
 
-    # id lookup: const -> real numeric id, sourced from rosters_mapped.json's
-    # per-species "id" field. Fail loudly if anything is still PENDING_PHASE1.
-    const_to_id = {}
-    unresolved = set()
-    for info in mapped.values():
-        for s in info["species"]:
-            if s["id"] == "PENDING_PHASE1":
-                unresolved.add(s["const"])
-            else:
-                const_to_id[s["const"]] = s["id"]
-        sig = info.get("signature")
-        if sig:
-            if sig["id"] == "PENDING_PHASE1":
-                unresolved.add(sig["const"])
-            else:
-                const_to_id[sig["const"]] = sig["id"]
-    if unresolved:
-        raise SystemExit(
-            "--final requires Stage B ids for all species; %d species still "
-            "PENDING_PHASE1 (e.g. %s). Run Stage B first."
-            % (len(unresolved), ", ".join(sorted(unresolved)[:5])))
+    const_to_id = const_id_map(mapped)
+    hidden_names = load_hidden(order)
 
     names_blob = bytearray()
     rosters_blob = bytearray()
     records = bytearray()
+    hidden_bits = bytearray((len(order) + 7) // 8)
     manifest = []
 
-    for disp in order:
-        if disp in skipped:
-            continue
+    for i, disp in enumerate(order):
         b = built[disp]
         name_off = len(names_blob)
         names_blob += encode_text(display_name(disp), charmap)
@@ -270,7 +354,10 @@ def cmd_final(mapped, order):
             rosters_blob += struct.pack("<H", const_to_id[const])
         rosters_blob += struct.pack("<H", 0)  # SPECIES_NONE terminator
 
-        flags = int(b["has_signature"]) & 0x1
+        hidden = disp in hidden_names
+        if hidden:
+            hidden_bits[i >> 3] |= 1 << (i & 7)
+        flags = (int(b["has_signature"]) & 0x1) | (0x2 if hidden else 0)
         sprite_asset_id = 0xFFFF  # TBD -- Seaglass OW/trainer-pic table not yet located (Phase 1/3)
         records += struct.pack("<IIHBB", name_off, roster_off, sprite_asset_id, b["generation"], flags)
 
@@ -281,21 +368,33 @@ def cmd_final(mapped, order):
             "roster_species_ids": [const_to_id[c] for c in b["ordered_consts"]],
             "starter_count": b["starter_count"], "has_signature": b["has_signature"],
             "signature_id": sig_id, "sprite_asset_id": "TBD",
+            # Under the playability threshold: the code is refused at the naming
+            # screen, but the record and its index stay so an existing save on
+            # this character keeps loading and keeps being enforced.
+            "hidden": hidden,
         })
 
     with open(os.path.join(HERE, "characters.bin"), "wb") as f:
         f.write(records)
+    with open(os.path.join(HERE, "hidden.bin"), "wb") as f:
+        f.write(hidden_bits)
     with open(os.path.join(HERE, "rosters.bin"), "wb") as f:
         f.write(rosters_blob)
     with open(os.path.join(HERE, "names.bin"), "wb") as f:
         f.write(names_blob)
+    n_hidden = sum(1 for r in manifest if r["hidden"])
     with open(os.path.join(HERE, "characters_manifest.json"), "w") as f:
-        json.dump({"mode": "final", "record_count": len(order) - len(skipped),
-                   "record_size_bytes": 12, "skipped_empty_roster": skipped,
+        json.dump({"mode": "final", "record_count": len(order),
+                   "record_size_bytes": 12, "empty_roster": empty,
+                   "selectable_count": len(manifest) - n_hidden,
+                   "hidden_count": n_hidden,
                    "warnings": warnings, "characters": manifest}, f, indent=1)
 
-    print("[final] emitted %d characters (%d skipped empty)" % (len(order) - len(skipped), len(skipped)))
+    print("[final] emitted %d characters (%d with an empty roster, kept for index stability)" % (len(order), len(empty)))
+    print("  %d selectable, %d hidden below the six-fully-evolved threshold"
+          % (len(manifest) - n_hidden, n_hidden))
     print("  characters.bin: %d bytes (%d records x 12)" % (len(records), len(records) // 12))
+    print("  hidden.bin:     %d bytes (1 bit per character)" % len(hidden_bits))
     print("  rosters.bin:    %d bytes" % len(rosters_blob))
     print("  names.bin:      %d bytes" % len(names_blob))
     print("\nsprite_asset_id is a PLACEHOLDER (0xFFFF) for every record -- Phase 3 fills")

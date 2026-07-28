@@ -45,7 +45,13 @@ end
 -- callnative show/hide, so the mugshot must be on screen while that box is up.
 -- The template is located by scanning the renderer blob for its tag pair
 -- rather than hardcoding an address the build could move.
-local MUG_BASE, MUG_SPAN = 0x09644000, 0x300
+-- Renderer base comes from build/cm_layout.lua, which the runner generates by
+-- parsing the injector. It was hardcoded, and the 238-character rebuild moved
+-- the renderer 0x4000 up (the sprite blobs grew into its old home) -- which
+-- surfaced as "mugshot never drawn", i.e. as a renderer bug, not as a moved
+-- address. Same trap as every other hardcoded layout constant in this repo.
+local LAYOUT = dofile("build/cm_layout.lua")
+local MUG_BASE, MUG_SPAN = LAYOUT.mugshot_addr, 0x300
 local GSPRITES, SPRITE_COUNT, SPRITE_STRIDE = 0x0203B5CC, 64, 0x44
 local OFF_TEMPLATE, OFF_INUSE = 0x14, 0x3E
 

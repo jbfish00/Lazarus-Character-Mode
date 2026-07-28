@@ -4,7 +4,7 @@ An opt-in game mode where you play as an iconic Pokemon character — a
 protagonist, rival, gym leader, Elite Four member, champion, villain, or
 anime cast member — and are restricted to catching and keeping only that
 character's canon roster (as documented on Bulbapedia, expanded to full
-evolution families). 202 characters, Generations 1 through 9.
+evolution families). 123 characters, Generations 1 through 9.
 
 Ported from the original Character Mode built for Pokemon ROWE, following
 the Radical Red port.
@@ -84,12 +84,20 @@ Notes:
 
 ## Known limitations
 
-- Characters keep the normal player sprite (no custom character sprites
-  yet).
+- Characters keep the normal player sprite in the overworld. A character
+  portrait is shown when you select one, for the 164 characters art is
+  staged for.
 - Some characters' canon rosters include Pokemon that are not obtainable
   in Lazarus's curated dex; their rosters were validated against the
   official Encounters guide so every character has obtainable Pokemon,
   but roster species missing from Lazarus simply never appear.
+- **Not every Pokemon character is offered here.** Lazarus ships a curated
+  dex, and for many characters it simply cannot field six fully-evolved
+  Pokemon from their canon roster — playing as one would mean a whole run
+  with almost nothing catchable. Those codes are refused, and only the
+  characters listed below are selectable. If you have a save from an
+  earlier build on a character that is no longer offered, it keeps working
+  exactly as it did.
 
 ## Character codes
 
@@ -97,49 +105,47 @@ Notes:
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Agatha` | Agatha | Elite Four | Gastly |
-| `Ash` | Ash | anime | Pikachu |
+| `Ash` | Ash | Anime | Pikachu |
 | `Blaine` | Blaine | Gym Leader | Growlithe |
-| `Blue` | Blue | champion | Aerodactyl |
+| `Blue` | Blue | Champion | Aerodactyl |
 | `Brock` | Brock | Gym Leader | Onix |
-| `Bruno` | Bruno | Elite Four | Dratini |
+| `Bruno` | Bruno | Elite Four | Grimer |
 | `Erika` | Erika | Gym Leader | Bellsprout |
-| `Gary` | Gary | anime | Aerodactyl |
-| `Giovanni` | Giovanni | villain | Bellsprout |
-| `James` | James | anime | Aron |
-| `Jessie` | Jessie | anime | Ekans |
+| `Gary` | Gary | Anime | Doduo |
+| `Giovanni` | Giovanni | Villain | Cubone |
+| `James` | James | Anime | Aron |
+| `Jessie` | Jessie | Anime | Ekans |
 | `Koga` | Koga | Elite Four | Chinchou |
-| `Lance` | Lance | champion | Dratini |
-| `Leaf` | Leaf | protagonist | Eevee |
+| `Lance` | Lance | Champion | Dratini |
+| `Leaf` | Leaf | Protagonist | Eevee |
 | `Lorelei` | Lorelei | Elite Four | Lapras |
 | `LtSurge` | Lt. Surge | Gym Leader | Pikachu |
 | `Misty` | Misty | Gym Leader | Buizel |
-| `Oak` | Oak | Professor | Dratini |
-| `Red` | Red | protagonist | Pikachu |
-| `Ritchie` | Ritchie | anime | Pikachu |
+| `Oak` | Oak | Professor | Bellsprout |
+| `Red` | Red | Protagonist | Pikachu |
+| `Ritchie` | Ritchie | Anime | Pikachu |
 | `Sabrina` | Sabrina | Gym Leader | Chingling |
-| `Tracey` | Tracey | anime | Scyther |
 
 ### Generation 2
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Archer` | Archer | villain | Houndour |
-| `Ariana` | Ariana | villain | Ekans |
+| `Archer` | Archer | Villain | Houndour |
+| `Ariana` | Ariana | Villain | Ekans |
 | `Bugsy` | Bugsy | Gym Leader | Scyther |
 | `Chuck` | Chuck | Gym Leader | Poliwag |
 | `Clair` | Clair | Gym Leader | Aerodactyl |
-| `Elm` | Elm | Professor | Bellsprout |
-| `Ethan` | Ethan | protagonist | Cyndaquil |
+| `Elm` | Elm | Professor | Chikorita |
+| `Ethan` | Ethan | Protagonist | Cyndaquil |
 | `Falkner` | Falkner | Gym Leader | Hoothoot |
 | `Janine` | Janine | Gym Leader | Spinarak |
 | `Jasmine` | Jasmine | Gym Leader | Onix |
 | `Karen` | Karen | Elite Four | Eevee |
-| `Kris` | Kris | protagonist | Totodile |
-| `Lyra` | Lyra | protagonist | Chikorita |
+| `Kris` | Kris | Protagonist | Totodile |
+| `Lyra` | Lyra | Protagonist | Chikorita |
 | `Morty` | Morty | Gym Leader | Gastly |
 | `Pryce` | Pryce | Gym Leader | Swinub |
-| `Silver` | Silver | rival | Totodile |
+| `Silver` | Silver | Rival | Totodile |
 | `Whitney` | Whitney | Gym Leader | Aipom |
 | `Will` | Will | Elite Four | Natu |
 
@@ -148,33 +154,21 @@ Notes:
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
 | `Anabel` | Anabel | Frontier Brain | Eevee |
-| `Archie` | Archie | villain | Dratini |
+| `Archie` | Archie | Villain | Grimer |
 | `Birch` | Birch | Professor | Aron |
-| `Brandon` | Brandon | Frontier Brain | Duskull |
-| `Brawly` | Brawly | Gym Leader | Heracross |
-| `Brendan` | Brendan | protagonist | Aron |
-| `Drake` | Drake | Elite Four | Pichu |
-| `Drew` | Drew | anime | Budew |
+| `Brendan` | Brendan | Protagonist | Aron |
 | `Flannery` | Flannery | Gym Leader | Torkoal |
-| `Glacia` | Glacia | Elite Four | Spheal |
 | `Greta` | Greta | Frontier Brain | Eevee |
 | `Juan` | Juan | Gym Leader | Barboach |
 | `Liza` | Liza | Gym Leader | Baltoy |
-| `Lucy` | Lucy | Frontier Brain | Magikarp |
-| `Maxie` | Maxie | villain | Numel |
-| `May` | May | protagonist | Torchic |
+| `Maxie` | Maxie | Villain | Numel |
+| `May` | May | Protagonist | Torchic |
 | `Noland` | Noland | Frontier Brain | Aron |
-| `Norman` | Norman | Gym Leader | Aipom |
-| `Phoebe` | Phoebe | Elite Four | Duskull |
 | `Roxanne` | Roxanne | Gym Leader | Nosepass |
-| `Sidney` | Sidney | Elite Four | Corphish |
 | `Spenser` | Spenser | Frontier Brain | Baltoy |
-| `Steven` | Steven | champion | Aerodactyl |
+| `Steven` | Steven | Champion | Aerodactyl |
 | `Tate` | Tate | Gym Leader | Baltoy |
-| `Tucker` | Tucker | Frontier Brain | Growlithe |
-| `Wallace` | Wallace | champion | Barboach |
-| `Wally` | Wally | rival | Ralts |
-| `Wattson` | Wattson | Gym Leader | Magnemite |
+| `Wallace` | Wallace | Champion | Barboach |
 | `Winona` | Winona | Gym Leader | Swablu |
 
 ### Generation 4
@@ -182,162 +176,97 @@ Notes:
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
 | `Aaron` | Aaron | Elite Four | Skorupi |
-| `Barry` | Barry | rival | Budew |
 | `Bertha` | Bertha | Elite Four | Barboach |
 | `Byron` | Byron | Gym Leader | Shieldon |
 | `Candice` | Candice | Gym Leader | Snorunt |
 | `CrasherWak` | Crasher Wake | Gym Leader | Buizel |
-| `Cynthia` | Cynthia | champion | Budew |
-| `Cyrus` | Cyrus | villain | Sneasel |
-| `Dahlia` | Dahlia | Frontier Brain | Duskull |
+| `Cynthia` | Cynthia | Champion | Budew |
+| `Cyrus` | Cyrus | Villain | Sneasel |
 | `Darach` | Darach | Frontier Brain | Houndour |
-| `Dawn` | Dawn | protagonist | Aipom |
-| `Fantina` | Fantina | Gym Leader | Bronzor |
-| `Flint` | Flint | Elite Four | Buizel |
+| `Dawn` | Dawn | Protagonist | Aipom |
+| `Fantina` | Fantina | Gym Leader | Corphish |
+| `Flint` | Flint | Elite Four | Eevee |
 | `Gardenia` | Gardenia | Gym Leader | Budew |
-| `Jupiter` | Jupiter | villain | Stunky |
-| `Lucas` | Lucas | protagonist | Cranidos |
+| `Lucas` | Lucas | Protagonist | Cranidos |
 | `Lucian` | Lucian | Elite Four | Bronzor |
-| `Mars` | Mars | villain | Bronzor |
-| `Maylene` | Maylene | Gym Leader | Aipom |
-| `Nando` | Nando | anime | Budew |
-| `Palmer` | Palmer | Frontier Brain | Dratini |
-| `Paul` | Paul | anime | Aron |
+| `Mars` | Mars | Villain | Bronzor |
+| `Maylene` | Maylene | Gym Leader | Dratini |
+| `Paul` | Paul | Anime | Aron |
 | `Roark` | Roark | Gym Leader | Cranidos |
-| `Rowan` | Rowan | Professor | Aipom |
-| `Saturn` | Saturn | villain | Bronzor |
+| `Saturn` | Saturn | Villain | Bronzor |
 | `Volkner` | Volkner | Gym Leader | Aipom |
-| `Volo` | Volo | villain | Budew |
-| `Zoey` | Zoey | anime | Aipom |
+| `Zoey` | Zoey | Anime | Eevee |
 
 ### Generation 5
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Alder` | Alder | champion | Archen |
-| `Bianca` | Bianca | rival | Blitzle |
-| `Brycen` | Brycen | Gym Leader | Cubchoo |
-| `Burgh` | Burgh | Gym Leader | Dwebble |
+| `Bianca` | Bianca | Rival | Lillipup |
 | `Caitlin` | Caitlin | Elite Four | Gothita |
 | `Cheren` | Cheren | Gym Leader | Lillipup |
-| `Chili` | Chili | Gym Leader | Pansear |
-| `Cilan` | Cilan | Gym Leader | Pansage |
 | `Clay` | Clay | Gym Leader | Baltoy |
-| `Colress` | Colress | villain | Cubchoo |
 | `Cress` | Cress | Gym Leader | Panpour |
-| `Drayden` | Drayden | Gym Leader | Dratini |
-| `Elesa` | Elesa | Gym Leader | Blitzle |
-| `Ghetsis` | Ghetsis | villain | Munna |
 | `Grimsley` | Grimsley | Elite Four | Houndour |
-| `Hilda` | Hilda | protagonist | Eevee |
-| `Hugh` | Hugh | rival | Grimer |
-| `Iris` | Iris | champion | Archen |
-| `Juniper` | Juniper | Professor | Archen |
-| `Lenora` | Lenora | Gym Leader | Gothita |
-| `Marlon` | Marlon | Gym Leader | Shellder |
-| `Marshal` | Marshal | Elite Four | Timburr |
-| `N` | N | rival | Zorua |
-| `Nate` | Nate | protagonist | Growlithe |
-| `Rosa` | Rosa | protagonist | Archen |
-| `Roxie` | Roxie | Gym Leader | Grimer |
-| `Shauntal` | Shauntal | Elite Four | Litwick |
+| `Hilbert` | Hilbert | Protagonist | Archen |
+| `Hilda` | Hilda | Protagonist | Archen |
+| `Ingo` | Ingo | Frontier Brain | Dwebble |
+| `N` | N | Rival | Zorua |
+| `Nate` | Nate | Protagonist | Archen |
+| `Rosa` | Rosa | Protagonist | Archen |
 | `Skyla` | Skyla | Gym Leader | Ducklett |
-| `Trip` | Trip | anime | Dwebble |
 
 ### Generation 6
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Alain` | Alain | anime | Chespin |
-| `Calem` | Calem | protagonist | Chespin |
+| `Calem` | Calem | Protagonist | Chespin |
 | `Clemont` | Clemont | Gym Leader | Helioptile |
-| `Diantha` | Diantha | champion | Ralts |
-| `Drasna` | Drasna | Elite Four | Skrelp |
-| `Grant` | Grant | Gym Leader | Tyrunt |
+| `Diantha` | Diantha | Champion | Ralts |
 | `Korrina` | Korrina | Gym Leader | Chespin |
-| `Lysandre` | Lysandre | villain | Magikarp |
-| `Malva` | Malva | Elite Four | Fennekin |
-| `Ramos` | Ramos | Gym Leader | Skiddo |
-| `Sawyer` | Sawyer | anime | Clauncher |
-| `Serena` | Serena | protagonist | Fennekin |
-| `Shauna` | Shauna | rival | Chespin |
-| `Siebold` | Siebold | Elite Four | Clauncher |
-| `Sycamore` | Sycamore | Professor | Chespin |
+| `Serena` | Serena | Protagonist | Fennekin |
+| `Shauna` | Shauna | Rival | Chespin |
+| `Sycamore` | Sycamore | Professor | Caterpie |
 | `Valerie` | Valerie | Gym Leader | Eevee |
-| `Viola` | Viola | Gym Leader | Honedge |
 | `Wikstrom` | Wikstrom | Elite Four | Honedge |
-| `Wulfric` | Wulfric | Gym Leader | Pichu |
 
 ### Generation 7
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Acerola` | Acerola | Elite Four | Cubone |
-| `Burnet` | Burnet | Professor | Bruxish |
-| `Elio` | Elio | protagonist | Popplio |
-| `Gladion` | Gladion | rival | Cubone |
-| `Guzma` | Guzma | villain | Wimpod |
+| `Acerola` | Acerola | Elite Four | Dhelmise |
+| `Elio` | Elio | Protagonist | Popplio |
+| `Gladion` | Gladion | Rival | Eevee |
+| `Guzma` | Guzma | Villain | Wimpod |
 | `Hala` | Hala | Gym Leader | Crabrawler |
-| `Hapu` | Hapu | Gym Leader | Mudbray |
-| `Hau` | Hau | champion | Pichu |
+| `Hau` | Hau | Champion | Pichu |
 | `Kahili` | Kahili | Elite Four | Pikipek |
-| `Kiaweanime` | Kiawe (anime) | anime | Corphish |
-| `Kukui` | Kukui | champion | Litten |
-| `Lanaanime` | Lana (anime) | anime | Popplio |
-| `Lillieanim` | Lillie (anime) | anime | Vulpix |
-| `Lusamine` | Lusamine | villain | Stufful |
-| `Mallowanim` | Mallow (anime) | anime | Bounsweet |
-| `Molayne` | Molayne | Elite Four | Grubbin |
-| `Nanu` | Nanu | Gym Leader | Meowth |
+| `Kukui` | Kukui | Champion | Litten |
+| `Lanaanime` | Lana (anime) | Anime | Popplio |
+| `Lusamine` | Lusamine | Villain | Stufful |
 | `Olivia` | Olivia | Gym Leader | Rockruff |
-| `Plumeria` | Plumeria | villain | Salandit |
-| `SamsonOak` | Samson Oak | Professor | Bronzor |
-| `Selene` | Selene | protagonist | Rowlet |
-| `Sophocles` | Sophocles | anime | Togedemaru |
+| `SamsonOak` | Samson Oak | Professor | Cubone |
+| `Selene` | Selene | Protagonist | Rowlet |
 
 ### Generation 8
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
+| `Adaman` | Adaman | Rival | Eevee |
 | `Allister` | Allister | Gym Leader | Gastly |
-| `Bea` | Bea | Gym Leader | Dracovish |
-| `Bede` | Bede | rival | Caterpie |
-| `Cerise` | Cerise | Professor | Eevee |
-| `Chloe` | Chloe | anime | Eevee |
-| `Goh` | Goh | anime | Aerodactyl |
-| `Gordie` | Gordie | Gym Leader | Lapras |
+| `Bede` | Bede | Rival | Eevee |
+| `Chloe` | Chloe | Anime | Eevee |
+| `Goh` | Goh | Anime | Aerodactyl |
+| `Irida` | Irida | Rival | Eevee |
 | `Kabu` | Kabu | Gym Leader | Sizzlipede |
-| `Laventon` | Laventon | Professor | Cyndaquil |
-| `Leon` | Leon | champion | Amaura |
-| `Magnolia` | Magnolia | Professor | Bronzor |
-| `Marnie` | Marnie | rival | Cufant |
-| `Melony` | Melony | Gym Leader | Lapras |
-| `Milo` | Milo | Gym Leader | Applin |
-| `Nessa` | Nessa | Gym Leader | Magikarp |
-| `Opal` | Opal | Gym Leader | Dracovish |
-| `Piers` | Piers | Gym Leader | Zigzagoon |
-| `Raihan` | Raihan | Gym Leader | Dreepy |
-| `Rose` | Rose | villain | Cufant |
-| `Sonia` | Sonia | Professor | Bounsweet |
 
 ### Generation 9
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Arven` | Arven | rival | Eevee |
-| `Brassius` | Brassius | Gym Leader | Applin |
-| `Geeta` | Geeta | champion | Chespin |
-| `Grusha` | Grusha | Gym Leader | Cubchoo |
-| `Hassel` | Hassel | Elite Four | Applin |
-| `Iono` | Iono | Gym Leader | Charcadet |
-| `Katy` | Katy | Gym Leader | Heracross |
-| `Kofu` | Kofu | Gym Leader | Crabrawler |
 | `Larry` | Larry | Gym Leader | Flamigo |
-| `Nemona` | Nemona | champion | Pawmi |
-| `Penny` | Penny | rival | Eevee |
+| `Nemona` | Nemona | Champion | Pawmi |
+| `Penny` | Penny | Rival | Eevee |
 | `Poppy` | Poppy | Elite Four | Tinkatink |
-| `Rika` | Rika | Elite Four | Wooper |
-| `Ryme` | Ryme | Gym Leader | Fuecoco |
 | `Tulip` | Tulip | Gym Leader | Florges |
 
 ## Credits

@@ -1,8 +1,8 @@
 {
- "count": 202,
- "with_art": 159,
- "without_art": 43,
- "blob_bytes": 142156,
+ "count": 238,
+ "with_art": 164,
+ "without_art": 74,
+ "blob_bytes": 146896,
  "entries": [
   {
    "character": "Red",
@@ -1434,6 +1434,51 @@
    "pal_off": 142116,
    "gfx_bytes": 1011,
    "pal_bytes": 40
+  },
+  {
+   "character": "Gloria",
+   "source": "rogue",
+   "file": "gloria_front.4bpp.lz",
+   "gfx_off": 142156,
+   "pal_off": 142984,
+   "gfx_bytes": 825,
+   "pal_bytes": 40
+  },
+  {
+   "character": "Hilbert",
+   "source": "rogue",
+   "file": "hilbert_front.4bpp.lz",
+   "gfx_off": 143024,
+   "pal_off": 143896,
+   "gfx_bytes": 872,
+   "pal_bytes": 40
+  },
+  {
+   "character": "Hop",
+   "source": "rogue",
+   "file": "hop_front.4bpp.lz",
+   "gfx_off": 143936,
+   "pal_off": 144832,
+   "gfx_bytes": 896,
+   "pal_bytes": 40
+  },
+  {
+   "character": "Olympia",
+   "source": "rogue",
+   "file": "olympia_front.4bpp.lz",
+   "gfx_off": 144872,
+   "pal_off": 145980,
+   "gfx_bytes": 1105,
+   "pal_bytes": 40
+  },
+  {
+   "character": "Victor",
+   "source": "rogue",
+   "file": "victor_front.4bpp.lz",
+   "gfx_off": 146020,
+   "pal_off": 146856,
+   "gfx_bytes": 835,
+   "pal_bytes": 40
   }
  ],
  "missing": [
@@ -1479,6 +1524,37 @@
   "Noland",
   "Spenser",
   "Tucker",
-  "Dahlia"
+  "Dahlia",
+  "Adaman",
+  "Akari",
+  "Arezu",
+  "Argenta",
+  "Beni",
+  "Calaba",
+  "Charm",
+  "Clover",
+  "Cogita",
+  "Coin",
+  "Cyllene",
+  "Gaeric",
+  "Ingo",
+  "Irida",
+  "Iscan",
+  "Kamado",
+  "Lian",
+  "Mai",
+  "Melli",
+  "Palina",
+  "Pesselle",
+  "Rei",
+  "Ress",
+  "Rye",
+  "Sabi",
+  "Sada",
+  "Sanqua",
+  "Thorton",
+  "Tobias",
+  "Turo",
+  "Zisu"
  ]
 }
