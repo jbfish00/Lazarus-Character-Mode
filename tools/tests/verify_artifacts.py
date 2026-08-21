@@ -876,6 +876,39 @@ def main():
                   and (attr1 >> 14) == 3 and ((attr2 >> 10) & 3) == 0,
                   f"attr0={attr0:#06x} attr1={attr1:#06x} attr2={attr2:#06x}")
 
+    # == Battle Pyramid guard ==
+    # CM_CreateWildMonGated refuses to roll inside the Battle Pyramid, because
+    # the pyramid's wild table stores INDICES (ids 1..4) in the species field
+    # and GenerateBattlePyramidWildMon does `wildMons[species - 1]` on a
+    # 12-byte stride. The guard calls the ROM's own predicate at 0x0808C264 by
+    # hardcoded address, so pin the bytes there: if that address ever means
+    # something else, the shim would be asking a different question and the
+    # override would silently come back inside the pyramid.
+    #
+    # The body is, exactly:
+    #   ldr r3,[pc,#24] / ldrh r3,[r3,#18] / mov r0,r3
+    #   subs r3,#123 / subs r0,#106 / subs r0,#255 / subs r3,#255
+    #   negs r2,r0 / adcs r0,r2 / negs r2,r3 / adcs r3,r2 / orrs r0,r3 / bx lr
+    # i.e. r0 = (mapLayoutId == 361) | (mapLayoutId == 378).
+    print("== 13. Battle Pyramid guard ==")
+    INBP = 0x0808C264
+    # Read out of this ROM 2026-08-20; do NOT hand-transcribe it from a
+    # disassembly listing -- the first attempt at exactly that was wrong in two
+    # bytes (offsets 6 and 18) and would have pinned a signature that never
+    # matches, i.e. a check that always fails for the wrong reason.
+    _sig = bytes.fromhex("064b5b8a18007b3b6a38ff38ff3b424250415a42534118437047")
+    _got = patched[INBP - 0x08000000: INBP - 0x08000000 + len(_sig)]
+    check("InBattlePyramid signature intact at 0x0808C264", _got == _sig,
+          _got.hex())
+    _lit = struct.unpack_from("<I", patched, 0x0808C280 - 0x08000000)[0]
+    check("its gMapHeader literal is 0x0200B06C", _lit == 0x0200B06C, hex(_lit))
+    _src = (ROOT / "src" / "character_mode.c").read_text()
+    check("the wild override still calls InBattlePyramid",
+          "!InBattlePyramid()" in _src)
+    check("the guard is in the same condition as gateActive() (no RNG burned "
+          "inside the pyramid)",
+          "gateActive() && !InBattlePyramid()" in _src)
+
     print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
     return 1 if failures else 0
 

@@ -105,6 +105,15 @@ typedef unsigned int u32;
  * lsl16/lsr16, r1=level truncated to u8 via lsl24/lsr24, exactly matching the
  * donor prototype CreateWildMon(enum Species species, u8 level). */
 #define OrigCreateWildMon ((void (*)(u16, u8))        0x0824AA55)
+
+/* InBattlePyramid() -- gMapHeader(0x0200B06C).mapLayoutId(+0x12) == 361 || 378.
+   Disassembled in THIS ROM at 0x0808C264; the body is exactly
+       r0 = (layoutId == 361) | (layoutId == 378)
+   i.e. LAYOUT_..._BATTLE_PYRAMID_FLOOR and ..._TOP. Needed by the wild
+   override -- see the ⚠️ block in CM_CreateWildMonGated. verify_artifacts.py
+   pins the byte signature at this address so it cannot silently become some
+   other predicate. */
+#define InBattlePyramid ((u8   (*)(void))             0x0808C265)
 /* Random32 — the JKISS-shaped low-level RNG primitive (state update matches
  * modern pokeemerald-expansion's Random()/Random32 shape exactly: x+=const;
  * y^=y<<5/y>>9/... ; z,w,c rotate), called pervasively by personality/nature
@@ -469,7 +478,31 @@ static u16 pickRosterWildSpecies(u16 charId, u8 level, u8 *outLevel)
 
 void CM_CreateWildMonGated(u16 species, u8 level)
 {
-    if (gateActive()) {
+    /* ⚠️ NEVER roll either override inside the Battle Pyramid. Its encounter
+     * tables do not store species at all -- they store INDICES. The pyramid's
+     * land table holds ids 1..4, and GenerateBattlePyramidWildMon
+     * (0x0808BFBC, reached from 0x0824B1A6 / 0x0824B412) does
+     *     id = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES) - 1;
+     *     ... wildMons[id] ...          (12-byte stride, an 8-entry round table)
+     * Hand it a real roster species and `id` becomes several hundred: it reads
+     * kilobytes past the table and writes a garbage species, which then indexes
+     * gBaseStats and the front-anim table.
+     *
+     * This is NOT theoretical and it was NOT one of the two callers this repo
+     * suspected. docs/ROUTINE_MAP.md called the 2 outliers (0x081036FE,
+     * 0x08103876) "Battle Frontier facility ... harmless to include per spec";
+     * measured 2026-08-20, those two are innocent -- they take species as a
+     * parameter and never read it back. The pyramid instead reuses the ORDINARY
+     * land path: its branch calls TryGenerateWildMon (0x0824AB1C), which
+     * contains retargeted BL 0x0824AC24, and only then calls
+     * GenerateBattlePyramidWildMon. A whole-ROM scan for the `species - 1`
+     * index shape found exactly two sites, both inside that function, so the
+     * pyramid is the only table in this ROM with index semantics.
+     *
+     * The test is in the same condition as gateActive() deliberately: inside
+     * the pyramid we must consume ZERO Random32() draws, for the same reason
+     * the legendary data-check precedes its RNG call. */
+    if (gateActive() && !InBattlePyramid()) {
         u16 id = *GetVarPointer(VAR_CM_CHAR);
         u32 hit;
         int eligible = 0;
