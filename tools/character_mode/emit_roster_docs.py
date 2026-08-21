@@ -144,6 +144,15 @@ class FinalIndex:
             if rec["name"]:
                 self.consts_by_name[normalize(rec["name"])].append(const)
         # canonical const per national dex number = the base-form entry
+        self._finals_memo = {}
+        self._root_memo = {}
+        # child -> parent, inverted from the donor's family data; the Source
+        # column needs to know which family a row belongs to.
+        self._parents = {}
+        for const, rec in self.donor.items():
+            for kid in rec["children"]:
+                if kid != const:
+                    self._parents.setdefault(kid, const)
         self.canonical = {}
         for const in sorted(self.donor):
             d = self.donor[const]["dex"]
@@ -176,8 +185,141 @@ class FinalIndex:
                     finals.add(self.canonical.get(self.donor[const]["dex"], const))
         return finals
 
+    def finals_below(self, const):
+        """Every doc row reachable by evolving from `const`, memoized.
+
+        A roster is family-expanded, so the doc row for a family is its final
+        stage -- but a provenance label is recorded against whatever the
+        character actually OWNED, which is often the base ("Feebas", not
+        "Milotic"). Walking down from each allowed species is what connects the
+        two."""
+        memo = self._finals_memo
+        if const in memo:
+            return memo[const]
+        memo[const] = frozenset()          # cycle guard, not an answer
+        kids = [k for k in self.donor[const]["children"] if k in self.donor]
+        if kids:
+            res = frozenset().union(*(self.finals_below(k) for k in kids))
+        elif self.is_final(const):
+            res = frozenset([self.canonical.get(self.donor[const]["dex"], const)])
+        else:
+            res = frozenset()
+        memo[const] = res
+        return res
+
+    def root_of(self, const):
+        """The evolution-family root `const` descends from, memoized."""
+        memo = self._root_memo
+        if const in memo:
+            return memo[const]
+        memo[const] = const                # cycle guard
+        parent = self._parents.get(const)
+        memo[const] = self.root_of(parent) if parent is not None else const
+        return memo[const]
+
+    def finals_with_members(self, names):
+        """{doc row: every allowed name in that row's FAMILY}.
+
+        Family-wide, not just the ancestors leading to this particular final.
+        That is deliberate and it is what the sibling generators do: a roster is
+        expanded by the "canon if any member is" rule, so owning Espeon puts
+        Umbreon, Vaporeon and the rest of the Eevee family on the roster too.
+        Those rows have no label of their own and never will -- the character
+        never owned them -- so attributing the family's label lets the row say
+        "as Espeon — Sun/Moon", which is the honest explanation of why it is
+        there. Restricting members to a row's own ancestry instead leaves every
+        sibling branch blank: measured, that alone was 190 of this repo's
+        blank rows, Eeveelutions almost entirely.
+
+        ⚠️ The row set is EXACTLY finals_for_names(names) and nothing else. It
+        would be easy to let the family walk introduce rows of its own, but this
+        hack ships a CURATED DEX -- a family whose final stage the binary does
+        not contain must not appear, or the docs promise a species the ROM
+        cannot field."""
+        rows = self.finals_for_names(names)
+        by_root = {}
+        for name in names:
+            for const in self.consts_by_name.get(normalize(name), ()):
+                by_root.setdefault(self.root_of(const), set()).add(name)
+        return {row: by_root.get(self.root_of(row), set()) for row in rows}
+
     def ordered(self, finals):
         return sorted(finals, key=lambda c: (self.dex_of(c), self.donor[c]["name"]))
+
+
+PLACEHOLDER_FORMS = {"normal", "base", "none", "-", ""}
+
+
+def load_sources():
+    """{character: {owned species name: {"source", "owned_form"}}}.
+
+    Two files carry provenance and BOTH are read, because roster_additions.json
+    has always recorded a source and owned_form per added species and nothing
+    here read them -- the same shape of bug the sibling repo found, where a
+    family that entered a roster through the additions overlay showed a blank
+    Source while its provenance sat one key away.
+
+    roster_sources.json wins on conflict: it is the audit's considered answer,
+    whereas an addition's label is whatever the pass that proposed it wrote
+    down. Absent files just mean no Source content, so the docs still generate.
+    """
+    merged = {}
+    add_path = os.path.join(HERE, "roster_additions.json")
+    if os.path.isfile(add_path):
+        with open(add_path, encoding="utf-8") as f:
+            for char, rows in json.load(f).get("additions", {}).items():
+                for row in rows:
+                    if not isinstance(row, dict) or not row.get("source"):
+                        continue
+                    merged.setdefault(char, {})[row["species"]] = {
+                        "source": row["source"],
+                        "owned_form": row.get("owned_form") or row["species"],
+                    }
+    path = os.path.join(HERE, "roster_sources.json")
+    if os.path.isfile(path):
+        with open(path, encoding="utf-8") as f:
+            for char, rows in json.load(f).get("sources", {}).items():
+                if char.startswith("_"):
+                    continue                      # _comment
+                merged.setdefault(char, {}).update(rows)
+    return merged
+
+
+def pick_source(char_sources, shown_name, members):
+    """The best entry for one doc row, deterministically.
+
+    Prefer the row's own species, then any family member with a real label,
+    then any member at all. An entry whose `source` is null NEVER beats a
+    sibling that has one: the audit records one entry per owned form and the
+    final form's entry is sometimes the null one while the base carries the
+    label, so taking the first match regardless leaves rows blank with the
+    provenance one key away.
+
+    Sorted iteration, not set order -- a family with several owned forms must
+    not pick a different label on each run, or every regeneration produces a
+    spurious diff with no data change.
+    """
+    if not char_sources:
+        return {}
+    keys = [shown_name] + sorted(n for n in members if n != shown_name)
+    entries = [char_sources[k] for k in keys
+               if isinstance(char_sources.get(k), dict)]
+    for e in entries:
+        if e.get("source"):
+            return e
+    return entries[0] if entries else {}
+
+
+def source_cell(info, shown_name):
+    """"as Feebas — Sun/Moon", or just the source when the character owned the
+    final stage itself."""
+    src = (info or {}).get("source")
+    if not src:
+        return "—"
+    owned = ((info or {}).get("owned_form") or "").strip()
+    if owned and owned.lower() not in PLACEHOLDER_FORMS and owned != shown_name:
+        return "as %s — %s" % (owned, src)
+    return src
 
 
 TAG_MARKER = {"anime-only": "ᵃ", "single-game": "ᵍ"}
@@ -210,6 +352,7 @@ def main():
     with open(os.path.join(HERE, "rom_species_table.json")) as f:
         rom_names = {int(k): v for k, v in json.load(f)["species"].items()}
     markers = load_markers()
+    sources = load_sources()
 
     stride = len(bitmaps) // len(manifest)
     if stride * len(manifest) != len(bitmaps):
@@ -238,12 +381,19 @@ def main():
         bits = bitmaps[i * stride:(i + 1) * stride]
         allowed = [name for sid, name in rom_names.items()
                    if sid < stride * 8 and (bits[sid >> 3] & (1 << (sid & 7)))]
-        ordered = index.ordered(index.finals_for_names(allowed))
+        members = index.finals_with_members(allowed)
+        ordered = index.ordered(set(members))
+        char_sources = sources.get(rec["character"], {})
         chars.append({
             "name": rec["character"],
             "gen": rec["generation"],
             "label": CATEGORY_LABEL.get(rec["category"], rec["category"].title()),
-            "finals": [(index.donor[c]["name"], index.dex_of(c)) for c in ordered],
+            "finals": [(index.donor[c]["name"], index.dex_of(c),
+                        source_cell(pick_source(char_sources,
+                                                index.donor[c]["name"],
+                                                members.get(c, set())),
+                                    index.donor[c]["name"]))
+                       for c in ordered],
         })
 
     def marked(char, name):
@@ -291,7 +441,11 @@ def main():
         for c in by_gen[g]:
             out.append("### %s — %s" % (c["name"], c["label"]))
             out.append("**Final evolutions (%d):**" % len(c["finals"]))
-            out.append(", ".join(marked(c["name"], n) for n, _ in c["finals"]))
+            out.append("")
+            out.append("| Pokémon | Source |")
+            out.append("|---|---|")
+            for n, _dex, src in c["finals"]:
+                out.append("| %s | %s |" % (marked(c["name"], n), src))
             out.append("")
     with open(os.path.join(TARGET, "ROSTERS.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(out).rstrip() + "\n")
@@ -318,7 +472,7 @@ def main():
             page.append("### %s — %s" % (c["name"], c["label"]))
             page.append("<table>")
             row = []
-            for name, num in c["finals"]:
+            for name, num, _src in c["finals"]:
                 row.append('<td align="center" width="80"><img width="56" src="%s">'
                            "<br><sub>%s</sub></td>"
                            % (SPRITE_URL % num, marked(c["name"], name)))

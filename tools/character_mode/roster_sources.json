@@ -352,7 +352,8 @@
    },
    "Entei": {
     "owned_form": "Entei",
-    "source": null
+    "source": "Emerald",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Espeon": {
     "owned_form": "Espeon",
@@ -360,11 +361,13 @@
    },
    "Latios": {
     "owned_form": "Latios",
-    "source": null
+    "source": "Emerald",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Lucario": {
     "owned_form": "Lucario",
-    "source": null
+    "source": "Sun/Moon & Ultra Sun/Ultra Moon (Battle Tree)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Metagross": {
     "owned_form": "Metagross",
@@ -376,7 +379,8 @@
    },
    "Raikou": {
     "owned_form": "Raikou",
-    "source": null
+    "source": "Emerald",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Salamence": {
     "owned_form": "Salamence",
@@ -389,6 +393,46 @@
    "Weavile": {
     "owned_form": "Weavile",
     "source": null
+   },
+   "Abra": {
+    "owned_form": "Abra",
+    "source": "Emerald",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bagon": {
+    "owned_form": "Bagon",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Beldum": {
+    "owned_form": "Beldum",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Eevee": {
+    "owned_form": "Eevee",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Misdreavus": {
+    "owned_form": "Misdreavus",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Munchlax": {
+    "owned_form": "Munchlax",
+    "source": "Emerald",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Riolu": {
+    "owned_form": "Riolu",
+    "source": "Anime — Sun & Moon era",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sneasel": {
+    "owned_form": "Sneasel",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Archer": {
@@ -727,6 +771,201 @@
    "Taillow": {
     "owned_form": "Swellow",
     "source": "Anime — Ruby & Sapphire era"
+   },
+   "Aipom": {
+    "owned_form": "Aipom",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Buizel": {
+    "owned_form": "Buizel",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bulbasaur": {
+    "owned_form": "Bulbasaur",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Caterpie": {
+    "owned_form": "Caterpie",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Chikorita": {
+    "owned_form": "Chikorita",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Corphish": {
+    "owned_form": "Corphish",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cyndaquil": {
+    "owned_form": "Cyndaquil",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Fletchling": {
+    "owned_form": "Talonflame",
+    "source": "Anime — Pokémon the Series: XY (Ash's Talonflame)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gligar": {
+    "owned_form": "Gligar",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Grimer": {
+    "owned_form": "Grimer",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Hawlucha": {
+    "owned_form": "Hawlucha",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Heracross": {
+    "owned_form": "Heracross",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Hoothoot": {
+    "owned_form": "Hoothoot",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Krabby": {
+    "owned_form": "Krabby",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Lapras": {
+    "owned_form": "Lapras",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Larvitar": {
+    "owned_form": "Larvitar",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mankey": {
+    "owned_form": "Mankey",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mime Jr.": {
+    "owned_form": "Mime Jr.",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Munchlax": {
+    "owned_form": "Munchlax",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Noibat": {
+    "owned_form": "Noibat",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Oshawott": {
+    "owned_form": "Oshawott",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Phanpy": {
+    "owned_form": "Phanpy",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pidgey": {
+    "owned_form": "Pidgey",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Poipole": {
+    "owned_form": "Poipole",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Rattata": {
+    "owned_form": "Raticate",
+    "source": "Anime — Indigo League, EP015 \"Battle Aboard the St. Anne\" (Ash's Raticate)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Roggenrola": {
+    "owned_form": "Roggenrola",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Rowlet": {
+    "owned_form": "Rowlet",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sandile": {
+    "owned_form": "Sandile",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sewaddle": {
+    "owned_form": "Sewaddle",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Snivy": {
+    "owned_form": "Snivy",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Snorunt": {
+    "owned_form": "Snorunt",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Squirtle": {
+    "owned_form": "Squirtle",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tauros": {
+    "owned_form": "Tauros",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tepig": {
+    "owned_form": "Tepig",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Torkoal": {
+    "owned_form": "Torkoal",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Totodile": {
+    "owned_form": "Totodile",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Treecko": {
+    "owned_form": "Treecko",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Turtwig": {
+    "owned_form": "Turtwig",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tympole": {
+    "owned_form": "Tympole",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Barry": {
@@ -1510,15 +1749,18 @@
   "Brandon": {
    "Articuno": {
     "owned_form": "Articuno",
-    "source": null
+    "source": "Emerald (Battle Pyramid, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Dusclops": {
     "owned_form": "Dusclops",
-    "source": null
+    "source": "Anime — Battle Frontier arc (on hand)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Moltres": {
     "owned_form": "Moltres",
-    "source": null
+    "source": "Emerald (Battle Pyramid, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Ninjask": {
     "owned_form": "Ninjask",
@@ -1526,27 +1768,43 @@
    },
    "Regice": {
     "owned_form": "Regice",
-    "source": null
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Regigigas": {
     "owned_form": "Regigigas",
-    "source": null
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Regirock": {
     "owned_form": "Regirock",
-    "source": null
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Registeel": {
     "owned_form": "Registeel",
-    "source": null
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Solrock": {
     "owned_form": "Solrock",
-    "source": null
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Zapdos": {
     "owned_form": "Zapdos",
-    "source": null
+    "source": "Emerald (Battle Pyramid, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Duskull": {
+    "owned_form": "Duskull",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Nincada": {
+    "owned_form": "Nincada",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Brassius": {
@@ -1923,6 +2181,11 @@
    "Zubat": {
     "owned_form": "Crobat",
     "source": "Anime — Indigo League"
+   },
+   "Mudkip": {
+    "owned_form": "Mudkip",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Bruno": {
@@ -2303,6 +2566,31 @@
    "Steelix": {
     "owned_form": "Steelix",
     "source": "Diamond/Pearl"
+   },
+   "Beldum": {
+    "owned_form": "Metagross",
+    "source": "Games — Brilliant Diamond and Shining Pearl (Battle Tower, Master Class Single Battles Rank 6)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Heatran": {
+    "owned_form": "Heatran",
+    "source": "Games — Brilliant Diamond and Shining Pearl (Battle Tower, Master Class Single Battles Rank 6)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Moltres": {
+    "owned_form": "Moltres",
+    "source": "Games — Brilliant Diamond and Shining Pearl (Battle Tower, Master Class Single Battles Rank 6)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Scyther": {
+    "owned_form": "Scizor",
+    "source": "Games — Brilliant Diamond and Shining Pearl (Battle Tower, Master Class Single Battles Rank 6)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Wingull": {
+    "owned_form": "Pelipper",
+    "source": "Games — Brilliant Diamond and Shining Pearl (Battle Tower, Master Class Single Battles Rank 6)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Caitlin": {
@@ -3413,16 +3701,23 @@
    "Weavile": {
     "owned_form": "Weavile",
     "source": "Diamond/Pearl"
+   },
+   "Rotom": {
+    "owned_form": "Rotom",
+    "source": "Games — Brilliant Diamond and Shining Pearl (Battle Tower, Master Class Double Battles Rank 9)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Dahlia": {
    "Blaziken": {
     "owned_form": "Blaziken",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Arcade, Gold Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Dusknoir": {
     "owned_form": "Dusknoir",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Arcade, Silver Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Ludicolo": {
     "owned_form": "Ludicolo",
@@ -3430,37 +3725,75 @@
    },
    "Medicham": {
     "owned_form": "Medicham",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Arcade, Silver Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Togekiss": {
     "owned_form": "Togekiss",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Arcade, Gold Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Zapdos": {
     "owned_form": "Zapdos",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Arcade, Gold Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Lotad": {
+    "owned_form": "Lotad",
+    "source": "Masters EX",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Meditite": {
+    "owned_form": "Meditite",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Togepi": {
+    "owned_form": "Togepi",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Darach": {
    "Empoleon": {
     "owned_form": "Empoleon",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Castle, Silver Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Entei": {
     "owned_form": "Entei",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Castle, Gold Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Gallade": {
     "owned_form": "Gallade",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Castle, Gold Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Houndoom": {
     "owned_form": "Houndoom",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Castle, Silver Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Staraptor": {
     "owned_form": "Staraptor",
-    "source": null
+    "source": "Platinum/HeartGold/SoulSilver (Battle Castle, Silver Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Houndour": {
+    "owned_form": "Houndour",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ralts": {
+    "owned_form": "Ralts",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Starly": {
+    "owned_form": "Starly",
+    "source": "Masters EX",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Dawn": {
@@ -3615,6 +3948,11 @@
    "Wormadam": {
     "owned_form": "Wormadam",
     "source": "BDSP"
+   },
+   "Buizel": {
+    "owned_form": "Buizel",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Diantha": {
@@ -3897,6 +4235,36 @@
    "Type: Null": {
     "owned_form": "Type: Null",
     "source": "Sun/Moon"
+   },
+   "Buzzwole": {
+    "owned_form": "Buzzwole",
+    "source": "Games — Pokemon Sun (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Celesteela": {
+    "owned_form": "Celesteela",
+    "source": "Games — Pokemon Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Guzzlord": {
+    "owned_form": "Guzzlord",
+    "source": "Games — Pokemon Sun and Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Kartana": {
+    "owned_form": "Kartana",
+    "source": "Games — Pokemon Sun (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pheromosa": {
+    "owned_form": "Pheromosa",
+    "source": "Games — Pokemon Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Xurkitree": {
+    "owned_form": "Xurkitree",
+    "source": "Games — Pokemon Sun and Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Elm": {
@@ -4115,6 +4483,31 @@
    "Typhlosion": {
     "owned_form": "Typhlosion",
     "source": "Masters EX"
+   },
+   "Bulbasaur": {
+    "owned_form": "Bulbasaur",
+    "source": "Games — HeartGold and SoulSilver, Pokegear calls ('Mentioned' section)",
+    "source_ported_from": "ROWE"
+   },
+   "Chikorita": {
+    "owned_form": "Chikorita",
+    "source": "Games — Gold/Silver/Crystal and HeartGold/SoulSilver (protagonist's starter)",
+    "source_ported_from": "ROWE"
+   },
+   "Porygon": {
+    "owned_form": "Porygon",
+    "source": "Games — HeartGold and SoulSilver, Pokegear calls ('Mentioned' section)",
+    "source_ported_from": "ROWE"
+   },
+   "Tangela": {
+    "owned_form": "Tangela",
+    "source": "Games — HeartGold and SoulSilver, Pokegear calls ('Mentioned' section)",
+    "source_ported_from": "ROWE"
+   },
+   "Totodile": {
+    "owned_form": "Totodile",
+    "source": "Games — Gold/Silver/Crystal and HeartGold/SoulSilver (protagonist's starter)",
+    "source_ported_from": "ROWE"
    }
   },
   "Falkner": {
@@ -4637,6 +5030,31 @@
    "Venusaur": {
     "owned_form": "Venusaur",
     "source": "Manga — The Electric Tale of Pikachu"
+   },
+   "Horsea": {
+    "owned_form": "Horsea",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Houndour": {
+    "owned_form": "Houndour",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pinsir": {
+    "owned_form": "Pinsir",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Skarmory": {
+    "owned_form": "Skarmory",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Spearow": {
+    "owned_form": "Spearow",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Geeta": {
@@ -4867,6 +5285,11 @@
    "Yamask": {
     "owned_form": "Yamask",
     "source": "Anime — Black & White"
+   },
+   "Koffing": {
+    "owned_form": "Koffing",
+    "source": "Anime — Giovanni's \"Given away\" list (James's Koffing)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Glacia": {
@@ -5009,6 +5432,31 @@
    "Zacian": {
     "owned_form": "Zacian (Crowned Sword)",
     "source": "Masters EX"
+   },
+   "Calyrex": {
+    "owned_form": "Calyrex",
+    "source": "Games — Sword and Shield: The Crown Tundra",
+    "source_ported_from": "ROWE"
+   },
+   "Eternatus": {
+    "owned_form": "Eternatus",
+    "source": "Games — Sword and Shield (main story)",
+    "source_ported_from": "ROWE"
+   },
+   "Glastrier": {
+    "owned_form": "Glastrier",
+    "source": "Games — Sword/Shield: The Crown Tundra (Legendary Clue 1)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Spectrier": {
+    "owned_form": "Spectrier",
+    "source": "Games — Sword/Shield: The Crown Tundra (Legendary Clue 1)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Zamazenta": {
+    "owned_form": "Zamazenta",
+    "source": "Games — Sword and Shield (post-game, Sordward & Shielbert)",
+    "source_ported_from": "ROWE"
    }
   },
   "Goh": {
@@ -5123,6 +5571,341 @@
    "Suicune": {
     "owned_form": "Suicune",
     "source": "Anime — Journeys"
+   },
+   "Absol": {
+    "owned_form": "Absol",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Aerodactyl": {
+    "owned_form": "Aerodactyl",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Arctozolt": {
+    "owned_form": "Arctozolt",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Bellsprout": {
+    "owned_form": "Bellsprout",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Binacle": {
+    "owned_form": "Binacle",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Bruxish": {
+    "owned_form": "Bruxish",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Carvanha": {
+    "owned_form": "Sharpedo",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Caterpie": {
+    "owned_form": "Caterpie",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Chinchou": {
+    "owned_form": "Chinchou",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Corsola": {
+    "owned_form": "Corsola",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Drowzee": {
+    "owned_form": "Drowzee",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ekans": {
+    "owned_form": "Ekans",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Falinks": {
+    "owned_form": "Falinks",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Farfetch'd": {
+    "owned_form": "Farfetch'd",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ferroseed": {
+    "owned_form": "Ferrothorn",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Fletchling": {
+    "owned_form": "Fletchling",
+    "source": "Anime — Pokémon Journeys (List of Goh's Pokémon, met in Kalos)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Froakie": {
+    "owned_form": "Froakie",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Geodude": {
+    "owned_form": "Geodude",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Goldeen": {
+    "owned_form": "Goldeen",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Gossifleur": {
+    "owned_form": "Gossifleur",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Grimer": {
+    "owned_form": "Grimer",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Hoothoot": {
+    "owned_form": "Hoothoot",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Krabby": {
+    "owned_form": "Krabby",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Magikarp": {
+    "owned_form": "Magikarp",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Mankey": {
+    "owned_form": "Mankey",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Mantyke": {
+    "owned_form": "Mantyke",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Milcery": {
+    "owned_form": "Milcery",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Misdreavus": {
+    "owned_form": "Misdreavus",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Morelull": {
+    "owned_form": "Morelull",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Murkrow": {
+    "owned_form": "Murkrow",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Nidoran♀": {
+    "owned_form": "Nidoran♀",
+    "source": "Manga",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Nidoran♂": {
+    "owned_form": "Nidoran♂",
+    "source": "Anime — Pokémon Journeys (List of Goh's Pokémon, met in Kanto)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Nincada": {
+    "owned_form": "Shedinja",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Numel": {
+    "owned_form": "Camerupt",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Oddish": {
+    "owned_form": "Oddish",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Panpour": {
+    "owned_form": "Panpour",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pansear": {
+    "owned_form": "Pansear",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Paras": {
+    "owned_form": "Paras",
+    "source": "Manga",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Passimian": {
+    "owned_form": "Passimian",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Petilil": {
+    "owned_form": "Lilligant",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Phantump": {
+    "owned_form": "Phantump",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Pidgey": {
+    "owned_form": "Pidgey",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Pineco": {
+    "owned_form": "Pineco",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Poliwag": {
+    "owned_form": "Poliwag",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Pyukumuku": {
+    "owned_form": "Pyukumuku",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Rattata": {
+    "owned_form": "Rattata",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Roggenrola": {
+    "owned_form": "Roggenrola",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sandile": {
+    "owned_form": "Sandile",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Scatterbug": {
+    "owned_form": "Scatterbug",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Seel": {
+    "owned_form": "Seel",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sentret": {
+    "owned_form": "Sentret",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Skwovet": {
+    "owned_form": "Skwovet",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Spearow": {
+    "owned_form": "Spearow",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Spinarak": {
+    "owned_form": "Spinarak",
+    "source": "Anime — Johto",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Stantler": {
+    "owned_form": "Stantler",
+    "source": "Anime — Pokémon Journeys (List of Goh's Pokémon, met in Johto)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Stunfisk": {
+    "owned_form": "Stunfisk",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Swablu": {
+    "owned_form": "Swablu",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Taillow": {
+    "owned_form": "Taillow",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tentacool": {
+    "owned_form": "Tentacool",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Trapinch": {
+    "owned_form": "Trapinch",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tyrogue": {
+    "owned_form": "Hitmonchan",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Venonat": {
+    "owned_form": "Venonat",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Voltorb": {
+    "owned_form": "Voltorb",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Weedle": {
+    "owned_form": "Weedle",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Wingull": {
+    "owned_form": "Wingull",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Wurmple": {
+    "owned_form": "Wurmple",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
+   },
+   "Zubat": {
+    "owned_form": "Golbat",
+    "source": "Anime — Pokemon Journeys (List of Goh's Pokemon)",
+    "source_ported_from": "ROWE"
    }
   },
   "Gordie": {
@@ -5172,23 +5955,28 @@
   "Greta": {
    "Breloom": {
     "owned_form": "Breloom",
-    "source": null
+    "source": "Emerald (Battle Arena, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Gengar": {
     "owned_form": "Gengar",
-    "source": null
+    "source": "Emerald (Battle Arena, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Hariyama": {
     "owned_form": "Hariyama",
-    "source": null
+    "source": "Anime — Battle Frontier arc",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Heracross": {
     "owned_form": "Heracross",
-    "source": null
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Medicham": {
     "owned_form": "Medicham",
-    "source": null
+    "source": "Anime — Battle Frontier arc",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Shedinja": {
     "owned_form": "Shedinja",
@@ -5197,6 +5985,31 @@
    "Umbreon": {
     "owned_form": "Umbreon",
     "source": null
+   },
+   "Eevee": {
+    "owned_form": "Eevee",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Makuhita": {
+    "owned_form": "Makuhita",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Meditite": {
+    "owned_form": "Meditite",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Nincada": {
+    "owned_form": "Nincada",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Shroomish": {
+    "owned_form": "Shroomish",
+    "source": "Masters EX",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Grimsley": {
@@ -5725,6 +6538,16 @@
    "Zekrom": {
     "owned_form": "Zekrom",
     "source": "Black/White"
+   },
+   "Snivy": {
+    "owned_form": "Snivy",
+    "source": "Games — Black and White first partner (player's choice)",
+    "source_ported_from": "ROWE"
+   },
+   "Tepig": {
+    "owned_form": "Tepig",
+    "source": "Games — Black and White first partner (player's choice)",
+    "source_ported_from": "ROWE"
    }
   },
   "Hilda": {
@@ -5919,6 +6742,16 @@
    "Zekrom": {
     "owned_form": "Zekrom",
     "source": "Black/White"
+   },
+   "Oshawott": {
+    "owned_form": "Oshawott",
+    "source": "Games — Black and White first partner (player's choice)",
+    "source_ported_from": "ROWE"
+   },
+   "Snivy": {
+    "owned_form": "Snivy",
+    "source": "Games — Black and White first partner (player's choice)",
+    "source_ported_from": "ROWE"
    }
   },
   "Hop": {
@@ -5985,6 +6818,31 @@
    "Zapdos": {
     "owned_form": "Zapdos",
     "source": "Masters EX"
+   },
+   "Heatmor": {
+    "owned_form": "Heatmor",
+    "source": "Games — Sword and Shield (Hop's rival battle teams)",
+    "source_ported_from": "ROWE"
+   },
+   "Phantump": {
+    "owned_form": "Trevenant",
+    "source": "Games — Sword and Shield (Hop's rival battle teams)",
+    "source_ported_from": "ROWE"
+   },
+   "Silicobra": {
+    "owned_form": "Silicobra",
+    "source": "Games — Sword and Shield (Hop's rival battle teams)",
+    "source_ported_from": "ROWE"
+   },
+   "Toxel": {
+    "owned_form": "Toxel",
+    "source": "Games — Sword and Shield (Hop's rival battle teams)",
+    "source_ported_from": "ROWE"
+   },
+   "Yamper": {
+    "owned_form": "Boltund",
+    "source": "Games — Sword and Shield (Hop's rival battle teams)",
+    "source_ported_from": "ROWE"
    }
   },
   "Hugh": {
@@ -6339,6 +7197,16 @@
    "Weezing": {
     "owned_form": "Weezing",
     "source": "Anime — Indigo League"
+   },
+   "Growlithe": {
+    "owned_form": "Growlithe",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Yamask": {
+    "owned_form": "Yamask",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Janine": {
@@ -6581,6 +7449,11 @@
    "Yanmega": {
     "owned_form": "Yanmega",
     "source": "Anime — Diamond & Pearl"
+   },
+   "Shellder": {
+    "owned_form": "Shellder",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Juan": {
@@ -7443,6 +8316,11 @@
    "Xurkitree": {
     "owned_form": "Xurkitree",
     "source": "Anime — Sun & Moon"
+   },
+   "Feebas": {
+    "owned_form": "Feebas",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Lance": {
@@ -7823,6 +8701,11 @@
    "Vulpix": {
     "owned_form": "Vulpix",
     "source": "Anime — Sun & Moon"
+   },
+   "Blacephalon": {
+    "owned_form": "Blacephalon",
+    "source": "Anime — Pokemon the Series: Sun & Moon, SM078 \"Twirling with a Bang!\" (Ultra Guardians catch, later released)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Liza": {
@@ -8238,7 +9121,8 @@
    },
    "Gyarados": {
     "owned_form": "Gyarados",
-    "source": null
+    "source": "Emerald (Battle Pike, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Makuhita": {
     "owned_form": "normal",
@@ -8250,11 +9134,13 @@
    },
    "Seviper": {
     "owned_form": "Seviper",
-    "source": null
+    "source": "Masters EX",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Shuckle": {
     "owned_form": "Shuckle",
-    "source": null
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Skitty": {
     "owned_form": "normal",
@@ -8266,11 +9152,17 @@
    },
    "Steelix": {
     "owned_form": "Steelix",
-    "source": null
+    "source": "Emerald (Battle Pike, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Swinub": {
     "owned_form": "normal",
     "source": "Pokemon the Series (AG158) — Pokemon at home"
+   },
+   "Feebas": {
+    "owned_form": "Feebas",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Lusamine": {
@@ -8381,6 +9273,51 @@
    "Xurkitree": {
     "owned_form": "Xurkitree",
     "source": "Manga — Pokémon Adventures"
+   },
+   "Drifloon": {
+    "owned_form": "Drifloon",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Litten": {
+    "owned_form": "Litten",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Magby": {
+    "owned_form": "Magmar",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pichu": {
+    "owned_form": "Pikachu",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pyukumuku": {
+    "owned_form": "Pyukumuku",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Rowlet": {
+    "owned_form": "Rowlet",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Slowpoke": {
+    "owned_form": "Slowpoke",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Snubbull": {
+    "owned_form": "Snubbull",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Staryu": {
+    "owned_form": "Starmie",
+    "source": "Games — Pokemon Sun and Moon (Lusamine's \"Kept frozen\" collection, Aether Paradise secret room)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Lyra": {
@@ -8431,6 +9368,31 @@
    "Vaporeon": {
     "owned_form": "Vaporeon",
     "source": "Masters EX"
+   },
+   "Bulbasaur": {
+    "owned_form": "Bulbasaur",
+    "source": "Games - HeartGold/SoulSilver (Pokegear calls)",
+    "source_ported_from": "ROWE"
+   },
+   "Cyndaquil": {
+    "owned_form": "Cyndaquil",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Porygon": {
+    "owned_form": "Porygon",
+    "source": "Games - HeartGold/SoulSilver (Pokegear calls)",
+    "source_ported_from": "ROWE"
+   },
+   "Tangela": {
+    "owned_form": "Tangela",
+    "source": "Games - HeartGold/SoulSilver (Pokegear calls)",
+    "source_ported_from": "ROWE"
+   },
+   "Tauros": {
+    "owned_form": "Tauros",
+    "source": "Games - HeartGold/SoulSilver (Pokegear calls)",
+    "source_ported_from": "ROWE"
    }
   },
   "Lysandre": {
@@ -9021,6 +9983,11 @@
    "Wurmple": {
     "owned_form": "Beautifly",
     "source": "Anime — Advanced Generation"
+   },
+   "Bulbasaur": {
+    "owned_form": "Bulbasaur",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Maylene": {
@@ -9339,6 +10306,21 @@
    "Wigglytuff": {
     "owned_form": "Wigglytuff",
     "source": "Pokémon Stadium 2"
+   },
+   "Azurill": {
+    "owned_form": "Azurill",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Corsola": {
+    "owned_form": "Corsola",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Luvdisc": {
+    "owned_form": "Luvdisc",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Molayne": {
@@ -9669,6 +10651,16 @@
    "Zorua": {
     "owned_form": "Zorua",
     "source": "Black 2/White 2"
+   },
+   "Lillipup": {
+    "owned_form": "Lillipup",
+    "source": "Anime — Best Wishes (BW118 'Secrets From Out of the Fog!')",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Minccino": {
+    "owned_form": "Minccino",
+    "source": "Anime — Best Wishes (BW118 'Secrets From Out of the Fog!')",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Nando": {
@@ -9787,6 +10779,306 @@
    "Tepig": {
     "owned_form": "Emboar",
     "source": "Black 2/White 2"
+   },
+   "Accelgor": {
+    "owned_form": "Accelgor",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Alomomola": {
+    "owned_form": "Alomomola",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Amoonguss": {
+    "owned_form": "Amoonguss",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Archen": {
+    "owned_form": "Archen",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Archeops": {
+    "owned_form": "Archeops",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Audino": {
+    "owned_form": "Audino",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Beartic": {
+    "owned_form": "Beartic",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bisharp": {
+    "owned_form": "Bisharp",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bouffalant": {
+    "owned_form": "Bouffalant",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Chandelure": {
+    "owned_form": "Chandelure",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cofagrigus": {
+    "owned_form": "Cofagrigus",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Conkeldurr": {
+    "owned_form": "Conkeldurr",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cryogonal": {
+    "owned_form": "Cryogonal",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cubchoo": {
+    "owned_form": "Cubchoo",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Darmanitan": {
+    "owned_form": "Darmanitan",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Darumaka": {
+    "owned_form": "Darumaka",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Drilbur": {
+    "owned_form": "Drilbur",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Druddigon": {
+    "owned_form": "Druddigon",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Durant": {
+    "owned_form": "Durant",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Eelektross": {
+    "owned_form": "Eelektross",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Escavalier": {
+    "owned_form": "Escavalier",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Excadrill": {
+    "owned_form": "Excadrill",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ferroseed": {
+    "owned_form": "Ferroseed",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ferrothorn": {
+    "owned_form": "Ferrothorn",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Foongus": {
+    "owned_form": "Foongus",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Frillish": {
+    "owned_form": "Frillish",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gigalith": {
+    "owned_form": "Gigalith",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Golett": {
+    "owned_form": "Golett",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Golurk": {
+    "owned_form": "Golurk",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gothita": {
+    "owned_form": "Gothita",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gothitelle": {
+    "owned_form": "Gothitelle",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Jellicent": {
+    "owned_form": "Jellicent",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Karrablast": {
+    "owned_form": "Karrablast",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Klink": {
+    "owned_form": "Klink",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Klinklang": {
+    "owned_form": "Klinklang",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Krookodile": {
+    "owned_form": "Krookodile",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Lilligant": {
+    "owned_form": "Lilligant",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Litwick": {
+    "owned_form": "Litwick",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mandibuzz": {
+    "owned_form": "Mandibuzz",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mienfoo": {
+    "owned_form": "Mienfoo",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mienshao": {
+    "owned_form": "Mienshao",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Munna": {
+    "owned_form": "Munna",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Musharna": {
+    "owned_form": "Musharna",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pawniard": {
+    "owned_form": "Pawniard",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Petilil": {
+    "owned_form": "Petilil",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Reuniclus": {
+    "owned_form": "Reuniclus",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Roggenrola": {
+    "owned_form": "Roggenrola",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sandile": {
+    "owned_form": "Sandile",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sawk": {
+    "owned_form": "Sawk",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Scrafty": {
+    "owned_form": "Scrafty",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Scraggy": {
+    "owned_form": "Scraggy",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Shelmet": {
+    "owned_form": "Shelmet",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Solosis": {
+    "owned_form": "Solosis",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Throh": {
+    "owned_form": "Throh",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Timburr": {
+    "owned_form": "Timburr",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tynamo": {
+    "owned_form": "Tynamo",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Vanillite": {
+    "owned_form": "Vanillite",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Vanilluxe": {
+    "owned_form": "Vanilluxe",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Vullaby": {
+    "owned_form": "Vullaby",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Yamask": {
+    "owned_form": "Yamask",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Nemona": {
@@ -9913,6 +11205,16 @@
    "Tauros": {
     "owned_form": "Tauros",
     "source": "Scarlet/Violet"
+   },
+   "Lechonk": {
+    "owned_form": "Lechonk",
+    "source": "Scarlet/Violet",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Smoliv": {
+    "owned_form": "Smoliv",
+    "source": "Scarlet/Violet",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Nessa": {
@@ -9968,19 +11270,23 @@
   "Noland": {
    "Articuno": {
     "owned_form": "Articuno",
-    "source": null
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Breloom": {
     "owned_form": "Breloom",
-    "source": null
+    "source": "Anime — Battle Frontier arc (at the Battle Factory)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Camerupt": {
     "owned_form": "Camerupt",
-    "source": null
+    "source": "Anime — Battle Frontier arc (at the Battle Factory)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Golduck": {
     "owned_form": "Golduck",
-    "source": null
+    "source": "Anime — Battle Frontier arc (at the Battle Factory)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Lairon": {
     "owned_form": "Lairon",
@@ -9988,7 +11294,8 @@
    },
    "Machamp": {
     "owned_form": "Machamp",
-    "source": null
+    "source": "Anime — Battle Frontier arc (at the Battle Factory)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Manectric": {
     "owned_form": "Manectric",
@@ -10004,15 +11311,18 @@
    },
    "Pinsir": {
     "owned_form": "Pinsir",
-    "source": null
+    "source": "Masters EX",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Rhydon": {
     "owned_form": "Rhydon",
-    "source": null
+    "source": "Anime — Battle Frontier arc (at the Battle Factory)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Rhyhorn": {
     "owned_form": "Rhyhorn",
-    "source": null
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Sandslash": {
     "owned_form": "Sandslash",
@@ -10024,11 +11334,52 @@
    },
    "Trapinch": {
     "owned_form": "Trapinch",
-    "source": null
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Venusaur": {
     "owned_form": "Venusaur",
     "source": null
+   },
+   "Aron": {
+    "owned_form": "Aron",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bulbasaur": {
+    "owned_form": "Bulbasaur",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Electrike": {
+    "owned_form": "Electrike",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Machop": {
+    "owned_form": "Machop",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Numel": {
+    "owned_form": "Numel",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Psyduck": {
+    "owned_form": "Psyduck",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sandshrew": {
+    "owned_form": "Sandshrew",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Shroomish": {
+    "owned_form": "Shroomish",
+    "source": "Battle Factory",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Norman": {
@@ -10487,6 +11838,11 @@
    "Rockruff": {
     "owned_form": "Lycanroc",
     "source": "Anime - Sun & Moon era"
+   },
+   "Stufful": {
+    "owned_form": "Stufful",
+    "source": "Games — Pokemon Sun/Moon/USUM (Olivia's Jewelry Shop and house)",
+    "source_ported_from": "ROWE"
    }
   },
   "Olympia": {
@@ -10538,15 +11894,18 @@
    },
    "Cresselia": {
     "owned_form": "Cresselia",
-    "source": null
+    "source": "Anime — Diamond & Pearl era",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Dragonite": {
     "owned_form": "Dragonite",
-    "source": null
+    "source": "Diamond/Pearl & Platinum/HeartGold/SoulSilver (Battle Tower, Silver Print challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Heatran": {
     "owned_form": "Heatran",
-    "source": null
+    "source": "Anime — Diamond & Pearl era",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Milotic": {
     "owned_form": "Milotic",
@@ -10554,11 +11913,27 @@
    },
    "Regigigas": {
     "owned_form": "Regigigas",
-    "source": null
+    "source": "Anime — Diamond & Pearl era",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Rhyperior": {
     "owned_form": "Rhyperior",
     "source": null
+   },
+   "Dratini": {
+    "owned_form": "Dratini",
+    "source": "Anime — Diamond & Pearl era",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Feebas": {
+    "owned_form": "Feebas",
+    "source": "Anime — Diamond & Pearl era",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Rhyhorn": {
+    "owned_form": "Rhyhorn",
+    "source": "Anime — Diamond & Pearl era",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Paul": {
@@ -11101,6 +12476,106 @@
    "Venusaur": {
     "owned_form": "Venusaur",
     "source": "Gold/Silver"
+   },
+   "Bellsprout": {
+    "owned_form": "Victreebel / Bellsprout",
+    "source": "Anime — Pokemon Origins (Victreebel, PO03 vs Giovanni) + manga Pokemon Adventures (Bellsprout, 'Status unknown', PS009)",
+    "source_ported_from": "ROWE"
+   },
+   "Doduo": {
+    "owned_form": "Dodrio",
+    "source": "Anime — Pokemon Origins PO04 (Red's Dodrio, used vs Agatha's Gengar and Blue's Exeggutor)",
+    "source_ported_from": "ROWE"
+   },
+   "Ekans": {
+    "owned_form": "Arbok",
+    "source": "Anime — Pokemon Origins PO04",
+    "source_ported_from": "ROWE"
+   },
+   "Gastly": {
+    "owned_form": "Haunter -> Gengar",
+    "source": "Anime — Pokemon Origins PO03/PO04",
+    "source_ported_from": "ROWE"
+   },
+   "Happiny": {
+    "owned_form": "Chansey",
+    "source": "Anime — Pokemon Origins PO04 (Kanto Safari Zone)",
+    "source_ported_from": "ROWE"
+   },
+   "Kabuto": {
+    "owned_form": "Kabutops",
+    "source": "Anime — Pokemon Origins PO03 (used vs Giovanni's Rhyhorn)",
+    "source_ported_from": "ROWE"
+   },
+   "Magikarp": {
+    "owned_form": "Magikarp / Gyarados",
+    "source": "Anime — Pokemon Origins PO02 (sold to Red by the Magikarp salesman) + manga Adventures (Gyara, on hand)",
+    "source_ported_from": "ROWE"
+   },
+   "Meowth": {
+    "owned_form": "Persian",
+    "source": "Anime — Pokemon Origins PO04",
+    "source_ported_from": "ROWE"
+   },
+   "Mewtwo": {
+    "owned_form": "Mewtwo",
+    "source": "Anime — Pokemon Origins PO04 (Cerulean Cave)",
+    "source_ported_from": "ROWE"
+   },
+   "Moltres": {
+    "owned_form": "Moltres",
+    "source": "Anime — Pokemon Origins PO04",
+    "source_ported_from": "ROWE"
+   },
+   "Nidoran♀": {
+    "owned_form": "Nidoqueen",
+    "source": "Manga — Pokemon Adventures PS021 (Kanto Safari Zone, 'Long Live the Nidoking!')",
+    "source_ported_from": "ROWE"
+   },
+   "Nidoran♂": {
+    "owned_form": "Nidoran♂",
+    "source": "Anime — Pokémon Origins (Red's Nidoran♂); also Pokémon Adventures (Nidorino, in box)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pidgey": {
+    "owned_form": "Pidgey",
+    "source": "Anime — Pokemon Origins PO01 (Route 1)",
+    "source_ported_from": "ROWE"
+   },
+   "Ponyta": {
+    "owned_form": "Rapidash",
+    "source": "Anime — Pokemon Origins PO04 (used at the Seafoam Islands vs Articuno)",
+    "source_ported_from": "ROWE"
+   },
+   "Psyduck": {
+    "owned_form": "Psyduck",
+    "source": "Anime — Pokemon Origins PO03",
+    "source_ported_from": "ROWE"
+   },
+   "Rattata": {
+    "owned_form": "Rattata",
+    "source": "Anime — Pokemon Origins PO01",
+    "source_ported_from": "ROWE"
+   },
+   "Spearow": {
+    "owned_form": "Spearow (also Fearow)",
+    "source": "Anime — Pokemon Origins PO01 (caught on Route 1) + PO04 Fearow; manga Adventures Fearow (PS009)",
+    "source_ported_from": "ROWE"
+   },
+   "Tentacool": {
+    "owned_form": "Tentacool",
+    "source": "Anime — Pokemon Origins PO04",
+    "source_ported_from": "ROWE"
+   },
+   "Tyrogue": {
+    "owned_form": "Hitmonlee",
+    "source": "Anime — Pokemon Origins PO03 (tied with Giovanni's Rhyhorn)",
+    "source_ported_from": "ROWE"
+   },
+   "Zapdos": {
+    "owned_form": "Zapdos",
+    "source": "Anime — Pokemon Origins PO04",
+    "source_ported_from": "ROWE"
    }
   },
   "Rei": {
@@ -11349,6 +12824,326 @@
    "Snivy": {
     "owned_form": "Serperior",
     "source": "Masters EX"
+   },
+   "Accelgor": {
+    "owned_form": "Accelgor",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Alomomola": {
+    "owned_form": "Alomomola",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Amoonguss": {
+    "owned_form": "Amoonguss",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Archen": {
+    "owned_form": "Archen",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Archeops": {
+    "owned_form": "Archeops",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Audino": {
+    "owned_form": "Audino",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Axew": {
+    "owned_form": "Axew",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Beartic": {
+    "owned_form": "Beartic",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bisharp": {
+    "owned_form": "Bisharp",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bouffalant": {
+    "owned_form": "Bouffalant",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Braviary": {
+    "owned_form": "Braviary",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Chandelure": {
+    "owned_form": "Chandelure",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cofagrigus": {
+    "owned_form": "Cofagrigus",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Conkeldurr": {
+    "owned_form": "Conkeldurr",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cryogonal": {
+    "owned_form": "Cryogonal",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Cubchoo": {
+    "owned_form": "Cubchoo",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Darmanitan": {
+    "owned_form": "Darmanitan",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Darumaka": {
+    "owned_form": "Darumaka",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Drilbur": {
+    "owned_form": "Drilbur",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Druddigon": {
+    "owned_form": "Druddigon",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Durant": {
+    "owned_form": "Durant",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Eelektross": {
+    "owned_form": "Eelektross",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Escavalier": {
+    "owned_form": "Escavalier",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Excadrill": {
+    "owned_form": "Excadrill",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ferroseed": {
+    "owned_form": "Ferroseed",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Ferrothorn": {
+    "owned_form": "Ferrothorn",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Foongus": {
+    "owned_form": "Foongus",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Frillish": {
+    "owned_form": "Frillish",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gigalith": {
+    "owned_form": "Gigalith",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Golett": {
+    "owned_form": "Golett",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Golurk": {
+    "owned_form": "Golurk",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gothita": {
+    "owned_form": "Gothita",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Gothitelle": {
+    "owned_form": "Gothitelle",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Haxorus": {
+    "owned_form": "Haxorus",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Jellicent": {
+    "owned_form": "Jellicent",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Karrablast": {
+    "owned_form": "Karrablast",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Klink": {
+    "owned_form": "Klink",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Klinklang": {
+    "owned_form": "Klinklang",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Krookodile": {
+    "owned_form": "Krookodile",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Lilligant": {
+    "owned_form": "Lilligant",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Litwick": {
+    "owned_form": "Litwick",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mandibuzz": {
+    "owned_form": "Mandibuzz",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mienfoo": {
+    "owned_form": "Mienfoo",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mienshao": {
+    "owned_form": "Mienshao",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Munna": {
+    "owned_form": "Munna",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Musharna": {
+    "owned_form": "Musharna",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pawniard": {
+    "owned_form": "Pawniard",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Petilil": {
+    "owned_form": "Petilil",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Reuniclus": {
+    "owned_form": "Reuniclus",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Roggenrola": {
+    "owned_form": "Roggenrola",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Rufflet": {
+    "owned_form": "Rufflet",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sandile": {
+    "owned_form": "Sandile",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Sawk": {
+    "owned_form": "Sawk",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Scrafty": {
+    "owned_form": "Scrafty",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Scraggy": {
+    "owned_form": "Scraggy",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Shelmet": {
+    "owned_form": "Shelmet",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Solosis": {
+    "owned_form": "Solosis",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Throh": {
+    "owned_form": "Throh",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Timburr": {
+    "owned_form": "Timburr",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Tynamo": {
+    "owned_form": "Tynamo",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Vanillite": {
+    "owned_form": "Vanillite",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Vanilluxe": {
+    "owned_form": "Vanilluxe",
+    "source": "Black/White & Black 2/White 2 (Battle Subway — Multi Train partner)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Vullaby": {
+    "owned_form": "Vullaby",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Yamask": {
+    "owned_form": "Yamask",
+    "source": "Pokemon Black 2/White 2 (Battle Subway - Multi Train partner pool)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Rose": {
@@ -11379,6 +13174,11 @@
    "Perrserker": {
     "owned_form": "Perrserker",
     "source": "Sword/Shield"
+   },
+   "Eternatus": {
+    "owned_form": "Eternatus",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Rowan": {
@@ -12017,6 +13817,36 @@
    "Umbreon": {
     "owned_form": "Umbreon",
     "source": "Masters EX"
+   },
+   "Buzzwole": {
+    "owned_form": "Buzzwole",
+    "source": "Games — Pokemon Sun (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Celesteela": {
+    "owned_form": "Celesteela",
+    "source": "Games — Pokemon Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Guzzlord": {
+    "owned_form": "Guzzlord",
+    "source": "Games — Pokemon Sun and Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Kartana": {
+    "owned_form": "Kartana",
+    "source": "Games — Pokemon Sun (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Pheromosa": {
+    "owned_form": "Pheromosa",
+    "source": "Games — Pokemon Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Xurkitree": {
+    "owned_form": "Xurkitree",
+    "source": "Games — Pokemon Sun and Moon (Looker Episode UB mission, post-game); Ultra Sun/Ultra Moon Ultra Space",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Serena": {
@@ -12119,6 +13949,11 @@
    "Zygarde": {
     "owned_form": "Zygarde",
     "source": "Masters EX"
+   },
+   "Pancham": {
+    "owned_form": "Pancham",
+    "source": "Anime — XY era",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Shauna": {
@@ -12504,15 +14339,18 @@
   "Spenser": {
    "Arcanine": {
     "owned_form": "Arcanine",
-    "source": null
+    "source": "Emerald (Battle Palace, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Azurill": {
     "owned_form": "Azurill",
-    "source": null
+    "source": "Emerald (Battle Palace — walks on with him, never battles)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Chansey": {
     "owned_form": "Chansey",
-    "source": null
+    "source": "Anime — Battle Frontier arc",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Claydol": {
     "owned_form": "Claydol",
@@ -12520,15 +14358,18 @@
    },
    "Crobat": {
     "owned_form": "Crobat",
-    "source": null
+    "source": "Emerald (Battle Palace, Silver Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Dusclops": {
     "owned_form": "Dusclops",
-    "source": null
+    "source": "Emerald (Battle Palace — walks on with him, never battles)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Lapras": {
     "owned_form": "Lapras",
-    "source": null
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Shiftry": {
     "owned_form": "Shiftry",
@@ -12536,15 +14377,47 @@
    },
    "Slaking": {
     "owned_form": "Slaking",
-    "source": null
+    "source": "Emerald (Battle Palace, Silver Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Suicune": {
     "owned_form": "Suicune",
-    "source": null
+    "source": "Emerald (Battle Palace, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Venusaur": {
     "owned_form": "Venusaur",
     "source": null
+   },
+   "Baltoy": {
+    "owned_form": "Baltoy",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Bulbasaur": {
+    "owned_form": "Bulbasaur",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Happiny": {
+    "owned_form": "Happiny",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Seedot": {
+    "owned_form": "Seedot",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Slakoth": {
+    "owned_form": "Slakoth",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Zubat": {
+    "owned_form": "Zubat",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Steven": {
@@ -12892,15 +14765,18 @@
   "Tucker": {
    "Arcanine": {
     "owned_form": "Arcanine",
-    "source": null
+    "source": "Anime — Battle Frontier arc",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Charizard": {
     "owned_form": "Charizard",
-    "source": null
+    "source": "Emerald (Battle Dome, Silver Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Latias": {
     "owned_form": "Latias",
-    "source": null
+    "source": "Emerald (Battle Dome, Gold Symbol challenge)",
+    "source_ported_from": "RadicalRed-Character-Mode"
    },
    "Metagross": {
     "owned_form": "Metagross",
@@ -12913,6 +14789,31 @@
    "Swampert": {
     "owned_form": "Swampert",
     "source": null
+   },
+   "Bagon": {
+    "owned_form": "Bagon",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Beldum": {
+    "owned_form": "Beldum",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Charmander": {
+    "owned_form": "Charmander",
+    "source": "Manga — Pokémon Adventures",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Growlithe": {
+    "owned_form": "Growlithe",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
+   },
+   "Mudkip": {
+    "owned_form": "Mudkip",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Tulip": {
@@ -13033,6 +14934,26 @@
    "Spectrier": {
     "owned_form": "Spectrier",
     "source": "Masters EX"
+   },
+   "Calyrex": {
+    "owned_form": "Calyrex",
+    "source": "Games - Pokemon Sword and Shield: The Crown Tundra",
+    "source_ported_from": "ROWE"
+   },
+   "Glastrier": {
+    "owned_form": "Glastrier",
+    "source": "Games - Pokemon Sword: The Crown Tundra",
+    "source_ported_from": "ROWE"
+   },
+   "Kubfu": {
+    "owned_form": "Urshifu",
+    "source": "Games - Pokemon Sword and Shield: The Isle of Armor",
+    "source_ported_from": "ROWE"
+   },
+   "Scorbunny": {
+    "owned_form": "Scorbunny",
+    "source": "Anime",
+    "source_ported_from": "RadicalRed-Character-Mode"
    }
   },
   "Viola": {
