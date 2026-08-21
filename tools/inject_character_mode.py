@@ -111,6 +111,25 @@ FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
 TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
 WILD_TRAMPOLINE_ADDR = 0x08470A6C   # next 8B in the same 22B run
+# Encounter marker (../game_plans/rowe_parity.md §3). The 22-byte run above is
+# full (8B + 8B leaves 4), but the ROM has three more runs of the identical
+# shape at 0x800 intervals; this takes the next one. 3.91 MB from the hook at
+# 0x080880B6 -- inside the +-4 MB Thumb BL window with little margin, so
+# re-check the reach if either address moves.
+MARKER_TRAMPOLINE_ADDR = 0x08471264
+# The BL inside BufferStringBattle that every intro string funnels through:
+#   <many> ldr r0, =<string> ; b 0x080880B4
+#   0x080880B4: ldr r1, =gDisplayedStringBattle ; bl BattleStringExpandPlaceholders
+MARKER_BL_SITE   = 0x0880B6
+EXPAND_STRING    = 0x08088928
+# TWO byte-identical copies of "Wild {FD}{06} appeared!{FB}", reached from
+# different arms of the compiled switch; the shim matches both (see the note in
+# src/character_mode.c for why picking one was not safe).
+TEXT_WILD_APPEARED = (0x08575304, 0x08575318)
+MARKER_ADDR      = 0x09650000   # 238*64 = 15,232 B; verified 0xFF in the
+                                # original and clear of the sprite blob (ends
+                                # ~0x09646000) and the mugshot (0x09648000)
+MARKER_STRIDE    = 64
 
 BL_SITE_CATCH = 0x0A7BDA            # battle-engine catch caller (live-pinned)
 BL_SITE_GIFT  = 0x20D416            # ScriptGiveMon's internal call
@@ -303,6 +322,7 @@ def main():
                     f"-DNUM_CHARACTERS={NUM_CHARACTERS}",
                     f"-DDBG_GIVE2_SPECIES={dbg_give2}",
                     f"-DWILDMONS_ADDR={WILDMONS_ADDR:#x}",
+                    f"-DMARKER_ADDR={MARKER_ADDR:#x}",
                     f"-DLEGENDARY_ADDR={LEGENDARY_ADDR:#x}",
                     f"-DLEGENDARY_STRIDE={legendary_stride}",
                     f"-DWILDMON_STRIDE={wildmon_stride}",
@@ -368,6 +388,7 @@ def main():
     hook_native   = syms["CM_GiveMonNativeGated"] | 1
     hook_trade    = syms["CM_TradeCheck"] | 1
     hook_wild     = syms["CM_CreateWildMonGated"] | 1
+    hook_marker   = syms["CM_BattleStringGated"] | 1
 
     # --- 2. confirm script ---
     txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
@@ -485,6 +506,19 @@ def main():
     assert WILD_TRAMPOLINE_ADDR % 4 == 0
     splice(WILD_TRAMPOLINE_ADDR, wild_tramp, "wild trampoline")
 
+    # --- encounter marker: per-character intro strings + its trampoline ---
+    marker_blob = (CM / "marker_strings.bin").read_bytes()
+    assert len(marker_blob) == NUM_CHARACTERS * MARKER_STRIDE, (
+        f"marker_strings.bin is {len(marker_blob)} B, expected "
+        f"{NUM_CHARACTERS * MARKER_STRIDE} -- re-run emit_marker_strings.py")
+    splice(MARKER_ADDR, marker_blob, "encounter marker strings")
+    assert MARKER_TRAMPOLINE_ADDR % 4 == 0
+    splice(MARKER_TRAMPOLINE_ADDR,
+           struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_marker),
+           "marker trampoline")
+    print(f"encounter marker: {len(marker_blob):,} B @ {MARKER_ADDR:#x}, "
+          f"stride {MARKER_STRIDE}, trampoline @ {MARKER_TRAMPOLINE_ADDR:#x}")
+
     # --- 4. patches (verify-then-write) ---
     for site in (BL_SITE_CATCH, BL_SITE_GIFT):
         cur = bytes(data[site:site + 4])
@@ -499,6 +533,21 @@ def main():
         assert cur == expect, (f"wild BL site {site:#x}: {cur.hex()} != {expect.hex()} "
                                "(wrong ROM or already patched)")
         data[site:site + 4] = thumb_bl(0x08000000 + site, WILD_TRAMPOLINE_ADDR)
+
+    # The shim compares src against these addresses; prove they still hold the
+    # exact string before moving the BL, or the marker silently never fires.
+    _want = bytes.fromhex("d1dde0d800fd0600d5e4e4d9d5e6d9d8abfbff")
+    for _a in TEXT_WILD_APPEARED:
+        _got = bytes(data[_a - 0x08000000:_a - 0x08000000 + len(_want)])
+        assert _got == _want, (
+            f"wild intro string at {_a:#x}: {_got.hex()} != {_want.hex()}")
+
+    cur = bytes(data[MARKER_BL_SITE:MARKER_BL_SITE + 4])
+    expect = thumb_bl(0x08000000 + MARKER_BL_SITE, EXPAND_STRING)
+    assert cur == expect, (
+        f"marker BL site {MARKER_BL_SITE:#x}: {cur.hex()} != {expect.hex()}")
+    data[MARKER_BL_SITE:MARKER_BL_SITE + 4] = thumb_bl(
+        0x08000000 + MARKER_BL_SITE, MARKER_TRAMPOLINE_ADDR)
 
     cur = struct.unpack_from("<I", data, SPECIALS_SLOT_222)[0]
     assert cur == ORIG_DISPATCH, f"specials slot: {cur:#x} != {ORIG_DISPATCH:#x}"

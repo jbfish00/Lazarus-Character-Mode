@@ -276,6 +276,66 @@ static int gateActive(void)
     return id >= 1 && id <= NUM_CHARACTERS;
 }
 
+/* --- wild-encounter marker (../../game_plans/rowe_parity.md §3) ---
+ *
+ *     Wild GIBLE appeared,
+ *     destined for CYNTHIA!
+ *
+ * WHY. The 10%% override hands out a family ROOT, which is indistinguishable
+ * from something the map's own table could have produced. ROWE measured the
+ * consequence -- the median selectable character matches ~2%% of the game's own
+ * wild slots -- and Platinum proved the failure mode is real: a playthrough
+ * reported as "no on-roster encounters" had no bug at all, and naming the
+ * character was the fix. It matters MORE here than in any sibling: this game
+ * hides 115 of 238 characters because only 206 of 504 roster species exist in
+ * its curated dex, so the 123 that remain are by construction the ones with the
+ * thinnest dex support and the override is doing even more of the work.
+ * Rates are untouched; this is a message.
+ *
+ * HOW. BufferStringBattle picks an intro string into r0 and falls into a single
+ * BattleStringExpandPlaceholders(src, dst) at 0x080880B6. That one BL is
+ * retargeted -- the same idiom the catch, gift and wild hooks already use.
+ *
+ * ⚠️ TWO STRINGS, and we match BOTH. This ROM holds two byte-identical copies
+ * of "Wild {FD}{06} appeared!{FB}" (0x08575304 and 0x08575318), reached from
+ * different arms of the compiled switch. Which is the plain single-wild intro
+ * and which the BATTLE_TYPE_LEGENDARY variant could NOT be told apart
+ * statically -- both sit in long `ldr r0,=X; b tail` chains. Matching both is
+ * the safe reading: they are the same sentence, and the marker only ever fires
+ * when the mon really is on the roster, so neither can be made to say something
+ * false. Matching only one risked picking the wrong one and shipping a marker
+ * that never fires.
+ *
+ * ⚠️ Deviations from ROWE, both forced by this being a binary hack: the strings
+ * are STATIC, one per character, emitted into ROM (no RAM to build one in), and
+ * the test is "is the wild mon on the roster" rather than "did the override
+ * fire" (no RAM to remember that in either). Double battles are deliberately
+ * left unmarked -- two opponents, only one of which could be the roster mon. */
+#ifndef MARKER_ADDR
+#error "compile with -DMARKER_ADDR= (marker_strings.bin injection address)"
+#endif
+#define MARKER_STRIDE 64
+#define TEXT_WILD_APPEARED_A ((const u8 *) 0x08575304)
+#define TEXT_WILD_APPEARED_B ((const u8 *) 0x08575318)
+#define OrigExpandString ((void (*)(const u8 *, u8 *)) 0x08088929)
+/* gEnemyParty, ROM-confirmed in docs/ROUTINE_MAP.md (the literal
+   ZeroEnemyPartyMons loops over). */
+#define gEnemyParty ((u8 *) 0x0201BBB8)
+
+void CM_BattleStringGated(const u8 *src, u8 *dst)
+{
+    if ((src == TEXT_WILD_APPEARED_A || src == TEXT_WILD_APPEARED_B)
+        && gateActive()) {
+        u16 charId = *GetVarPointer(VAR_CM_CHAR);
+        u32 species = GetMonData(gEnemyParty, MON_DATA_SPECIES, 0);
+
+        if (species != 0 && onRoster(charId, species))
+            src = (const u8 *) (MARKER_ADDR
+                                + (u32) (charId - 1) * MARKER_STRIDE);
+    }
+    OrigExpandString(src, dst);
+}
+
 u8 CM_GiveMonToPlayerGated(void *mon)
 {
     if (gateActive() && gPlayerPartyCount != 0

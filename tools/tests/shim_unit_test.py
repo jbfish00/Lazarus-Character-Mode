@@ -93,6 +93,24 @@ PARTY_COUNT = 0x0201B95D
 MON_ADDR = 0x02033000    # scratch EWRAM for the synthetic mon
 TRAMP_ADDR = 0x02032F00  # scratch EWRAM for the ARM->Thumb entry trampoline
 
+# --- encounter marker (../../game_plans/rowe_parity.md §3) ---
+# Observation point is the REAL entry of BattleStringExpandPlaceholders, which
+# CM_BattleStringGated always tail-calls -- so whatever r0 it is entered with IS
+# the shim's decision, exactly the same trick the wild cases use on
+# CreateWildMon. The expander itself never runs.
+EXPAND_STRING = 0x08088928
+MARKER_TRAMP_LIT_OFF = 0x471268     # marker trampoline literal = entry | 1
+MARKER_ADDR = 0x09650000
+MARKER_STRIDE = 64
+# The two byte-identical "Wild {FD}{06} appeared!{FB}" copies the shim matches.
+TEXT_WILD_A = 0x08575304
+TEXT_WILD_B = 0x08575318
+# Something that is NOT a wild intro, to prove other battle messages are not
+# clobbered. Any ROM address the shim must pass through untouched will do.
+TEXT_NOT_WILD = 0x08575400
+ENEMY_PARTY = 0x0201BBB8            # gEnemyParty, docs/ROUTINE_MAP.md
+DST_SCRATCH = 0x02033400            # scratch dst for the expander (never written)
+
 # DERIVED, never a literal. A stale count here does not fail as a count error:
 # the "out of range -> give" case below picks NUM_CHARACTERS + 1, and once the
 # roster grows past the literal that index is a REAL character, so the test
@@ -121,7 +139,8 @@ def build_mon(species, is_egg=False):
 
 def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
                var8004_addr, wild_cases, wild_entry_thumb,
-               select_cases, select_entry_thumb):
+               select_cases, select_entry_thumb,
+               marker_cases, marker_entry_thumb):
     # ARM->Thumb entry trampoline in scratch EWRAM: the stub ignores manual
     # CPSR T-bit writes, so the first entry goes through a real BX. Later
     # cases re-enter from Thumb context and can set $pc directly.
@@ -146,6 +165,7 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
         f"break *{GIVEMON:#x}",
         f"break *{COPYPC:#x}",
         f"break *{CREATEWILDMON:#x}",
+        f"break *{EXPAND_STRING:#x}",
     ]
     for i, c in enumerate(cases):
         mon = build_mon(c["species"], c.get("egg", False))
@@ -196,6 +216,23 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
             "continue",
             'printf "WILD_RESULT=%d,%d\\n", $r0, $r1',
         ]
+    # encounter marker: which string does the shim hand the expander?
+    for i, c in enumerate(marker_cases):
+        mon = build_mon(c["species"])
+        lines += [
+            f'echo \\n=== MARKER {i}: {c["name"]} ===\\n',
+            f'python gdb.selected_inferior().write_memory({ENEMY_PARTY:#x}, bytes.fromhex("{mon.hex()}"))',
+            f'set *(unsigned char*){FLAG_BYTE:#x} = {FLAG_MASK if c["flag"] else 0:#x}',
+            f'set *(unsigned short*){VAR_ADDR:#x} = {c["char_id"]}',
+            f'set $r0 = {c["src"]:#x}',
+            f'set $r1 = {DST_SCRATCH:#x}',
+            'set $sp = 0x03007F00',
+            f'set $lr = {GIVEMON | 1:#x}',
+            f'set $pc = {marker_entry_thumb & ~1:#x}',
+            "continue",
+            'printf "MARKER_R0=%08x\\n", $r0',
+        ]
+
     # selection gate: drive the REAL shipped entry (the specials-table slot the
     # naming screen calls) with the REAL shipped code bytes, and read back what
     # it decided. The naming screen itself cannot be typed to an arbitrary
@@ -416,10 +453,67 @@ def main():
             {"name": f"{chars[lastok]['character']} (last offered) -> selected",
              "code": code_bytes(lastok).hex(), "expect": (lastok + 1, 1)})
 
+    # --- encounter marker (2026-08-21) ---------------------------------------
+    # Entry from the SHIPPED marker trampoline's literal, like every other entry
+    # here, so the test exercises exactly what the retargeted BL reaches.
+    marker_entry = struct.unpack_from("<I", romdata, MARKER_TRAMP_LIT_OFF)[0]
+    assert marker_entry & 1 and 0x08000000 < (marker_entry & ~1) < 0x0A000000, \
+        hex(marker_entry)
+    print(f"marker entry (from ROM trampoline literal): {marker_entry:#x}")
+
+    def marker_for(ci0):
+        return MARKER_ADDR + ci0 * MARKER_STRIDE
+
+    # A species on Red's roster, and one that is not, resolved from the shipped
+    # bitmaps rather than hardcoded.
+    red_on = next(sp for sp in range(1, 500) if allows(red0, sp))
+    # A REAL species id that Red's bitmap does not allow -- validity matters,
+    # because a nonexistent id would make GetMonData's read meaningless and the
+    # case would pass for the wrong reason.
+    red_off = next(sp for sp in range(1, 500)
+                   if not allows(red0, sp) and str(sp) in sp_table["species"])
+    other0 = next(i for i in range(len(chars))
+                  if i != red0 and not chars[i].get("hidden")
+                  and any(allows(i, sp) for sp in range(1, 500)))
+    other_on = next(sp for sp in range(1, 500) if allows(other0, sp))
+
+    marker_cases = [
+        # The positive claim. Everything else here is an absence.
+        {"name": f"CM on, {chars[red0]['character']}, on-roster -> marker",
+         "flag": 1, "char_id": red0 + 1, "species": red_on, "src": TEXT_WILD_A,
+         "expect": marker_for(red0)},
+        # THE control that matters: a different character must get a DIFFERENT
+        # string. A shim that ignored charId and always returned the first
+        # character's marker would pass every other case here.
+        {"name": f"CM on, {chars[other0]['character']} (char {other0 + 1}) -> its OWN marker",
+         "flag": 1, "char_id": other0 + 1, "species": other_on, "src": TEXT_WILD_A,
+         "expect": marker_for(other0)},
+        # The second copy of the string must be matched too -- the whole reason
+        # the shim tests both is that we could not tell them apart statically.
+        {"name": "CM on, on-roster, SECOND string copy -> marker",
+         "flag": 1, "char_id": red0 + 1, "species": red_on, "src": TEXT_WILD_B,
+         "expect": marker_for(red0)},
+        # Off-roster: unmarked. This is the case the live e2e cannot make
+        # deterministic (a 10% override could turn it on-roster), which is
+        # exactly why it belongs here.
+        {"name": "CM on, OFF-roster mon -> vanilla string",
+         "flag": 1, "char_id": red0 + 1, "species": red_off, "src": TEXT_WILD_A,
+         "expect": TEXT_WILD_A},
+        {"name": "CM off -> vanilla string",
+         "flag": 0, "char_id": red0 + 1, "species": red_on, "src": TEXT_WILD_A,
+         "expect": TEXT_WILD_A},
+        # Any other battle message must pass through untouched, or the marker
+        # would be rewriting unrelated text.
+        {"name": "a non-wild-intro string is never substituted",
+         "flag": 1, "char_id": red0 + 1, "species": red_on, "src": TEXT_NOT_WILD,
+         "expect": TEXT_NOT_WILD},
+    ]
+
     script = HERE / "shim_test.gdb"
     script.write_text(gdb_script(cases, gate, trade_cases, trade_entry, var8004,
                                   wild_cases, wild_gate,
-                                  select_cases, select_entry))
+                                  select_cases, select_entry,
+                                  marker_cases, marker_entry))
 
     launcher = ["mgba-qt", "-g", str(rom)]
     if not os.environ.get("DISPLAY"):
@@ -448,10 +542,12 @@ def main():
     sresults = [(int(a) & 0xFFFF, int(b)) for a, b in
                 (m.split(",") for m in
                  re.findall(r"SELECT_RESULT=(-?\d+,-?\d+)", out))]
+    mresults = [int(m, 16) for m in re.findall(r"MARKER_R0=([0-9a-f]+)", out)]
     print(out[-3000:] if len(out) > 3000 else out)
     if (len(stops) != len(cases) or len(tresults) != len(trade_cases)
             or len(wresults) != len(wild_cases)
-            or len(sresults) != len(select_cases)):
+            or len(sresults) != len(select_cases)
+            or len(mresults) != len(marker_cases)):
         print(f"FATAL: expected {len(cases)} stops + {len(trade_cases)} trade "
               f"+ {len(wild_cases)} wild + {len(select_cases)} select results, "
               f"got {len(stops)} + {len(tresults)} + {len(wresults)} + "
@@ -543,7 +639,18 @@ def main():
               f"(char={got[0]}, flag={got[1]}) (expected char={c['expect'][0]}, "
               f"flag={c['expect'][1]})")
 
+    for c, got in zip(marker_cases, mresults):
+        ok = got == c["expect"]
+        failures += not ok
+        print(f"  [{'PASS' if ok else 'FAIL'}] marker: {c['name']}: "
+              f"r0={got:#010x} (expected {c['expect']:#010x})")
+
+    # ⚠️ Hand-summed, and it has already been wrong once: the six marker cases
+    # ran and passed while this still said 28/28, because adding a case list
+    # does not update an expression that lists the others by name. Every list
+    # that produces a [PASS]/[FAIL] line must appear here.
     total = (len(cases) + len(trade_cases) + len(select_cases)
+             + len(marker_cases)
              + 7)  # 7 wild-trial aggregate checks (3 are the legendary roll)
     print(f"\n{total - failures}/{total} passed")
     return 1 if failures else 0

@@ -269,6 +269,12 @@ def main():
         (CM_MUGSHOT_ADDR - 0x08000000, CM_MUGSHOT_ADDR - 0x08000000 + _mugshot_len),
         (TRAMPOLINE_ADDR - 0x08000000, TRAMPOLINE_ADDR - 0x08000000 + 8),
         (WILD_TRAMPOLINE_ADDR - 0x08000000, WILD_TRAMPOLINE_ADDR - 0x08000000 + 8),
+        # encounter marker: the per-character intro strings, its own trampoline
+        # (a different 22-byte scavenge run from the two above), and the single
+        # BL inside BufferStringBattle that it retargets.
+        (0x09650000 - 0x08000000, 0x09650000 - 0x08000000 + NUM_CHARACTERS * 64),
+        (0x08471264 - 0x08000000, 0x08471264 - 0x08000000 + 8),
+        (0x0880B6, 0x0880B6 + 4),
         *[(s, s + 4) for s in BL_SITES],
         *[(s, s + 4) for s in BL_SITES_WILD],
         (SPECIALS_SLOT_222, SPECIALS_SLOT_222 + 4),
@@ -908,6 +914,43 @@ def main():
     check("the guard is in the same condition as gateActive() (no RNG burned "
           "inside the pyramid)",
           "gateActive() && !InBattlePyramid()" in _src)
+
+    # == 14. Encounter marker ==
+    print("== 14. encounter marker ==")
+    _MK_ADDR, _MK_STRIDE = 0x09650000, 64
+    _MK_BL, _MK_EXPAND, _MK_TRAMP = 0x0880B6, 0x08088928, 0x08471264
+    _MK_STRS = (0x08575304, 0x08575318)
+    _mk = (HERE.parent / "character_mode" / "marker_strings.bin").read_bytes()
+    check("marker_strings.bin is NUM_CHARACTERS x 64",
+          len(_mk) == NUM_CHARACTERS * _MK_STRIDE, str(len(_mk)))
+    check("marker strings in ROM == marker_strings.bin",
+          bytes(patched[_MK_ADDR - 0x08000000:
+                        _MK_ADDR - 0x08000000 + len(_mk)]) == _mk)
+    # The shim compares src against both addresses; if either string moved the
+    # marker would silently never fire for that branch of the switch.
+    _want = bytes.fromhex("d1dde0d800fd0600d5e4e4d9d5e6d9d8abfbff")
+    for _a in _MK_STRS:
+        check(f"wild-intro string intact at {_a:#x}",
+              bytes(patched[_a - 0x08000000:
+                            _a - 0x08000000 + len(_want)]) == _want)
+    check("the intro BL now points at the marker trampoline",
+          decode_bl(bytes(patched[_MK_BL:_MK_BL + 4]),
+                    0x08000000 + _MK_BL) == _MK_TRAMP)
+    check("and originally pointed at BattleStringExpandPlaceholders",
+          decode_bl(bytes(orig[_MK_BL:_MK_BL + 4]),
+                    0x08000000 + _MK_BL) == _MK_EXPAND)
+    check("marker trampoline is ldr r3,[pc]; bx r3",
+          bytes(patched[_MK_TRAMP - 0x08000000:_MK_TRAMP - 0x08000000 + 4])
+          == struct.pack("<HH", 0x4B00, 0x4718))
+    _mh = struct.unpack_from("<I", patched, _MK_TRAMP - 0x08000000 + 4)[0]
+    check("its literal is a Thumb pointer into the shim", _mh & 1, hex(_mh))
+    # It shares a 22-byte scavenge run with nothing, but prove it did not land
+    # on the OTHER two trampolines' run by accident.
+    check("marker trampoline is clear of the catch/wild trampoline run",
+          not (TRAMPOLINE_ADDR <= _MK_TRAMP < TRAMPOLINE_ADDR + 22))
+    _bad = [i for i in range(NUM_CHARACTERS)
+            if 0xFF not in _mk[i * _MK_STRIDE:(i + 1) * _MK_STRIDE]]
+    check("every marker slot is 0xFF-terminated", not _bad, str(len(_bad)))
 
     print(f"\n{'ALL PASS' if not failures else 'FAILURES: ' + ', '.join(failures)}")
     return 1 if failures else 0
