@@ -290,9 +290,73 @@ def const_id_map(mapped):
     return const_to_id
 
 
+
+# ---------------------------------------------------------------------------
+# The empty-roster INVENTORY.
+#
+# rowe_parity.md §10.  A character whose roster maps to nothing is reported in
+# a print line and a manifest field -- and a report line nobody reads is how a
+# real data bug hides.  ROWE filed exactly this shape as cosmetic ("they are
+# not selectable, so nothing is broken") and one of its two cases turned out to
+# be stale mapped data rather than an absent species.
+#
+# So every empty roster is listed here with the species that went missing, and
+# the emitter FAILS if the observed set differs in either direction.  A new
+# silent skip becomes a failed build instead of a line in a log.
+#
+# MEASURED 2026-09-01, and every entry below is genuine.  Method: capture Stage
+# A's output (post-audit, post-additions, pre-dex-filter), then confirm every
+# surviving const appears in Stage B's own stageb_unmatched.txt.  All came back
+# clean -- there is no Iscan here.  Re-running both stages also reproduces
+# rosters_mapped.json byte-for-byte, so the data is not stale either.
+#
+# Do NOT test absence with unresolved_ids.json.  Its pending_phase1_species key
+# lists EVERY species Stage A saw -- they are all PENDING at that point -- so
+# "is it in there" answers yes for everything and reads as a clean bill of
+# health.  stageb_unmatched.txt is the file that means what it looks like.
+EMPTY_ROSTER_EXPECTED = {
+    "Burnet":      "MUNCHLAX",
+    "Calaba":      "BIDOOF, TEDDIURSA",
+    "Cogita":      "ENAMORUS_INCARNATE",
+    "Coin":        "CROAGUNK",
+    "Cyllene":     "ABRA",
+    "Gloria":      "CALYREX, ETERNATUS, GLASTRIER, GROOKEY, KUBFU, SCORBUNNY, SOBBLE, SPECTRIER, ZACIAN_HERO, ZAMAZENTA_HERO",
+    "Iscan":       "BASCULIN_WHITE_STRIPED",
+    "Magnolia":    "GROOKEY, ROTOM, SINISTEA_PHONY",
+    "Olympia":     "ESPURR, SIGILYPH, SLOWPOKE",
+    "Pesselle":    "CROAGUNK",
+    "Ress":        "BIDOOF, SHINX, STARLY",
+    "Rowan":       "CHIMCHAR, KRICKETOT, PIPLUP, SHINX, STARLY, TURTWIG",
+    "Rye":         "RIOLU",
+    "Tobias":      "DARKRAI, LATIOS",
+    "Turo":        "IRON_BOULDER, IRON_BUNDLE, IRON_CROWN, IRON_HANDS, IRON_JUGULIS, IRON_LEAVES, IRON_MOTH, IRON_THORNS, IRON_TREADS, IRON_VALIANT, MIRAIDON",
+    "Victor":      "CALYREX, ETERNATUS, FARFETCHD_GALAR, GLASTRIER, GROOKEY, KUBFU, SCORBUNNY, SKWOVET, SOBBLE, SPECTRIER",
+    "Viola":       "SURSKIT, VIVILLON",
+}
+
+
+def assert_empty_inventory(empty):
+    """Fail the emit unless the empty rosters are exactly the ones above."""
+    seen, want = set(empty), set(EMPTY_ROSTER_EXPECTED)
+    added, gone = sorted(seen - want), sorted(want - seen)
+    if not added and not gone:
+        return
+    msg = ["empty-roster inventory mismatch -- see EMPTY_ROSTER_EXPECTED"]
+    for c in added:
+        msg.append("  NEW empty roster: %s. Something stopped resolving; find "
+                   "out why before adding it to the inventory." % c)
+    for c in gone:
+        msg.append("  %s is NO LONGER empty -- it gained a roster. Saves store "
+                   "the character INDEX, so before emitting a character who "
+                   "gains a first roster, move their line to the END of "
+                   "characters.txt or every later index shifts." % c)
+    raise SystemExit("\n".join(msg))
+
+
 def cmd_dry_run(mapped, order):
     charmap = load_charmap(CHARMAP_PATH)
     built, empty, warnings = build_rosters(mapped, order)
+    assert_empty_inventory(empty)
 
     names_blob = bytearray()
     manifest = []
@@ -334,6 +398,7 @@ def cmd_dry_run(mapped, order):
 def cmd_final(mapped, order):
     charmap = load_charmap(CHARMAP_PATH)
     built, empty, warnings = build_rosters(mapped, order)
+    assert_empty_inventory(empty)
 
     const_to_id = const_id_map(mapped)
     hidden_names = load_hidden(order)
