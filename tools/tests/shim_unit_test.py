@@ -46,11 +46,20 @@ Starts mgba-qt -g under xvfb-run if there is no DISPLAY. Exit 0 = all pass.
 import json
 import os
 import re
+
+# How many checks this layer must run. A deliberate LITERAL, never a total
+# recomputed from the data the checks iterate: such a total drifts in lockstep
+# with what it is meant to pin and therefore cannot fail. Bump it in the same
+# commit that adds or removes a check. See tools/tests/cm_tally.py.
+EXPECT_CHECKS = 34
 import struct
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cm_tally import assert_tally  # noqa: E402
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent.parent
@@ -556,14 +565,17 @@ def main():
         return 1
 
     failures = 0
+    checks_run = 0
     print("\n=== RESULTS ===")
     for c, got in zip(cases, stops):
         ok = got == c["expect"]
+        checks_run += 1
         failures += not ok
         print(f"  [{'PASS' if ok else 'FAIL'}] {c['name']}: stopped at {got:#x} "
               f"(expected {c['expect']:#x})")
     for c, got in zip(trade_cases, tresults):
         ok = got == c["expect"]
+        checks_run += 1
         failures += not ok
         print(f"  [{'PASS' if ok else 'FAIL'}] trade: {c['name']}: result {got} "
               f"(expected {c['expect']})")
@@ -575,6 +587,7 @@ def main():
     off_unchanged = sum(1 for sp, lvl in wild_off
                         if sp == wild_input_species and lvl == wild_input_level)
     ok = off_unchanged == len(wild_off)
+    checks_run += 1
     failures += not ok
     print(f"  [{'PASS' if ok else 'FAIL'}] wild: CM off, {len(wild_off)} trials -> "
           f"never overridden ({off_unchanged}/{len(wild_off)} unchanged)")
@@ -583,6 +596,7 @@ def main():
                      if not (sp == wild_input_species and lvl == wild_input_level)]
     rate = len(on_overridden) / len(wild_on) if wild_on else 0
     rate_ok = 0.04 <= rate <= 0.20   # target 10%, generous band for 300 Bernoulli trials
+    checks_run += 1
     failures += not rate_ok
     print(f"  [{'PASS' if rate_ok else 'FAIL'}] wild: CM on, {len(wild_on)} trials -> "
           f"{len(on_overridden)} overridden ({rate:.1%}, expected ~10%)")
@@ -593,6 +607,7 @@ def main():
     exclusion_bad = [sp for sp, lvl in on_overridden
                      if sp not in red_wild_species and sp not in red_legendary_species]
     excl_ok = not exclusion_bad
+    checks_run += 1
     failures += not excl_ok
     print(f"  [{'PASS' if excl_ok else 'FAIL'}] wild: every overridden species is on "
           f"Red's roster, from either pool ({len(exclusion_bad)} bad, "
@@ -607,6 +622,7 @@ def main():
     # caught, so the pool is full and the roll must fire. ~1% of 200 is ~2.
     legendary_hits = [sp for sp, lvl in on_overridden if sp in red_legendary_species]
     pos_ok = len(legendary_hits) > 0
+    checks_run += 1
     failures += not pos_ok
     print(f"  [{'PASS' if pos_ok else 'FAIL'}] wild: the 1% legendary roll ACTUALLY "
           f"FIRED ({len(legendary_hits)} of {len(wild_on)} trials, "
@@ -614,6 +630,7 @@ def main():
 
     # ...and stays rare. 12+ would mean it is leaking into the 10% path.
     rare_ok = len(legendary_hits) < 12
+    checks_run += 1
     failures += not rare_ok
     print(f"  [{'PASS' if rare_ok else 'FAIL'}] wild: legendaries stay rare "
           f"({len(legendary_hits)} < 12 in {len(wild_on)} trials)")
@@ -622,18 +639,21 @@ def main():
     # swallowed the 10% path, this collapses.
     ordinary = len(on_overridden) - len(legendary_hits)
     dom_ok = ordinary > len(legendary_hits)
+    checks_run += 1
     failures += not dom_ok
     print(f"  [{'PASS' if dom_ok else 'FAIL'}] wild: the 10% roster override still "
           f"dominates ({ordinary} ordinary vs {len(legendary_hits)} legendary)")
 
     level_bad = [lvl for _, lvl in on_overridden if not (1 <= lvl <= 100)]
     lvl_ok = not level_bad
+    checks_run += 1
     failures += not lvl_ok
     print(f"  [{'PASS' if lvl_ok else 'FAIL'}] wild: every overridden level stays in "
           f"[1,100] ({len(level_bad)} bad)")
 
     for c, got in zip(select_cases, sresults):
         ok = got == tuple(c["expect"])
+        checks_run += 1
         failures += not ok
         print(f"  [{'PASS' if ok else 'FAIL'}] select: {c['name']}: "
               f"(char={got[0]}, flag={got[1]}) (expected char={c['expect'][0]}, "
@@ -641,18 +661,20 @@ def main():
 
     for c, got in zip(marker_cases, mresults):
         ok = got == c["expect"]
+        checks_run += 1
         failures += not ok
         print(f"  [{'PASS' if ok else 'FAIL'}] marker: {c['name']}: "
               f"r0={got:#010x} (expected {c['expect']:#010x})")
 
-    # ⚠️ Hand-summed, and it has already been wrong once: the six marker cases
-    # ran and passed while this still said 28/28, because adding a case list
-    # does not update an expression that lists the others by name. Every list
-    # that produces a [PASS]/[FAIL] line must appear here.
-    total = (len(cases) + len(trade_cases) + len(select_cases)
-             + len(marker_cases)
-             + 7)  # 7 wild-trial aggregate checks (3 are the legendary roll)
+    # This total used to be hand-summed from the case lists by name. That is
+    # a CLAIM, not a count of what ran: its sibling wild_encounter_shim_test.py
+    # printed "21/21 checks passed" while running 20, in both modes, for as
+    # long as its version of this expression existed. Count the real results,
+    # and pin the count to a literal (rowe_parity.md §9 Finding 2).
+    total = checks_run
     print(f"\n{total - failures}/{total} passed")
+    if assert_tally(total, EXPECT_CHECKS, "shim_unit_test"):
+        return 1
     return 1 if failures else 0
 
 
