@@ -69,7 +69,14 @@ def code_for(display):
 
 
 def parse_doc(text):
-    """{character: [listed Pokemon names]} from a ROSTERS.md-shaped file."""
+    """{character: [listed Pokemon names]} from a ROSTERS.md-shaped file.
+
+    ROSTERS.md lists one Pokemon per table row -- `| Name | Source |` -- since
+    the doc-Sources port replaced the old single comma-separated line.  Reading
+    it as a comma list makes every roster parse as EMPTY, which reports as the
+    docs omitting everything rather than as a parse failure, so keep the table
+    shape and this function in step.
+    """
     out, cur = {}, None
     for line in text.splitlines():
         m = re.match(r"^### (.+?) — ", line)
@@ -77,9 +84,9 @@ def parse_doc(text):
             cur = m.group(1).strip()
             out[cur] = []
             continue
-        if cur is not None and out.get(cur) == [] and line and \
-                not line.startswith(("#", "*", ">", "|", "<")):
-            out[cur] = [n.strip() for n in line.split(",") if n.strip()]
+        m = re.match(r"^\| (.+?) \| (.*?) \|$", line)
+        if m and cur is not None and m.group(1) not in ("Pokémon", "---"):
+            out[cur].append(m.group(1).strip())
     return out
 
 
@@ -145,6 +152,21 @@ def main():
             index.donor[c]["name"] for c in index.finals_for_names(allowed)}
 
     doc = parse_doc(read(os.path.join(ROOT, "ROSTERS.md")))
+
+    # --- 0. the parse itself worked ---------------------------------------
+    # When parse_doc fell out of step with ROSTERS.md's shape it returned every
+    # character with an EMPTY row list, and that surfaced as 246 content
+    # failures ("the doc omits 12 final evolutions") rather than as what it
+    # was.  An offered character always has at least six fully-evolved Pokemon
+    # -- that is the threshold rule that decides it is offered at all -- so a
+    # heading with no rows under it cannot be a real roster, only a bad parse.
+    empty = sorted(c for c, rows in doc.items() if not rows)
+    if not doc or empty:
+        print("verify_docs: PARSE FAILURE -- %d of %d headings in ROSTERS.md "
+              "yielded no rows (%s). parse_doc no longer matches the file's "
+              "shape; fix the parser before reading anything below."
+              % (len(empty), len(doc), ", ".join(empty[:6]) or "no headings"))
+        return 1
 
     # --- 3. offered <-> documented, both directions ------------------------
     for char in doc:
