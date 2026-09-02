@@ -9,10 +9,16 @@ handing the player a Pokemon must eventually touch that byte. It proves the SET
 of writers has not changed; it does **not** prove each one is gated. This file
 records what reverse engineering found each one to be.
 
-Verdicts: **GATED** -- the project's enforcement covers it. **EXEMPT** --
+Verdicts: **UNGATED** -- measured, reachable, and covered by NO gate: a known
+hole. **GATED** -- the project's enforcement covers it. **EXEMPT** --
 deliberately not gated, with the reason. **NOT-A-WRITER** -- the scan reports
 it, RE showed it is a read (see the detector note). **UNVERIFIED** -- a real
 "go look", not a clean bill of health.
+
+An UNGATED row is pinned by `EXPECT_UNGATED` in the checker rather than failing
+the suite, so a SECOND hole fails loudly while a recorded, understood one waits
+on a design decision. A checker that is permanently red is a checker nobody
+runs -- this workspace has had exactly that happen once already.
 
 ## Two things that generalise, and both bite
 
@@ -46,9 +52,9 @@ re-baseline the inventory in the same commit.
 
 ## Pokémon Lazarus v2.0 -- 12 inventoried writer site(s)
 
-### `0x0820ddb8` (file `0x0020ddb8`) -- **UNVERIFIED**
+### `0x0820ddb8` (file `0x0020ddb8`) -- **UNGATED**
 
-SUSPECTED BYPASS -- the top follow-up in the workspace. `bl 0x081C40B0` (CopyMon, 100 bytes) into a party slot, then `adds r5,#1; strb r5,[=count]` -- a real party-count INCREMENT, the same shape as the GATED site at 0x0020DB60. It is in a DIFFERENT function: entry 0x0820DBB4, a fully-parameterised script give (species/level/item/ball/nature/gender/EVs/ IVs/moves off the stack), single BL caller 0x082393BA, which stores the return into a script var. The GATED entry covers ScriptGiveMon 0x0820D3F4 and the 112 retargeted callnative sites; this entry is not one of them. Determine whether any shipped script reaches 0x082393BA before shipping
+UNGATED, CONFIRMED REACHABLE -- Lazarus's own 9-starter picker. `bl 0x081C40B0` (CopyMon, 100 bytes) into a party slot, then `adds r5,#1; strb r5,[=count]`. The full chain, every link measured: thumb pointer at 0x08239DB8 installs task fn 0x08239C08, which BLs 0x08239348 (its entry -- the `movs r0,#134` is hoisted above the push, which is why a nearest-push scan lands 2 bytes late), which reads a 36-byte record from the table at 0x08E55FE8 and BLs the parameterised give 0x0820DBB4 at 0x082393BA. The table's 9 clean entries are Chespin, Fennekin, Froakie, Rowlet, Litten, Popplio, Sprigatito, Fuecoco and Quaxly, all level 5 -- and docs/INTRO_NAVIGATION.md's have_starter.ss fixture is a level-5 Popplio, entry [0]. Neither gate covers it: not GiveMonToPlayer 0x081C40BC, and not the ScriptGiveMon 0x0820D3F4 / 112-callnative surface. IN PRACTICE the picker runs BEFORE Character Mode can be activated at the code-entry NPC, so the gate is not being dodged so much as pre-empted -- and because activation (src/character_mode.c) sets the flag, character and starter var and NEVER TOUCHES THE EXISTING PARTY, the off-roster starter persists for the whole run. Not fixed: see docs/PARTY_COUNT_WRITERS.md
 
 ### `0x081c4118` (file `0x001c4118`) -- **GATED**
 

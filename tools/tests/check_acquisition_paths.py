@@ -53,7 +53,10 @@ ROM = os.path.join(ROOT, 'rom/lazarus-v2.gba')
 PARTY_COUNT = 0x0201b95d
 
 # How many checks this layer must run. A deliberate LITERAL -- see cm_tally.py.
-EXPECT_CHECKS = 3
+EXPECT_CHECKS = 4
+
+# Measured, reachable, and covered by NO gate. A second one must fail check 4.
+EXPECT_UNGATED = frozenset({0x0020ddb8})
 
 # ldr site -> (verdict, why). Every writer the scan finds must be listed here.
 #   GATED      the project's enforcement covers this path
@@ -98,20 +101,29 @@ INVENTORY = {
                  "confirmed here by opcode stream"),
     0x0020db60: ("GATED",
                  "in the ScriptGiveMon 0x0820D3F4 give region; the 112 callnative give sites are retargeted to the wrapper and verify_artifacts.py check [8] pins them"),
-    0x0020ddb8: ("UNVERIFIED",
-                 "SUSPECTED BYPASS -- the top follow-up in the workspace. "
-                 "`bl 0x081C40B0` (CopyMon, 100 bytes) into a party slot, "
-                 "then `adds r5,#1; strb r5,[=count]` -- a real party-count "
-                 "INCREMENT, the same shape as the GATED site at "
-                 "0x0020DB60. It is in a DIFFERENT function: entry "
-                 "0x0820DBB4, a fully-parameterised script give "
-                 "(species/level/item/ball/nature/gender/EVs/ IVs/moves off "
-                 "the stack), single BL caller 0x082393BA, which stores the "
-                 "return into a script var. The GATED entry covers "
-                 "ScriptGiveMon 0x0820D3F4 and the 112 retargeted "
-                 "callnative sites; this entry is not one of them. "
-                 "Determine whether any shipped script reaches 0x082393BA "
-                 "before shipping"),
+    0x0020ddb8: ("UNGATED",
+                 "UNGATED, CONFIRMED REACHABLE -- Lazarus's own 9-starter "
+                 "picker. `bl 0x081C40B0` (CopyMon, 100 bytes) into a party "
+                 "slot, then `adds r5,#1; strb r5,[=count]`. The full "
+                 "chain, every link measured: thumb pointer at 0x08239DB8 "
+                 "installs task fn 0x08239C08, which BLs 0x08239348 (its "
+                 "entry -- the `movs r0,#134` is hoisted above the push, "
+                 "which is why a nearest-push scan lands 2 bytes late), "
+                 "which reads a 36-byte record from the table at 0x08E55FE8 "
+                 "and BLs the parameterised give 0x0820DBB4 at 0x082393BA. "
+                 "The table's 9 clean entries are Chespin, Fennekin, "
+                 "Froakie, Rowlet, Litten, Popplio, Sprigatito, Fuecoco and "
+                 "Quaxly, all level 5 -- and docs/INTRO_NAVIGATION.md's "
+                 "have_starter.ss fixture is a level-5 Popplio, entry [0]. "
+                 "Neither gate covers it: not GiveMonToPlayer 0x081C40BC, "
+                 "and not the ScriptGiveMon 0x0820D3F4 / 112-callnative "
+                 "surface. IN PRACTICE the picker runs BEFORE Character "
+                 "Mode can be activated at the code-entry NPC, so the gate "
+                 "is not being dodged so much as pre-empted -- and because "
+                 "activation (src/character_mode.c) sets the flag, "
+                 "character and starter var and NEVER TOUCHES THE EXISTING "
+                 "PARTY, the off-roster starter persists for the whole run. "
+                 "Not fixed: see docs/PARTY_COUNT_WRITERS.md"),
     0x0023a698: ("NOT-A-WRITER",
                  "FALSE POSITIVE -- not a writer. `ldr r3,=count; ldrb "
                  "r3,[r3]; cmp r3,#0` is an is-the-party-empty READ that "
@@ -212,12 +224,33 @@ def main():
     check("at least one GATED writer is present (the enforcement point)",
           bool(gated), "no GATED writer found among %d" % len(found))
 
+    # 4. no NEW ungated acquisition path. UNGATED means measured, reachable and
+    #    NOT covered by any gate -- a known hole, pinned here so that finding a
+    #    SECOND one fails the suite instead of arriving silently. Pinning it
+    #    rather than failing on its existence is deliberate: the suite must stay
+    #    green while a recorded, understood hole waits on a design decision,
+    #    or it becomes a red checker nobody runs.
+    ungated = frozenset(o for o in INVENTORY if INVENTORY[o][0] == "UNGATED")
+    check("the set of UNGATED acquisition paths is exactly the known one",
+          ungated == EXPECT_UNGATED,
+          "new: %s | disappeared: %s"
+          % (", ".join("%#010x" % (0x08000000 + o)
+                       for o in sorted(ungated - EXPECT_UNGATED)) or "none",
+             ", ".join("%#010x" % (0x08000000 + o)
+                       for o in sorted(EXPECT_UNGATED - ungated)) or "none"))
+    if ungated:
+        print("  🔴 %d UNGATED path(s) -- reachable and covered by no gate:"
+              % len(ungated))
+        for o in sorted(ungated):
+            print("       %#010x" % (0x08000000 + o))
+
     unver = sorted(o for o in INVENTORY if INVENTORY[o][0] == "UNVERIFIED")
-    print("\n  verdicts: %d GATED, %d EXEMPT, %d NOT-A-WRITER, %d UNVERIFIED"
+    print("\n  verdicts: %d GATED, %d EXEMPT, %d NOT-A-WRITER, %d UNGATED, "
+          "%d UNVERIFIED"
           % (sum(1 for v in INVENTORY.values() if v[0] == "GATED"),
              sum(1 for v in INVENTORY.values() if v[0] == "EXEMPT"),
              sum(1 for v in INVENTORY.values() if v[0] == "NOT-A-WRITER"),
-             len(unver)))
+             len(ungated), len(unver)))
     print("  NOT-A-WRITER: the scan reports these, and reverse engineering "
           "showed they are\n    reads, not stores. They stay listed on "
           "purpose -- the detector is deliberately\n    conservative, so "
