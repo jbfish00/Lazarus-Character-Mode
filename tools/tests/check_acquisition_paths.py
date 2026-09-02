@@ -60,30 +60,65 @@ EXPECT_CHECKS = 3
 #   EXEMPT     deliberately not gated, with a reason
 #   UNVERIFIED found by the scan, containing routine not yet identified
 INVENTORY = {
-    0x001542ca: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x0016ebec: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x0018977e: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
+    0x001542ca: ("EXEMPT",
+                 "SAVE/RESTORE, not a write: `ldrb r7,[r4]` snapshots "
+                 "gPlayerPartyCount at 0x081542CC and `strb r7,[r4]` writes "
+                 "the SAME value back at 0x081542E0, across four subsystem "
+                 "calls. Value-preserving by construction"),
+    0x0016ebec: ("EXEMPT",
+                 "LoadPlayerParty-equivalent: gPlayerPartyCount = "
+                 "gSaveBlock1Ptr->[0x238], then a 100-byte-stride copy loop "
+                 "restores the party. Restores the player's OWN saved "
+                 "party; everything in it was gated when first acquired"),
+    0x0018977e: ("EXEMPT",
+                 "new-game reset: `strb r6,[r3]` with r6 = 0, amid the init "
+                 "BL run (0x081D4ACC / 0x081D4B20 / 0x081C0A38 ...). "
+                 "Zeroing removes, never adds"),
     0x001c4118: ("GATED",
                  "inside GiveMonToPlayer 0x081C40BC -- the injected enforcement point (docs/ROUTINE_MAP.md:158)"),
-    0x001c422a: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x001c429e: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x001c430a: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x001d830a: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x001d84ba: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
+    0x001c422a: ("EXEMPT",
+                 "CalculatePlayerPartyCount (40 BL callers -- the engine's "
+                 "recount primitive): count = 6 if all six slots are "
+                 "filled, else the index of the first empty one. A RECOUNT. "
+                 "See the LAUNDERING note in docs/PARTY_COUNT_WRITERS.md"),
+    0x001c429e: ("EXEMPT",
+                 "second recount arm in the same region: `strb r4,[r7]` "
+                 "where r4 is the first-empty-slot index from the loop "
+                 "immediately above"),
+    0x001c430a: ("EXEMPT",
+                 "third recount arm, the early-exit branch of the loop at "
+                 "0x001C429E (`strb r4,[r7]`, r4 = the index the loop broke "
+                 "at)"),
+    0x001d830a: ("EXEMPT",
+                 "gPlayerPartyCount = CalculatePlayerPartyCount() -- `bl "
+                 "0x081C420C; ldr r3,=count; strb r0,[r3]`. A recount"),
+    0x001d84ba: ("EXEMPT",
+                 "the same recount as 0x001D830A in the sibling routine; "
+                 "these two are the +0x1B0 pair the plan predicted, "
+                 "confirmed here by opcode stream"),
     0x0020db60: ("GATED",
                  "in the ScriptGiveMon 0x0820D3F4 give region; the 112 callnative give sites are retargeted to the wrapper and verify_artifacts.py check [8] pins them"),
     0x0020ddb8: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
-    0x0023a698: ("UNVERIFIED",
-                 "writes the party count; containing routine not yet identified"),
+                 "SUSPECTED BYPASS -- the top follow-up in the workspace. "
+                 "`bl 0x081C40B0` (CopyMon, 100 bytes) into a party slot, "
+                 "then `adds r5,#1; strb r5,[=count]` -- a real party-count "
+                 "INCREMENT, the same shape as the GATED site at "
+                 "0x0020DB60. It is in a DIFFERENT function: entry "
+                 "0x0820DBB4, a fully-parameterised script give "
+                 "(species/level/item/ball/nature/gender/EVs/ IVs/moves off "
+                 "the stack), single BL caller 0x082393BA, which stores the "
+                 "return into a script var. The GATED entry covers "
+                 "ScriptGiveMon 0x0820D3F4 and the 112 retargeted "
+                 "callnative sites; this entry is not one of them. "
+                 "Determine whether any shipped script reaches 0x082393BA "
+                 "before shipping"),
+    0x0023a698: ("NOT-A-WRITER",
+                 "FALSE POSITIVE -- not a writer. `ldr r3,=count; ldrb "
+                 "r3,[r3]; cmp r3,#0` is an is-the-party-empty READ that "
+                 "immediately clobbers r3. The detector matched `strb "
+                 "r1,[r3,#5]` at 0x0823A6F0, which stores through the "
+                 "reloaded r3 at a +5 offset. Same detector defect as "
+                 "Radical Red's 0x0012092A"),
 }
 
 WINDOW = 60          # instructions to follow after the ldr
@@ -178,10 +213,17 @@ def main():
           bool(gated), "no GATED writer found among %d" % len(found))
 
     unver = sorted(o for o in INVENTORY if INVENTORY[o][0] == "UNVERIFIED")
-    print("\n  verdicts: %d GATED, %d EXEMPT, %d UNVERIFIED"
+    print("\n  verdicts: %d GATED, %d EXEMPT, %d NOT-A-WRITER, %d UNVERIFIED"
           % (sum(1 for v in INVENTORY.values() if v[0] == "GATED"),
              sum(1 for v in INVENTORY.values() if v[0] == "EXEMPT"),
+             sum(1 for v in INVENTORY.values() if v[0] == "NOT-A-WRITER"),
              len(unver)))
+    print("  NOT-A-WRITER: the scan reports these, and reverse engineering "
+          "showed they are\n    reads, not stores. They stay listed on "
+          "purpose -- the detector is deliberately\n    conservative, so "
+          "dropping them would make check 2 fail. See\n    "
+          "docs/PARTY_COUNT_WRITERS.md for the detector defect that "
+          "produces them.")
     if unver:
         print("  ⚠️ UNVERIFIED means the containing routine has not been "
               "identified here. It is a 'go look', not a clean bill of health:")
