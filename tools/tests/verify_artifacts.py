@@ -139,6 +139,11 @@ def _inj_addr(name):
 
 
 SHIM_ADDR = _inj_addr("SHIM_ADDR")
+# The shim's slot ends where the confirm script begins. This used to be spelled
+# BITMAPS_ADDR, which WAS the slot end until the data blobs moved out of the
+# 0x095Fxxxx window -- after which every "points into the shim" bound below
+# silently accepted ~190KB of unrelated ROM. Do not spell it as another blob's
+# base again.
 BITMAPS_ADDR = _inj_addr("BITMAPS_ADDR")
 CODES_ADDR = _inj_addr("CODES_ADDR")
 STARTERS_ADDR = _inj_addr("STARTERS_ADDR")
@@ -300,8 +305,17 @@ def main():
         _mend += 32
     _mugshot_len = _mend - _m
 
+    # The shim's own length, measured the same way the renderer's is. It used to
+    # be declared as the whole slot up to BITMAPS_ADDR; once the bitmaps moved
+    # out of that window in 2026-09-02 that would have declared ~190KB of ROM
+    # "intended" and swallowed any stray byte in it.
+    _s = SHIM_ADDR - 0x08000000
+    _send = _s
+    while not all(b == 0xFF for b in patched[_send:_send + 32]):
+        _send += 32
+
     intended = [
-        (SHIM_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000),
+        (_s, _send),
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
         (CODES_ADDR - 0x08000000, CODES_ADDR - 0x08000000 + NUM_CHARACTERS * CODE_LEN),
         (STARTERS_ADDR - 0x08000000, STARTERS_ADDR - 0x08000000 + NUM_CHARACTERS * 2),
@@ -357,7 +371,7 @@ def main():
     gate = u32(patched, toff + 4)
     check("trampoline = ldr r3,[pc]; bx r3", (hw1, hw2) == (0x4B00, 0x4718))
     check("trampoline literal is Thumb ptr into shim",
-          (gate & 1) == 1 and SHIM_ADDR <= (gate & ~1) < BITMAPS_ADDR, hex(gate))
+          (gate & 1) == 1 and SHIM_ADDR <= (gate & ~1) < SCRIPT_ADDR, hex(gate))
     check("shim code present at gate target",
           patched[(gate & ~1) - 0x08000000] != 0xFF)
     check("trampoline bytes were free (0xFF) in original",
@@ -502,7 +516,7 @@ def main():
           u32(orig, SPECIALS_SLOT_222) == ORIG_DISPATCH)
     disp = u32(patched, SPECIALS_SLOT_222)
     check("slot 0x222 -> Thumb ptr into shim (CM_CheatDispatchHook)",
-          (disp & 1) == 1 and SHIM_ADDR <= (disp & ~1) < BITMAPS_ADDR, hex(disp))
+          (disp & 1) == 1 and SHIM_ADDR <= (disp & ~1) < SCRIPT_ADDR, hex(disp))
 
     print("== 8. callnative give sites ==")
     vals = {u32(patched, s) for s in native_sites}
@@ -511,7 +525,7 @@ def main():
           f"{len(vals) + 1} distinct values")
     if hook_native is not None:
         check("retargeted give ptr is Thumb ptr into shim",
-              (hook_native & 1) == 1 and SHIM_ADDR <= (hook_native & ~1) < BITMAPS_ADDR,
+              (hook_native & 1) == 1 and SHIM_ADDR <= (hook_native & ~1) < SCRIPT_ADDR,
               hex(hook_native))
         leftovers = []
         i = patched.find(pat)
@@ -588,6 +602,14 @@ def main():
     ok &= give_ptr == hook_native
     ok &= expect("give args (species=var 0x8000, L5)",
                  bytes([0x00, 0x06]) + struct.pack("<HHI", 0x8000, 5, 0))
+    # The activation sweep, and its ORDER is the whole point: it must come after
+    # the give. Before it, the party holds only the vanilla starter, which is
+    # off-roster, and the never-empty rule would keep it and box nothing. This
+    # decodes positionally, so an edit that moved it before the give fails here.
+    ok &= expect("callnative sweep-party (AFTER the give)", bytes([0x23]))
+    sweep_ptr = take_u32()
+    ok &= (sweep_ptr & 1) == 1 and SHIM_ADDR <= (sweep_ptr & ~1) < SCRIPT_ADDR
+    ok &= sweep_ptr != hook_native
     ok &= expect("goto received-msg tail",
                  bytes([0x05]) + struct.pack("<I", RECEIVED_MSG_SUB))
     check("activation handler decodes (incl. give via shim ptr)", ok)
@@ -633,7 +655,7 @@ def main():
         if hook_trade is None:
             hook_trade = tptr
         ok = ok and tptr == hook_trade and (tptr & 1) == 1 \
-            and SHIM_ADDR <= (tptr & ~1) < BITMAPS_ADDR
+            and SHIM_ADDR <= (tptr & ~1) < SCRIPT_ADDR
         ok = ok and patched[w + 15] == 0x21 \
             and struct.unpack_from("<HH", patched, w + 16) == (0x800D, 0)
         ok = ok and patched[w + 20] == 0x06 and patched[w + 21] == 1
@@ -674,7 +696,7 @@ def main():
     hook_wild = u32(patched, wtoff + 4)
     check("wild trampoline = ldr r3,[pc]; bx r3", (whw1, whw2) == (0x4B00, 0x4718))
     check("wild trampoline literal is Thumb ptr into shim",
-          (hook_wild & 1) == 1 and SHIM_ADDR <= (hook_wild & ~1) < BITMAPS_ADDR, hex(hook_wild))
+          (hook_wild & 1) == 1 and SHIM_ADDR <= (hook_wild & ~1) < SCRIPT_ADDR, hex(hook_wild))
     check("shim code present at wild gate target",
           patched[(hook_wild & ~1) - 0x08000000] != 0xFF)
     check("wild trampoline bytes were free (0xFF) in original",

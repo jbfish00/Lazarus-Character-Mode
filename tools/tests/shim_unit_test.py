@@ -51,7 +51,7 @@ import re
 # recomputed from the data the checks iterate: such a total drifts in lockstep
 # with what it is meant to pin and therefore cannot fail. Bump it in the same
 # commit that adds or removes a check. See tools/tests/cm_tally.py.
-EXPECT_CHECKS = 34
+EXPECT_CHECKS = 38   # +4: the activation party sweep (2026-09-02)
 import struct
 import subprocess
 import sys
@@ -99,6 +99,10 @@ CODE_BUFFER = 0x0203CCE0     # the naming screen's 10-char buffer (sCodeBuffer)
 SPECIALS_SLOT_222 = 0x28D47C  # specials-table entry the naming screen calls
 
 PARTY_COUNT = 0x0201B95D
+PLAYER_PARTY = 0x0201B960          # gPlayerParty, docs/ROUTINE_MAP.md:145
+MON_SIZE = 100
+SCRIPT_ADDR = 0x095FE000           # the confirm script (tools/inject_character_mode.py)
+RECEIVED_MSG_SUB = 0x083289DB      # the tail the confirm script gotos into
 MON_ADDR = 0x02033000    # scratch EWRAM for the synthetic mon
 TRAMP_ADDR = 0x02032F00  # scratch EWRAM for the ARM->Thumb entry trampoline
 
@@ -146,7 +150,8 @@ def build_mon(species, is_egg=False):
     return bytes(mon)
 
 
-def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
+def gdb_script(cases, gate_entry_thumb, sweep_cases, sweep_entry_thumb,
+               trade_cases, trade_entry_thumb,
                var8004_addr, wild_cases, wild_entry_thumb,
                select_cases, select_entry_thumb,
                marker_cases, marker_entry_thumb):
@@ -263,6 +268,32 @@ def gdb_script(cases, gate_entry_thumb, trade_cases, trade_entry_thumb,
             "continue",
             f'printf "SELECT_RESULT=%d,%d\\n", *(unsigned short*){VAR_ADDR:#x},'
             f' (*(unsigned char*){FLAG_BYTE:#x} & {FLAG_MASK:#x}) != 0',
+        ]
+    # activation sweep: drive CM_SweepPartyToPCNative with a synthetic party.
+    # This asserts the DECISION, not the deep effect -- CopyMonToPC is a
+    # breakpoint, so it never actually copies. Case "off-roster is the only
+    # mon" is the important one: it is why the confirm script must call this
+    # AFTER the starter give and not before.
+    for i, c in enumerate(sweep_cases):
+        lines += [f'echo \\n=== SWEEP {i}: {c["name"]} ===\\n']
+        # clear all six slots, then fill the ones this case wants
+        lines += [f'python gdb.selected_inferior().write_memory('
+                  f'{PLAYER_PARTY:#x}, bytes({6 * MON_SIZE}))']
+        for slot, sp in enumerate(c["party_species"]):
+            mon = build_mon(sp)
+            lines += [f'python gdb.selected_inferior().write_memory('
+                      f'{PLAYER_PARTY + slot * MON_SIZE:#x}, '
+                      f'bytes.fromhex("{mon.hex()}"))']
+        lines += [
+            f'set *(unsigned char*){FLAG_BYTE:#x} = {FLAG_MASK if c["flag"] else 0:#x}',
+            f'set *(unsigned short*){VAR_ADDR:#x} = {c["char_id"]}',
+            f'set *(unsigned char*){PARTY_COUNT:#x} = {len(c["party_species"])}',
+            'set $r0 = 0',
+            'set $sp = 0x03007F00',
+            f'set $lr = {GIVEMON | 1:#x}',   # a clean return stops on this BP
+            f'set $pc = {sweep_entry_thumb & ~1:#x}',
+            "continue",
+            'printf "SWEEP_AT=%08x\\n", $pc',
         ]
     lines += ["disconnect", "quit"]
     return "\n".join(lines) + "\n"
@@ -519,7 +550,42 @@ def main():
     ]
 
     script = HERE / "shim_test.gdb"
-    script.write_text(gdb_script(cases, gate, trade_cases, trade_entry, var8004,
+    # --- activation sweep (2026-09-02) ---------------------------------------
+    # The entry is decoded FROM THE SHIPPED ROM, not hardcoded: find the
+    # `goto RECEIVED_MSG_SUB` that ends the confirm script's activation arm and
+    # take the `callnative <ptr>` immediately before it. That is the sweep, and
+    # decoding it this way also proves it sits AFTER the give, not somewhere
+    # harmless.
+    _goto = bytes([0x05]) + struct.pack("<I", RECEIVED_MSG_SUB)
+    _sbase = SCRIPT_ADDR - 0x08000000
+    _g = romdata.find(_goto, _sbase, _sbase + 0x800)
+    assert _g > 0, "confirm script: goto received-msg tail not found"
+    assert romdata[_g - 5] == 0x23, (
+        "the 5 bytes before the tail goto are not a callnative -- the "
+        "activation sweep is missing or has moved")
+    sweep_entry = struct.unpack_from("<I", romdata, _g - 4)[0]
+    assert sweep_entry & 1, "sweep entry is not a Thumb pointer"
+    print(f"activation sweep: {sweep_entry:#x} (decoded from the confirm script)")
+
+    sweep_cases = [
+        {"name": f"CM on, [{sp_name} off-roster, Pikachu] -> boxes it",
+         "flag": 1, "char_id": red_id,
+         "party_species": [other_sp, pikachu], "expect": COPYPC},
+        {"name": "CM on, [Pikachu, Pikachu] all on-roster -> nothing boxed",
+         "flag": 1, "char_id": red_id,
+         "party_species": [pikachu, pikachu], "expect": GIVEMON},
+        {"name": f"CM off, [{sp_name}, Pikachu] -> nothing boxed",
+         "flag": 0, "char_id": red_id,
+         "party_species": [other_sp, pikachu], "expect": GIVEMON},
+        # The case that documents WHY the confirm script sweeps AFTER the give:
+        # run before it, the party is exactly this, and nothing may be boxed.
+        {"name": f"CM on, [{sp_name}] ONLY -> kept (never empty the party)",
+         "flag": 1, "char_id": red_id,
+         "party_species": [other_sp], "expect": GIVEMON},
+    ]
+
+    script.write_text(gdb_script(cases, gate, sweep_cases, sweep_entry,
+                                 trade_cases, trade_entry, var8004,
                                   wild_cases, wild_gate,
                                   select_cases, select_entry,
                                   marker_cases, marker_entry))
@@ -552,8 +618,10 @@ def main():
                 (m.split(",") for m in
                  re.findall(r"SELECT_RESULT=(-?\d+,-?\d+)", out))]
     mresults = [int(m, 16) for m in re.findall(r"MARKER_R0=([0-9a-f]+)", out)]
+    wsweep = [int(m, 16) for m in re.findall(r"SWEEP_AT=([0-9a-f]+)", out)]
     print(out[-3000:] if len(out) > 3000 else out)
     if (len(stops) != len(cases) or len(tresults) != len(trade_cases)
+            or len(wsweep) != len(sweep_cases)
             or len(wresults) != len(wild_cases)
             or len(sresults) != len(select_cases)
             or len(mresults) != len(marker_cases)):
@@ -579,6 +647,12 @@ def main():
         failures += not ok
         print(f"  [{'PASS' if ok else 'FAIL'}] trade: {c['name']}: result {got} "
               f"(expected {c['expect']})")
+    for c, got in zip(sweep_cases, wsweep):
+        ok = got == c["expect"]
+        checks_run += 1
+        failures += not ok
+        print(f"  [{'PASS' if ok else 'FAIL'}] sweep: {c['name']}: stopped at "
+              f"{got:#x} (expected {c['expect']:#x})")
 
     # wild-encounter override trials
     wild_off = wresults[:WILD_TRIALS_OFF]

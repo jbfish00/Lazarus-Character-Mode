@@ -191,7 +191,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -200,7 +200,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -209,7 +209,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -218,7 +218,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -227,7 +227,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -236,7 +236,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -245,7 +245,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -254,7 +254,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -263,7 +263,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -272,7 +272,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -281,7 +281,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -290,7 +290,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -299,7 +299,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -308,7 +308,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -317,7 +317,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -326,7 +326,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -335,7 +335,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -344,7 +344,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -353,7 +353,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x0
@@ -362,7 +362,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -371,7 +371,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -380,7 +380,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -389,7 +389,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -398,7 +398,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -407,7 +407,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -416,7 +416,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -425,7 +425,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -434,7 +434,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -443,7 +443,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -452,7 +452,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -461,7 +461,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -470,7 +470,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -479,7 +479,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -488,7 +488,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -497,7 +497,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -506,7 +506,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -515,7 +515,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -524,7 +524,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -533,7 +533,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -542,7 +542,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -551,7 +551,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -560,7 +560,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -569,7 +569,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -578,7 +578,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -587,7 +587,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -596,7 +596,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -605,7 +605,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -614,7 +614,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -623,7 +623,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -632,7 +632,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -641,7 +641,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -650,7 +650,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -659,7 +659,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -668,7 +668,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -677,7 +677,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -686,7 +686,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -695,7 +695,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -704,7 +704,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -713,7 +713,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -722,7 +722,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -731,7 +731,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -740,7 +740,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -749,7 +749,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -758,7 +758,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -767,7 +767,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -776,7 +776,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -785,7 +785,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -794,7 +794,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -803,7 +803,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -812,7 +812,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -821,7 +821,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -830,7 +830,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -839,7 +839,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -848,7 +848,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -857,7 +857,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -866,7 +866,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -875,7 +875,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -884,7 +884,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -893,7 +893,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -902,7 +902,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -911,7 +911,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -920,7 +920,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -929,7 +929,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -938,7 +938,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -947,7 +947,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -956,7 +956,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -965,7 +965,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -974,7 +974,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -983,7 +983,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -992,7 +992,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1001,7 +1001,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1010,7 +1010,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1019,7 +1019,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1028,7 +1028,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1037,7 +1037,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1046,7 +1046,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1055,7 +1055,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1064,7 +1064,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1073,7 +1073,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1082,7 +1082,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1091,7 +1091,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1100,7 +1100,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1109,7 +1109,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1118,7 +1118,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1127,7 +1127,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1136,7 +1136,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1145,7 +1145,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1154,7 +1154,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1163,7 +1163,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1172,7 +1172,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1181,7 +1181,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1190,7 +1190,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1199,7 +1199,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1208,7 +1208,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1217,7 +1217,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1226,7 +1226,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1235,7 +1235,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1244,7 +1244,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1253,7 +1253,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1262,7 +1262,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1271,7 +1271,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1280,7 +1280,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1289,7 +1289,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1298,7 +1298,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1307,7 +1307,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1316,7 +1316,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1325,7 +1325,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1334,7 +1334,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1343,7 +1343,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1352,7 +1352,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1361,7 +1361,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1370,7 +1370,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1379,7 +1379,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1388,7 +1388,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1397,7 +1397,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1406,7 +1406,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1415,7 +1415,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1424,7 +1424,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1433,7 +1433,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1442,7 +1442,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1451,7 +1451,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1460,7 +1460,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1469,7 +1469,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1478,7 +1478,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1487,7 +1487,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1496,7 +1496,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1505,7 +1505,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1514,7 +1514,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1523,7 +1523,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1532,7 +1532,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1541,7 +1541,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1550,7 +1550,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1559,7 +1559,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1568,7 +1568,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1577,7 +1577,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1586,7 +1586,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1595,7 +1595,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1604,7 +1604,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1613,7 +1613,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1622,7 +1622,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1631,7 +1631,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1640,7 +1640,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1649,7 +1649,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1658,7 +1658,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1667,7 +1667,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1676,7 +1676,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1685,7 +1685,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1694,7 +1694,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1703,7 +1703,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1712,7 +1712,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1721,7 +1721,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1730,7 +1730,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1739,7 +1739,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1748,7 +1748,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1757,7 +1757,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1766,7 +1766,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1775,7 +1775,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1784,7 +1784,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1793,7 +1793,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1802,7 +1802,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1811,7 +1811,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1820,7 +1820,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1829,7 +1829,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1838,7 +1838,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1847,7 +1847,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1856,7 +1856,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1865,7 +1865,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1874,7 +1874,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1883,7 +1883,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1892,7 +1892,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1901,7 +1901,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1910,7 +1910,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1919,7 +1919,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1928,7 +1928,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1937,7 +1937,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1946,7 +1946,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1955,7 +1955,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1964,7 +1964,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1973,7 +1973,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1982,7 +1982,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -1991,7 +1991,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2000,7 +2000,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2009,7 +2009,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2018,7 +2018,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2027,7 +2027,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2036,7 +2036,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2045,7 +2045,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2054,7 +2054,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2063,7 +2063,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2072,7 +2072,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2081,7 +2081,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2090,7 +2090,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2099,7 +2099,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2108,7 +2108,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2117,7 +2117,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2126,7 +2126,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2135,7 +2135,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2144,7 +2144,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2153,7 +2153,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 set *(unsigned char*)0x203133e = 0x1
@@ -2162,7 +2162,7 @@ set $r0 = 142
 set $r1 = 30
 set $sp = 0x03007F00
 set $lr = 0x81c40bd
-set $pc = 0x95f14bc
+set $pc = 0x95f1684
 continue
 printf "WILD_RESULT=%d,%d\n", $r0, $r1
 echo \n=== MARKER 0: CM on, Red, on-roster -> marker ===\n
@@ -2291,5 +2291,56 @@ set $lr = 0x81c40bd
 set $pc = 0x95f1098
 continue
 printf "SELECT_RESULT=%d,%d\n", *(unsigned short*)0x20315d4, (*(unsigned char*)0x203133e & 0x1) != 0
+echo \n=== SWEEP 0: CM on, [Aerodactyl off-roster, Pikachu] -> boxes it ===\n
+python gdb.selected_inferior().write_memory(0x201b960, bytes(600))
+python gdb.selected_inferior().write_memory(0x201b960, bytes.fromhex("000000000000000000000000000000000000000200000000000000008e0000008e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+python gdb.selected_inferior().write_memory(0x201b9c4, bytes.fromhex("00000000000000000000000000000000000000020000000000000000190000001900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+set *(unsigned char*)0x203133e = 0x1
+set *(unsigned short*)0x20315d4 = 1
+set *(unsigned char*)0x201b95d = 2
+set $r0 = 0
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f14bc
+continue
+printf "SWEEP_AT=%08x\n", $pc
+echo \n=== SWEEP 1: CM on, [Pikachu, Pikachu] all on-roster -> nothing boxed ===\n
+python gdb.selected_inferior().write_memory(0x201b960, bytes(600))
+python gdb.selected_inferior().write_memory(0x201b960, bytes.fromhex("00000000000000000000000000000000000000020000000000000000190000001900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+python gdb.selected_inferior().write_memory(0x201b9c4, bytes.fromhex("00000000000000000000000000000000000000020000000000000000190000001900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+set *(unsigned char*)0x203133e = 0x1
+set *(unsigned short*)0x20315d4 = 1
+set *(unsigned char*)0x201b95d = 2
+set $r0 = 0
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f14bc
+continue
+printf "SWEEP_AT=%08x\n", $pc
+echo \n=== SWEEP 2: CM off, [Aerodactyl, Pikachu] -> nothing boxed ===\n
+python gdb.selected_inferior().write_memory(0x201b960, bytes(600))
+python gdb.selected_inferior().write_memory(0x201b960, bytes.fromhex("000000000000000000000000000000000000000200000000000000008e0000008e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+python gdb.selected_inferior().write_memory(0x201b9c4, bytes.fromhex("00000000000000000000000000000000000000020000000000000000190000001900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+set *(unsigned char*)0x203133e = 0x0
+set *(unsigned short*)0x20315d4 = 1
+set *(unsigned char*)0x201b95d = 2
+set $r0 = 0
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f14bc
+continue
+printf "SWEEP_AT=%08x\n", $pc
+echo \n=== SWEEP 3: CM on, [Aerodactyl] ONLY -> kept (never empty the party) ===\n
+python gdb.selected_inferior().write_memory(0x201b960, bytes(600))
+python gdb.selected_inferior().write_memory(0x201b960, bytes.fromhex("000000000000000000000000000000000000000200000000000000008e0000008e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+set *(unsigned char*)0x203133e = 0x1
+set *(unsigned short*)0x20315d4 = 1
+set *(unsigned char*)0x201b95d = 1
+set $r0 = 0
+set $sp = 0x03007F00
+set $lr = 0x81c40bd
+set $pc = 0x95f14bc
+continue
+printf "SWEEP_AT=%08x\n", $pc
 disconnect
 quit

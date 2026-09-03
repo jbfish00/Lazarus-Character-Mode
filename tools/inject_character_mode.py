@@ -116,11 +116,28 @@ SHIM_ADDR      = 0x095F0EC0
 # order with slack, so the next growth moves one constant instead of three.
 # splice() asserts every target is still 0xFF in the working copy, which is what
 # actually proves these do not overlap -- keep it that way.
-BITMAPS_ADDR   = 0x095F1800  # 238*196=46,648B -> ends 0x095FCE38
-CODES_ADDR     = 0x095FD000  # 238*11=2,618B   -> ends 0x095FDA3A
-STARTERS_ADDR  = 0x095FDC00  # 238*2=476B      -> ends 0x095FDDDC
-HIDDEN_ADDR    = 0x095FDE00  # (238+7)/8=30B   -> ends 0x095FDE1E
+# 2026-09-02: the four data blobs moved out of the 0x095Fxxxx window into the
+# wide free area above LEGENDARY_ADDR, because the shim outgrew the 2,368-byte
+# slot it had between SHIM_ADDR and the old BITMAPS_ADDR when the activation
+# sweep was added. Nothing outside this file hardcodes them -- the C gets them
+# as -D, and verify_artifacts.py parses them back out of this file -- and a
+# save stores the character INDEX, never an address, so moving them is safe for
+# existing saves. SCRIPT_ADDR and TRADE_SCRIPT_ADDR deliberately did NOT move:
+# those are the two with pointers patched into shipped ROM regions.
+# Above MARKER_ADDR's block (ends 0x09653B80). NOT 0x09620000: that whole
+# window through 0x09648000 belongs to the Phase 3 sprite pointer table and
+# blobs, and putting the bitmaps there collides -- which surfaces only as
+# "target not 0xFF", never as "these two overlap". Hence the overlap check in
+# splice() below.
+BITMAPS_ADDR   = 0x09660000  # 238*196=46,648B -> ends 0x0966B638
+CODES_ADDR     = 0x0966C000  # 238*11=2,618B   -> ends 0x0966CA3A
+STARTERS_ADDR  = 0x0966CC00  # 238*2=476B      -> ends 0x0966CDDC
+HIDDEN_ADDR    = 0x0966CE00  # (238+7)/8=30B   -> ends 0x0966CE1E
 SCRIPT_ADDR    = 0x095FE000
+# The shim runs from SHIM_ADDR up to (not into) the confirm script. Explicit,
+# because the old guard was "< BITMAPS_ADDR" and silently became meaningless
+# the moment the bitmaps moved away.
+SHIM_MAX       = SCRIPT_ADDR - SHIM_ADDR
 WILDMONS_ADDR  = 0x09600000  # 238*stride      -> must end before LEGENDARY_ADDR
 # The 1% legendary wild pool (../game_plans/legendary_encounters.md). Sits in
 # the same free run, immediately after wildmons: at 238 chars x stride 16 it is
@@ -378,7 +395,9 @@ def main():
     for need in ("CM_CheatDispatchHook", "CM_GiveMonToPlayerGated",
                  "CM_GiveMonNativeGated", "CM_TradeCheck", "CM_CreateWildMonGated"):
         assert need in syms, f"missing symbol {need}"
-    assert len(shim) <= BITMAPS_ADDR - SHIM_ADDR, f"shim too big: {len(shim)}"
+    assert len(shim) <= SHIM_MAX, (
+        f"shim too big: {len(shim)} > {SHIM_MAX} -- it would run into "
+        f"SCRIPT_ADDR {SCRIPT_ADDR:#x}")
 
     # --- 1b. compile the mugshot renderer (separate unit + link address; see
     # the CM_MUGSHOT_ADDR comment). Both entry points are resolved from the
@@ -423,6 +442,7 @@ def main():
     hook_trade    = syms["CM_TradeCheck"] | 1
     hook_wild     = syms["CM_CreateWildMonGated"] | 1
     hook_marker   = syms["CM_BattleStringGated"] | 1
+    hook_sweep    = syms["CM_SweepPartyToPCNative"] | 1
 
     # --- 2. confirm script ---
     txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
@@ -449,6 +469,10 @@ def main():
            + op_setvar(0x4001, 0x8000)
            + op_setvar(VAR_CM_STARTER, 0)  # consume the marker before the give
            + op_callnative_give(hook_native, 0x8000, 5)
+           # Sweep AFTER the give, never before: beforehand the party holds only
+           # the vanilla starter, which is off-roster, and the never-empty rule
+           # would keep it and box nothing. See CM_SweepPartyToPCNative.
+           + op_callnative(hook_sweep)
            + op_goto(RECEIVED_MSG_SUB))  # fanfare + "received!" + nickname/PC, ends script
     off_h = (op_setvar(VAR_CM_STARTER, 0)
              + op_delay(2) + op_loadword(0)  # txt_off ptr fixed below
@@ -482,11 +506,22 @@ def main():
     print(f"confirm script: {len(script)} bytes @ {SCRIPT_ADDR:#x}")
 
     # --- 3. splice payloads ---
+    spliced = []
+
     def splice(rom_addr, payload, label):
         off = rom_addr - 0x08000000
         assert rom_addr + len(payload) <= FREE_END_ROM, f"{label} overruns ROM"
         seg = data[off:off + len(payload)]
         assert all(b == 0xFF for b in seg), f"{label}: target not 0xFF @ {rom_addr:#x}"
+        # The 0xFF precondition alone reports an overlap as "target not 0xFF",
+        # which reads like a wrong base ROM rather than two blobs colliding --
+        # it cost a build when the bitmaps were moved on top of the sprite
+        # blobs. Check the regions against each other so the message names both.
+        for o_off, o_len, o_label in spliced:
+            assert off >= o_off + o_len or off + len(payload) <= o_off, \
+                (f"{label} @ {rom_addr:#x} (+{len(payload)}) overlaps "
+                 f"{o_label} @ {o_off + 0x08000000:#x} (+{o_len})")
+        spliced.append((off, len(payload), label))
         data[off:off + len(payload)] = payload
 
     splice(SHIM_ADDR, shim, "shim")

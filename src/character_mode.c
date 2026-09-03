@@ -401,6 +401,93 @@ void CM_GiveMonNativeGated(void *ctx)
     }
 }
 
+/* ---- one-shot party sweep at Character Mode activation (2026-09-02) ----
+ *
+ * WHY THIS EXISTS. Lazarus's own 9-starter picker
+ * (docs/PARTY_COUNT_WRITERS.md, 0x0820DBB4 <- 0x08239348 <- task 0x08239C08)
+ * runs BEFORE Character Mode can be activated at the code-entry NPC. The gate
+ * is therefore pre-empted rather than dodged, and nothing used to reconcile
+ * the party afterwards -- so every run began with a permanent off-roster
+ * Pokemon in slot 0.
+ *
+ * ORDERING IS LOAD-BEARING. The confirm script calls this IMMEDIATELY AFTER
+ * the character's own starter has been given, never before. Before the give
+ * the party holds only the vanilla starter, which is off-roster, so the
+ * never-empty-the-party rule below would keep it and box nothing -- the sweep
+ * would be a silent no-op.
+ *
+ * Semantics are ROWE's, matching CharacterMode_SweepPartyToPC in the Unbound
+ * port: eggs exempt, full boxes leave the mon in the party, and the party is
+ * never emptied. The keep decision is made in a SEPARATE PRE-SCAN so it cannot
+ * depend on slot order (the ordering defect ROWE shipped once).
+ *
+ * Deliberately does NOT touch gSpecialVar_Result: the give tail this returns
+ * into branches on it (0 = nickname flow, 1 = "sent to the PC"), and the mon
+ * that flow targets is the last party slot -- which is still the character's
+ * starter afterwards, because it was appended last and compaction preserves
+ * order.
+ */
+void CM_SweepPartyToPCNative(void)
+{
+    int i, j, w;
+    u8 kept = 0;
+    u16 me;
+
+    if (!gateActive())
+        return;
+    me = *GetVarPointer(VAR_CM_CHAR);
+
+    /* Pre-scan: is anything allowed to stay? Decided before anything moves. */
+    for (i = 0; i < PARTY_SIZE; i++) {
+        u8 *mon = gPlayerParty + i * MON_SIZE;
+        u32 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+
+        if (species == 0)
+            continue;
+        if (GetMonData(mon, MON_DATA_IS_EGG, 0) || onRoster(me, species))
+            kept = 1;
+    }
+
+    for (i = 0; i < PARTY_SIZE; i++) {
+        u8 *mon = gPlayerParty + i * MON_SIZE;
+        u32 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+
+        if (species == 0)
+            continue;
+        if (GetMonData(mon, MON_DATA_IS_EGG, 0) || onRoster(me, species))
+            continue;
+        if (!kept) {            /* never leave the player with no party */
+            kept = 1;
+            continue;
+        }
+        if (CopyMonToPC(mon) == 1) {   /* 1 = MON_GIVEN_TO_PC; full -> keep */
+            for (j = 0; j < MON_SIZE; j++)
+                mon[j] = 0;
+        }
+    }
+
+    /* Compact. The engine's party helpers assume there are no holes, and a
+     * zeroed slot reads back as species 0 (its encryption key is zero too),
+     * which is the same test the engine's own CompactPartySlots uses. */
+    w = 0;
+    for (i = 0; i < PARTY_SIZE; i++) {
+        u8 *src = gPlayerParty + i * MON_SIZE;
+
+        if (GetMonData(src, MON_DATA_SPECIES, 0) == 0)
+            continue;
+        if (w != i) {
+            u8 *dst = gPlayerParty + w * MON_SIZE;
+
+            for (j = 0; j < MON_SIZE; j++)
+                dst[j] = src[j];
+            for (j = 0; j < MON_SIZE; j++)
+                src[j] = 0;
+        }
+        w++;
+    }
+    gPlayerPartyCount = w;
+}
+
 /* Wild-encounter roster override (new, 2026-07-17). Picks a RANDOM roster
  * family (base + evolution chain), then within that family the stage whose
  * [minLevel,maxLevel] window contains the rolled level; if none contains it
