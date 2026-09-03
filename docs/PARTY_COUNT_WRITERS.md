@@ -101,6 +101,64 @@ gPlayerPartyCount = CalculatePlayerPartyCount() -- `bl 0x081C420C; ldr r3,=count
 the same recount as 0x001D830A in the sibling routine; these two are the +0x1B0 pair the plan predicted, confirmed here by opcode stream
 
 
+---
+
+# The other half: mon-sized copies INTO gPlayerParty
+
+`tools/tests/check_party_writes.py` is the second inventory, and it exists
+because of the LAUNDERING HOLE above: a recount is EXEMPT precisely because it
+introduces nothing, and that is exactly what makes a direct write into
+gPlayerParty legitimate afterwards. It pins every call whose destination is a
+gPlayerParty slot and whose size argument is the mon size -- a species can only
+enter a slot as a whole-mon copy, and the size argument is what separates the
+copies from the reads.
+
+⚠️ **Choosing that primitive took three tries, and the failures are the useful
+part.** "Every store through a party-derived pointer" gave 261 candidates.
+"Every function called with a party pointer in r0" gave ~171 callees, because
+`GetMonData(&gPlayerParty[i], ...)` passes the mon in r0 too -- at that
+resolution a read is indistinguishable from a write. Only the size argument
+cuts it to a set a person can actually read.
+
+⚠️ **And the first working version had a blind spot that hid the enforcement
+copy itself.** It treated a pc-relative reload of ANY tracked register as the
+end of the window; CFRU's `GiveMonToPlayer` reloads the register that held
+gPlayerParty long after the slot pointer has been computed into r0, so its own
+copy went unseen -- and the "at least one GATED copy is present" check failed,
+which is how it was noticed. It now drops just that register and keeps going.
+**A checker whose anchor assertion fails is telling you about the checker.**
+
+## 7 inventoried copy site(s)
+
+### `0x080add76` (file `0x000add76`) -- **UNVERIFIED**
+
+mon-sized copy into a party slot inside the 0x080ADD76 region (callee 0x081C2FAC); containing routine not yet identified. It reaches the party through a known copy primitive, so it cannot be introducing a species by an unknown mechanism -- but WHAT it copies is unexamined
+
+### `0x080bab4a` (file `0x000bab4a`) -- **UNVERIFIED**
+
+mon-sized copy into a party slot inside the 0x080BAB4A region (callee 0x081C2FAC); containing routine not yet identified. It reaches the party through a known copy primitive, so it cannot be introducing a species by an unknown mechanism -- but WHAT it copies is unexamined
+
+### `0x081a2050` (file `0x001a2050`) -- **UNVERIFIED**
+
+mon-sized copy into a party slot inside the 0x081A2050 region (callee 0x083E7F2C (memcpy)); containing routine not yet identified. It reaches the party through a known copy primitive, so it cannot be introducing a species by an unknown mechanism -- but WHAT it copies is unexamined
+
+### `0x081dd4c4` (file `0x001dd4c4`) -- **UNVERIFIED**
+
+mon-sized copy into a party slot inside the 0x081DD4C4 region (callee 0x083E7F2C (memcpy)); containing routine not yet identified. It reaches the party through a known copy primitive, so it cannot be introducing a species by an unknown mechanism -- but WHAT it copies is unexamined
+
+### `0x081c40e4` (file `0x001c40e4`) -- **GATED**
+
+inside GiveMonToPlayer 0x081C40BC -- THE enforcement choke point, the CopyMon that actually places the mon in the party slot. Its count writer 0x001c4118 is the GATED entry in check_acquisition_paths.py
+
+### `0x0820da96` (file `0x0020da96`) -- **GATED**
+
+in the ScriptGiveMon 0x0820D3F4 give region, alongside the GATED count writer 0x0020DB60; the 112 callnative give sites are retargeted to the wrapper and verify_artifacts.py check [8] pins them
+
+### `0x081542b6` (file `0x001542b6`) -- **EXEMPT**
+
+inside the routine that also SAVES AND RESTORES gPlayerPartyCount around a subsystem call (docs/PARTY_COUNT_WRITERS.md entry 0x001542ca, where `ldrb r7,[r4]` and `strb r7,[r4]` write the same value back). A party save/restore: it moves the player's own mons out and back
+
+
 ## Method, so it can be repeated
 
 1. `arm-none-eabi-objdump -b binary -m armv4t -M force-thumb -D
