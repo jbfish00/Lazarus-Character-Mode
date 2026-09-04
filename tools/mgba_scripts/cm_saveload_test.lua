@@ -1,6 +1,6 @@
 -- Phase 6 e2e: save/load round-trip of the Character Mode state.
 -- From cm_red_active.ss (clean overworld at the University desk, CM on as
--- Red, party = 2): in-game save via the START menu (Save = index 3), hard
+-- Red): in-game save via the START menu (Save = index 3), hard
 -- reset, CONTINUE from the title, then assert flag 0x2B0 / VAR_CM_CHAR /
 -- party count all survived the flash round-trip.
 --
@@ -34,12 +34,19 @@ for _, pk in ipairs(plan) do
 end
 
 local RESET_AT = 1500
+-- ⚠️ 2026-09-04: the party assertion used to be a LITERAL 2, describing a
+-- savestate that now holds ONE mon, so this layer was RED and nothing re-ran
+-- it. A literal here pins the fixture, not the behaviour under test -- what
+-- the round-trip must preserve is whatever the party WAS. Captured pre-reset
+-- and compared, with a non-zero floor so an empty-party fixture cannot make
+-- the comparison vacuous (0 == 0 would "pass" while proving nothing).
+local preParty = nil
 H.onFrame(function(f)
     if f == RESET_AT - 20 then
         emu:screenshot(DIR .. "saveload_saved.png")
+        preParty = emu:read8(PARTY_COUNT)
         H.log(string.format("pre-reset: party=%d flag=%s char=%d",
-            emu:read8(PARTY_COUNT), tostring(H.flagGet(FLAG_CM)),
-            H.varGet(VAR_CHAR)))
+            preParty, tostring(H.flagGet(FLAG_CM)), H.varGet(VAR_CHAR)))
     end
     if f == RESET_AT then
         emu:reset()
@@ -57,7 +64,9 @@ H.onFrame(function(f)
         H.log(string.format("post-load: party=%d flag=%s char=%d",
             emu:read8(PARTY_COUNT), tostring(H.flagGet(FLAG_CM)),
             H.varGet(VAR_CHAR)))
-        H.assertEq("party count restored", emu:read8(PARTY_COUNT), 2)
+        H.assertTrue("the fixture had a non-empty party to restore",
+                     preParty ~= nil and preParty > 0)
+        H.assertEq("party count restored", emu:read8(PARTY_COUNT), preParty)
         H.assertTrue("flag 0x2B0 survived save/load", H.flagGet(FLAG_CM))
         H.assertEq("VAR_CM_CHAR survived save/load", H.varGet(VAR_CHAR), 1)
         H.finish()

@@ -36,11 +36,18 @@ local function u16sum(addr, n)
     return s
 end
 
-local function injectRalts()
-    local mon = PARTY + 2 * MON_SIZE
+-- ⚠️ 2026-09-04: this used to write ONE mon into slot 3 and set the party
+-- count to 3, while the savestate holds only ONE mon -- leaving slot 2 empty.
+-- CalculatePlayerPartyCount stops at the first empty slot, so the party menu's
+-- own recount collapsed the count back to 1 and dropped the injected Bagon
+-- before the trade could see it: both runs ended `party=1` and the CONTROL
+-- run's trade never happened either. The layer had been RED and nothing re-ran
+-- it (rowe_parity.md §11: a checker is evidence only on the runs where it
+-- executes). A party array must be CONTIGUOUS, so slot 2 is filled too.
+local function injectAt(slot, nick)
+    local mon = PARTY + slot * MON_SIZE
     for i = 0, MON_SIZE - 1 do emu:write8(mon + i, 0) end
-    -- nickname "BAGON" @ +8 (charmap upper A-Z = 0xBB..)
-    local nick = { 0xBC, 0xBB, 0xC1, 0xC9, 0xC8, 0xFF }
+    -- nickname @ +8 (charmap upper A-Z = 0xBB..)
     for i, b in ipairs(nick) do emu:write8(mon + 8 + i - 1, b) end
     emu:write8(mon + 18, 2)          -- language ENG
     emu:write8(mon + 19, 0x02)       -- hasSpecies
@@ -55,8 +62,17 @@ local function injectRalts()
     emu:write16(mon + 86, 30)        -- hp
     emu:write16(mon + 88, 30)        -- maxHP
     for off = 90, 98, 2 do emu:write16(mon + off, 12) end
+end
+
+local function injectRalts()
+    -- slot 2 first: a filler so the array is contiguous and a recount cannot
+    -- shrink it. It is a Bagon too -- the menu selects slot 3 explicitly, and
+    -- the assertions read slot 3's nickname, which is what discriminates.
+    injectAt(1, { 0xBB, 0xC6, 0xC6, 0xBF, 0xC8, 0xFF })   -- "ALLEN"
+    injectAt(2, { 0xBC, 0xBB, 0xC1, 0xC9, 0xC8, 0xFF })   -- "BAGON"
     emu:write8(PARTY_COUNT, 3)
-    H.log("synthetic Bagon injected in slot 3")
+    H.log("synthetic Bagon injected in slot 3 (slot 2 filled so a recount "
+          .. "cannot drop it)")
 end
 
 local function slot3nick()

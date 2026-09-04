@@ -3,6 +3,19 @@
 Confirmed addresses only; candidates are marked. Every entry needs XREF or
 live verification before Phase 4 may hook it (standing rule).
 
+### Egg-hatch sweep (2026-09-04)
+
+The field-control step handler runs the script at `0x0834915D` when
+`ShouldEggHatch` returns true; its pointer sits in that caller's literal pool at
+`0x0812C664`. The script's tail (`0x08349169`: `special EggHatch(0xC5);
+waitstate; releaseall; end`) is overlaid with `goto 0x09670000`, an 11-byte
+replayed tail ending `callnative CM_SweepPartyToPCNative`. Checked before
+hooking: the entry has **exactly one** referent and the six overlaid bytes have
+**zero** — via an UNALIGNED u32 scan, because script pointers here are not
+word-aligned. ⚠️ The donor's `day_care.inc` shows this script WITHOUT the
+waitstate; the ROM has it. `docs/GIFT_EGGS.md`,
+`tools/character_mode/egg_hook.py`.
+
 ## RAM anchors (CONFIRMED 2026-07-15, live + static)
 
 | Symbol | Address | Evidence |

@@ -196,7 +196,16 @@ checks_run = 0
 # recomputed from the data the checks iterate: such a total drifts in lockstep
 # with what it is meant to pin and therefore cannot fail. Bump it in the same
 # commit that adds or removes a check. See tools/tests/cm_tally.py.
-EXPECT_CHECKS = 128
+# The egg-hatch hook's own constants, read from the module the injector uses,
+# so the two cannot drift apart. EGG_TAIL_ADDR is duplicated from the injector
+# on purpose: this file shares no code with it.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "..", "character_mode"))
+import egg_hook  # noqa: E402
+
+EGG_TAIL_ADDR = 0x09670000
+
+EXPECT_CHECKS = 133  # +5: the egg-hatch sweep (2026-09-03)
 
 
 def check(name, ok, detail=""):
@@ -342,6 +351,11 @@ def main():
         (BRANCH0_PTR_OFF, BRANCH0_PTR_OFF + 4),
         *[(s, s + 4) for s in native_sites],
         *[(j, j + 5) for j in TRADE_JUNCTIONS],
+        # egg-hatch sweep: the 11-byte replayed tail, and the 6-byte overlay on
+        # the hatch script that jumps to it
+        (EGG_TAIL_ADDR - 0x08000000, EGG_TAIL_ADDR - 0x08000000 + 11),
+        (egg_hook.SPLICE_FILE_OFF,
+         egg_hook.SPLICE_FILE_OFF + len(egg_hook.SPLICE_ORIG)),
     ]
     stray = []
     CHUNK = 4096
@@ -613,6 +627,50 @@ def main():
     ok &= expect("goto received-msg tail",
                  bytes([0x05]) + struct.pack("<I", RECEIVED_MSG_SUB))
     check("activation handler decodes (incl. give via shim ptr)", ok)
+
+    # --- the egg-hatch sweep (../game_plans/rowe_parity.md §13.16/§13.18) ----
+    # Checked here because the strongest assertion available is that the hatch
+    # tail calls THE SAME native the activation handler just called: a tail
+    # pointing anywhere else would satisfy every "looks like a callnative" test
+    # while jumping into the middle of another routine on every hatch.
+    #
+    # Pinned in BOTH directions. Checking only the patched bytes would pass
+    # just as happily if the base ROM had always held a goto here, which would
+    # mean the injector was doing nothing.
+    print("\n== egg-hatch sweep ==")
+    _eo = egg_hook.SPLICE_FILE_OFF
+    _n = len(egg_hook.SPLICE_ORIG)
+    check("base ROM still holds the stock hatch tail at the splice site",
+          bytes(orig[_eo:_eo + _n]) == egg_hook.SPLICE_ORIG,
+          f"{bytes(orig[_eo:_eo + _n]).hex()} != {egg_hook.SPLICE_ORIG.hex()}")
+    _spl = bytes(patched[_eo:_eo + _n])
+    check("hatch script tail overlaid with `goto <egg tail>`",
+          _spl[0] == 0x05
+          and struct.unpack_from("<I", _spl, 1)[0] == EGG_TAIL_ADDR,
+          _spl.hex())
+    _to = EGG_TAIL_ADDR - 0x08000000
+    _tail = bytes(patched[_to:_to + 11])
+    check("egg tail replays hatch/waitstate/releaseall, then callnative, then end",
+          _tail[0] == 0x25
+          and struct.unpack_from("<H", _tail, 1)[0] == egg_hook.SPECIAL_HATCH
+          and _tail[3] == 0x27                                  # waitstate
+          and _tail[4] == egg_hook.OPCODE_RELEASEALL
+          and _tail[5] == 0x23                                  # callnative
+          and _tail[10] == 0x02,                                # end
+          _tail.hex())
+    # ORDERING IS LOAD-BEARING, exactly as in the activation handler above: the
+    # sweep must run after the waitstate or it sees an egg, and the sweep's own
+    # egg exemption then keeps the off-roster hatchling.
+    check("the egg tail's native IS the activation sweep, and runs after the "
+          "hatch's waitstate",
+          struct.unpack_from("<I", _tail, 6)[0] == sweep_ptr
+          and _tail.index(b"\x27") < 5,
+          f"tail sweep={struct.unpack_from('<I', _tail, 6)[0]:#x}, "
+          f"handler sweep={sweep_ptr:#x}")
+    check("the field-control hatch caller still points at the hooked script",
+          struct.unpack_from("<I", patched, egg_hook.CALLER_POOL_OFF)[0]
+          == egg_hook.SCRIPT_ENTRY,
+          f"{struct.unpack_from('<I', patched, egg_hook.CALLER_POOL_OFF)[0]:#x}")
 
     # off handler
     ok = (0x08000000 + p) == off_addr

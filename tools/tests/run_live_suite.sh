@@ -74,7 +74,7 @@ run ui_activate_red tools/savestates/naming.ss tools/mgba_scripts/cm_cheat_ui_te
 echo 'return {code="cmdbggive2", expect="give2", open_desk=true}' > build/cm_ui_code.lua
 run ui_give2_boxing tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_cheat_ui_test.lua 3
 
-run save_load tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_saveload_test.lua 3
+run save_load tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_saveload_test.lua 4
 
 sh tools/tests/run_trade_e2e.sh || fail=1
 

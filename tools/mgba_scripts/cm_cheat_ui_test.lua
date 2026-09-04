@@ -17,7 +17,7 @@
 -- buffer does NOT work: the naming screen flushes its internal buffer over
 -- 0x0203CCE0 at commit.
 --   activate_red: flag 0x2B0 on, var 0x40E0 == 1 (Red), party +1 (Pikachu 25
---                 on-roster stays in party), box0 unchanged, 0x40E4 == 0.
+--                 the sweep boxes what the player already had), 0x40E4 == 0.
 --   give2:        party unchanged, box0 +1 (off-roster boxed by the native
 --                 wrapper), 0x40E4 == 0.
 -- Usage: mgba-headless -t tools/savestates/naming.ss \
@@ -206,8 +206,18 @@ H.onFrame(function(f)
         if cfg.expect == "activate_red" then
             H.assertTrue("flag 0x2B0 set", H.flagGet(FLAG_CM))
             H.assertEq("VAR_CM_CHAR == Red(1)", H.varGet(VAR_CHAR), 1)
-            H.assertEq("party grew (starter give)", party, before.party + 1)
-            H.assertEq("box0 unchanged (on-roster)", box0, before.box0)
+            -- ⚠️ 2026-09-04: these were `party == before.party + 1` and
+            -- `box0 == before.box0`, written before the activation party
+            -- sweep shipped (2026-09-02) and never updated, so this layer --
+            -- and, through the fixture it saves below, the save/load and
+            -- trade layers downstream of it -- had been RED with nobody
+            -- re-running them. The sweep boxes the off-roster mon the player
+            -- already had, immediately after the signature give, so the count
+            -- is unchanged and the box gains one. That IS the feature.
+            H.assertEq("party count unchanged: give +1, sweep -1",
+                       party, before.party)
+            H.assertEq("box0 +1: the sweep boxed the off-roster mon",
+                       box0, before.box0 + 1)
             H.assertEq("VAR_CM_STARTER reset", H.varGet(VAR_STARTER), 0)
             -- Report the sampling separately from the result: a window that
             -- never ran would otherwise read as "0 sprites" and pass as if the
