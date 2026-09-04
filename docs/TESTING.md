@@ -10,7 +10,7 @@ Run everything with:
 ```
 python3 tools/tests/verify_artifacts.py             # 133 checks, ALL PASS
 python3 tools/tests/shim_unit_test.py               # 38/38
-bash    tools/tests/run_live_suite.sh               # ALL PASS, 10 layers
+bash    tools/tests/run_live_suite.sh               # ALL PASS, 14 layers
 bash    tools/tests/checker_guard_test.sh           # 8/8
 python3 tools/tests/check_gift_eggs.py              # + _negative_test.py 7/7
 python3 tools/tests/egg_hook_negative_test.py       # 6/6
@@ -36,7 +36,33 @@ stale expectation there takes down three layers. Fixtures under
 five checks pinning the hatch-script overlay, the replayed tail's shape, its
 ORDERING (the sweep after the waitstate) and that its native is the same one the
 activation handler calls; `egg_hook_negative_test.py` breaks the built ROM in
-five directions with two controls. 🔴 **There is still no LIVE egg-hatch test.**
+five directions with two controls.
+
+✅ **New, 2026-09-04 (later) — THE LIVE EGG-HATCH LAYER EXISTS**
+(`tools/tests/run_egg_e2e.sh`, four cases, run from `run_live_suite.sh`). It was
+`../game_plans/rowe_parity.md` §13.21's top open item: the hook was verified by
+reading bytes and by every pre-existing live layer, and no hatch had ever been
+walked. `tools/tests/build_egg_testrom.py` repoints the University desk (8,8) at
+`giveegg 60; setvar 0x8004,1; goto EventScript_EggHatch`, so everything after
+the `goto` is **shipped bytes**; `cm_egg_hatch_test.lua` walks to the desk, taps
+**B** through the hatch scene (A opens the nickname naming screen and the run
+wedges), and asserts the **swap** — the egg's own personality is in the PC, or
+still in the party.
+
+⭐ **Poliwag 60 discriminates all three cases with one species**: ON Misty's
+roster, OFF Red's. Red → boxed; Misty → kept; CM off → kept.
+
+⭐ **The egg is built by the ROM's own `giveegg`, never synthesised from Lua.**
+`cm_trade_test.lua` does inject a synthetic mon and that cost this repo a day
+(slot 3 with slot 2 empty; the party menu's own recount dropped it). An egg is
+worse: it means taking the substruct order, XOR key and checksum from a donor
+tree already known to be **wrong about this exact script**.
+
+⭐ **The negative control is the layer's whole value.** `--no-hook` reverts the
+splice in the test ROM only; the same run must then FAIL, and the runner greps
+for the specific failure ("reached the sweep (timeout)") rather than a non-zero
+exit — otherwise the layer only proves the sweep works *when something calls
+it*, which is not the claim.
 
 ## Layer 1 — Shim unit tests (GDB, real code in the real emulator)
 
