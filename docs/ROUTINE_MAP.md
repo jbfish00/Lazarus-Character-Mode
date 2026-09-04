@@ -182,7 +182,7 @@ Phase 4 hook/audit surface, only 3):**
 | BL site | Subsystem | Classification |
 |---|---|---|
 | `0x080A7BDA` | battle engine | **the catch path** (only battle-engine caller; active during our live catch) |
-| `0x0819FC8E` | daycare/hatch region | daycare-withdraw/hatch family (works over 100-byte records + daycare struct); audit in Phase 4, egg-exemption decision applies |
+| `0x0819FC8E` | daycare/hatch region | daycare-withdraw/hatch family (works over 100-byte records + daycare struct). The give stays exempt (an egg event must never block progress); ✅ **the HATCH is gated as of 2026-09-04** via `0x08349169` → `0x09670000` — see the section at the top of this file. The *"audit in Phase 4"* deferral is closed |
 | `0x0820D416` | script engine | ScriptGiveMon (gift path) |
 
 CopyMonToPC's other callers: `0x0820DB1E`, `0x0820DD94` (script gift-to-PC
