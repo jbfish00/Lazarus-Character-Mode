@@ -202,10 +202,13 @@ checks_run = 0
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                 "..", "character_mode"))
 import egg_hook  # noqa: E402
+import pc_hook  # noqa: E402
 
 EGG_TAIL_ADDR = 0x09670000
+PC_TAIL_ADDR = 0x09671000
+PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 133  # +5: the egg-hatch sweep (2026-09-03)
+EXPECT_CHECKS = 143  # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
 def check(name, ok, detail=""):
@@ -356,6 +359,11 @@ def main():
         (EGG_TAIL_ADDR - 0x08000000, EGG_TAIL_ADDR - 0x08000000 + 11),
         (egg_hook.SPLICE_FILE_OFF,
          egg_hook.SPLICE_FILE_OFF + len(egg_hook.SPLICE_ORIG)),
+        # PC-exit sweep: two 14-byte replayed tails and two 9-byte overlays.
+        (PC_TAIL_ADDR - 0x08000000,
+         PC_TAIL_ADDR - 0x08000000 + PC_TAIL_SPACING + pc_hook.TAIL_LEN),
+        (pc_hook.SITES[0][1], pc_hook.SITES[0][1] + len(pc_hook.SITES[0][2])),
+        (pc_hook.SITES[1][1], pc_hook.SITES[1][1] + len(pc_hook.SITES[1][2])),
     ]
     stray = []
     CHUNK = 4096
@@ -671,6 +679,50 @@ def main():
           struct.unpack_from("<I", patched, egg_hook.CALLER_POOL_OFF)[0]
           == egg_hook.SCRIPT_ENTRY,
           f"{struct.unpack_from('<I', patched, egg_hook.CALLER_POOL_OFF)[0]:#x}")
+
+    # --- the PC-exit sweep (game_plans/rowe_parity.md §13.24/§13.26c) ---
+    # Same shape as the egg hook, pinned the same way, in BOTH directions, and
+    # for BOTH PC access scripts -- checking only one would leave the other free
+    # to be unhooked or to point at the wrong tail.
+    for _i, (_pr, _pf, _porig, _ptxt) in enumerate(pc_hook.SITES):
+        _pn = len(_porig)
+        check(f"[PC{_i}] base ROM still holds the stock PC script tail",
+              bytes(orig[_pf:_pf + _pn]) == _porig,
+              f"{bytes(orig[_pf:_pf + _pn]).hex()} != {_porig.hex()}")
+        _pspl = bytes(patched[_pf:_pf + _pn])
+        _want_tail = PC_TAIL_ADDR + _i * PC_TAIL_SPACING
+        check(f"[PC{_i}] PC script tail overlaid with `goto <PC tail>`",
+              _pspl[0] == 0x05
+              and struct.unpack_from("<I", _pspl, 1)[0] == _want_tail,
+              _pspl.hex())
+        _pto = _want_tail - 0x08000000
+        _pt = bytes(patched[_pto:_pto + pc_hook.TAIL_LEN])
+        # ORDERING IS LOAD-BEARING: the sweep must run AFTER the waitstate.
+        # Before it the storage UI has not opened, so the sweep would see the
+        # party the player walked IN with -- a silent no-op that still passes
+        # any "the callnative is present" check.
+        # ⭐ And the goto must rejoin THIS site's own caller: a tail that
+        # rejoined the other one would look perfectly well-formed and would send
+        # the player to the wrong menu.
+        check(f"[PC{_i}] PC tail replays special/waitstate, then callnative, "
+              f"then a goto back into its OWN caller",
+              _pt[0] == 0x25
+              and struct.unpack_from("<H", _pt, 1)[0] == pc_hook.SPECIAL_PC
+              and _pt[3] == 0x27                                # waitstate
+              and _pt[4] == 0x23                                # callnative
+              and _pt[9] == 0x05                                # goto
+              and struct.unpack_from("<I", _pt, 10)[0]
+                  == struct.unpack_from("<I", _porig, 5)[0],
+              _pt.hex())
+        check(f"[PC{_i}] the PC tail's native IS the activation sweep, and runs "
+              f"after the PC's waitstate",
+              struct.unpack_from("<I", _pt, 5)[0] == sweep_ptr
+              and _pt.index(b"\x27") < 4,
+              f"tail sweep={struct.unpack_from('<I', _pt, 5)[0]:#x}, "
+              f"handler sweep={sweep_ptr:#x}")
+        check(f"[PC{_i}] the hooked script is still the PC access script",
+              struct.unpack_from("<I", patched, _ptxt)[0] == pc_hook.PC_TEXT_PTR,
+              f"{struct.unpack_from('<I', patched, _ptxt)[0]:#x}")
 
     # off handler
     ok = (0x08000000 + p) == off_addr
