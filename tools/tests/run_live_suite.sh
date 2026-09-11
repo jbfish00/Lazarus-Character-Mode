@@ -78,6 +78,7 @@ run save_load tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_saveload_t
 
 sh tools/tests/run_trade_e2e.sh || fail=1
 sh tools/tests/run_egg_e2e.sh || fail=1
+sh tools/tests/run_pc_e2e.sh || fail=1
 
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"

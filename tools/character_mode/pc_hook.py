@@ -74,6 +74,12 @@ Byte grammar (all opcodes confirmed in this ROM):
 import struct
 
 SPECIAL_PC = 0x003F
+# gSpecials, the table the id above indexes (docs/ROUTINE_MAP.md: base from the
+# cmd-0x25/0x26 handler literals). Named here because the LIVE layer
+# (tools/mgba_scripts/cm_pc_exit_test.lua) breakpoints the storage system's own
+# handler -- gSpecials[SPECIAL_PC] -- to prove the UI really opened, rather than
+# inferring it from the script having run. Derived, never hardcoded downstream.
+SPECIALS_TABLE_ADDR = 0x0828CBF4
 OPCODE_CALLNATIVE = 0x23
 
 # The message both PC access scripts show, and the file offset of each script's

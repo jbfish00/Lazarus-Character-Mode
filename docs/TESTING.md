@@ -39,7 +39,9 @@ activation handler calls; `egg_hook_negative_test.py` breaks the built ROM in
 five directions with two controls.
 
 ✅ **New, 2026-09-04 (later) — THE LIVE EGG-HATCH LAYER EXISTS**
-(`tools/tests/run_egg_e2e.sh`, four cases, run from `run_live_suite.sh`). It was
+(`tools/tests/run_egg_e2e.sh`, four cases, run from `run_live_suite.sh`; the
+PC-exit hook has its own live layer beside it, `run_pc_e2e.sh`, also four
+cases and also wired into the suite). It was
 `../game_plans/rowe_parity.md` §13.21's top open item: the hook was verified by
 reading bytes and by every pre-existing live layer, and no hatch had ever been
 walked. `tools/tests/build_egg_testrom.py` repoints the University desk (8,8) at
