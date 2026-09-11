@@ -66,6 +66,10 @@ WAITSTATE = 0x27
 ITEM_TABLE = (0x0886855c, 80)
 SPECIES_TABLE = (0x08c7a364, 212)
 # (id, name) pairs read out of those two tables when this file was written.
+# ⚠️ At least one probe is deliberately FAR from the base: a wrong STRIDE is
+# invisible at id 1 and shows up only at a high index. That is not
+# hypothetical -- an early version of this work carried a sibling's stride for
+# Seaglass, read ids 1-4 correctly, and decoded item 51 as mojibake.
 # Species id 386 is pinned in the FireRed pair on purpose: it is Volbeat, not
 # the national-dex 386, which is the trap `CHARACTER_ROSTER_PLAN.md` records.
 ITEM_PROBES = ((1, 'Pokひ Ball'), (215, 'Ice Stone'))
@@ -109,22 +113,91 @@ SITES = (
 #                       is NOT established here -- so this verdict bounds the
 #                       cost, it does not prove it is zero
 GATES = {
+ 0x082bc129: (
+  'Name Rater -- its compare is SPECIES_EGG (1561), not a species',
+  (),
+  (),
+  'NOT_A_GATE',
+  'no give-item in its window'),
+ 0x082c8dd2: (
+  'in-game trade',
+  (),
+  (),
+  'NOT_A_GATE',
+  'no give-item in its window'),
+ 0x082da4cf: (
+  'big SEEDOT judge -- Elixir',
+  (),
+  ((0x082da53b, 51, 1),),
+  'UNIQUE',
+  'rewards seen in the window between this site and the next call site:'
+  ' Elixir x1'),
+ 0x082da575: (
+  'big LOTAD judge -- Elixir',
+  (),
+  ((0x082da5e1, 51, 1),),
+  'UNIQUE',
+  'rewards seen in the window between this site and the next call site:'
+  ' Elixir x1'),
+ 0x08312c81: (
+  'IV judge -- its compares are IV TOTALS (120/150/151), not species',
+  (),
+  (),
+  'NOT_A_GATE',
+  'no give-item in its window'),
+ 0x08318c00: (
+  'the egg kid -- compares SPECIES_EGG (1561)',
+  (),
+  (),
+  'NOT_A_GATE',
+  'no give-item in its window'),
  0x083916ae: (
-  'Old Woman -- "have you found the Ice-type Bug for me?"',
+  'Old Woman, the Ice-type Bug quest -- Snom, Ice Stone',
   (872,),
   ((0x083916fc, 215, 1),),
   'ELSEWHERE',
-  'one Ice Stone, plus flag 0x4C8 and a quest marked complete. The Ice'
-  ' Stone is sold at the evolution-stone mart (item table 0x083E2040),'
-  ' so the gate gives nothing the player cannot buy.'),
+  'rewards seen in the window between this site and the next call site:'
+  ' Ice Stone x1'),
+ 0x0839416d: (
+  'Froslass -- 3x Exp. Candy M',
+  (478,),
+  ((0x083941cc, 105, 3),),
+  'UNIQUE',
+  'rewards seen in the window between this site and the next call site:'
+  ' Exp。 Candy M x3'),
+ 0x08396c24: (
+  'Alolan Raichu -- an Alolan Raichu Doll',
+  (958,),
+  (),
+  'SPECIES_LOCKED',
+  'no give-item in its window'),
  0x083a1d60: (
-  'Archen Fan -- "I\'m still chasing down Archens... Do you happen to'
-  ' have one?"',
+  'Archen Fan -- ten Nest Balls',
   (566,),
   ((0x083a1da5, 8, 10),),
   'ELSEWHERE',
-  'ten Nest Balls and a quest marked complete. Nest Balls are sold in'
-  ' two marts (0x082B4A84, 0x083B46C8).'),
+  'rewards seen in the window between this site and the next call site:'
+  ' Nest Ball x10'),
+ 0x083a9a3b: (
+  'Blitzle -- a Rare Candy',
+  (522,),
+  ((0x083a9ad4, 102, 1),),
+  'ELSEWHERE',
+  'rewards seen in the window between this site and the next call site:'
+  ' Rare Candy x1'),
+ 0x083bdebe: (
+  'Tyrunt -- a Protein',
+  (696,),
+  ((0x083bdf59, 66, 1),),
+  'ELSEWHERE',
+  'rewards seen in the window between this site and the next call site:'
+  ' Protein x1'),
+ 0x083dee08: (
+  'show a Pikachu -- receive a Pichu',
+  (),
+  (),
+  'SPECIES_LOCKED',
+  'no give-item in its window'),
 }
 
 EXPECT_CHECKS = 7

@@ -1,84 +1,103 @@
 # SPECIES GATES — Lazarus v2.0
 
-**2 decoded gate(s) out of 19 ChoosePartyMon call sites** (3
-of them reachable from a dialogue anchor). Measured 2026-09-11; pinned by
-`tools/tests/check_species_gates.py` (7 checks, negative-tested).
+**19 `ChoosePartyMon` call sites, 13 classified, 9 of them
+real species gates.** Only **3** of the call sites are reachable from a
+dialogue anchor, which is why every earlier count of this class was wrong.
+Measured 2026-09-11; pinned by `tools/tests/check_species_gates.py` (7 checks,
+negative-tested).
 
 A *species gate* is an NPC that wants a Pokémon **shown** rather than traded:
 it calls `ChoosePartyMon`, tests what you handed it, and gives something back.
-It matters to Character Mode because the PC-withdraw fix (`rowe_parity.md`
-§13.26c, option 1) sweeps an off-roster Pokémon back into the PC the moment
-you leave the storage system, so you can no longer carry one to an NPC.
-§13.28 counted these NPCs and said plainly that **nobody had decoded what any
-of them give**, leaving the cost an upper bound. This is the decode.
 
 ## The verdict
 
-**Both gates cost this game nothing.** Each is a sidequest NPC whose reward is
-a generic item — and both items are on sale in this same ROM, measured.
+**Small but not zero.** Four of the nine gates give something this ROM sells or
+gives again (an Ice Stone, ten Nest Balls, a Rare Candy, a Protein), two are
+inert without the species (an Alolan Raichu Doll, a gift Pichu), and **three
+give a generic item with no other source found**: an **Elixir** at each of the
+two size judges, and **three Exp. Candy M** at the Froslass gate.
+⚠️ As in every port, these are costs of Character Mode's catch gate, not of the
+PC-withdraw hook — each gate wants a species you must catch.
 
-## The gates
+## Every classified site
 
-| site | NPC | gate | what it actually gives | verdict |
+| site | what it is | gate species | rewards seen in its window | verdict |
 |---|---|---|---|---|
-| `0x083916AE` | Old Woman — *"have you found the Ice-type Bug for me?"* → *"I found this strange, cold stone in the rocks nearby"* | Snom (872) | one **Ice Stone** (item 215 at `0x083916FC`), flag `0x4C8`, quest marked complete. The Pokémon is **not** consumed | `ELSEWHERE` — the Ice Stone is sold at the evolution-stone mart (table `0x083E2040`, alongside every other stone) |
-| `0x083A1D60` | Archen Fan — *"I'm still chasing down Archens... Do you happen to have one?"* | Archen (566) | **ten Nest Balls** (item 8 ×10 at `0x083A1DA5`) and a quest marked complete | `ELSEWHERE` — Nest Balls are sold in two marts (`0x082B4A84`, `0x083B46C8`) |
+| `0x082bc129` | Name Rater -- its compare is SPECIES_EGG (1561), not a species | — | — | `NOT_A_GATE` |
+| `0x082c8dd2` | in-game trade | Zigzagoon (263) | — | `NOT_A_GATE` |
+| `0x082da4cf` | big SEEDOT judge -- Elixir | *tested in native code* | Elixir ×1 | `UNIQUE` |
+| `0x082da575` | big LOTAD judge -- Elixir | *tested in native code* | Elixir ×1 | `UNIQUE` |
+| `0x08312c81` | IV judge -- its compares are IV TOTALS (120/150/151), not species | — | — | `NOT_A_GATE` |
+| `0x08318c00` | the egg kid -- compares SPECIES_EGG (1561) | — | — | `NOT_A_GATE` |
+| `0x083916ae` | Old Woman, the Ice-type Bug quest -- Snom, Ice Stone | Snom (872) | Ice Stone ×1 | `ELSEWHERE` |
+| `0x0839416d` | Froslass -- 3x Exp. Candy M | Froslass (478) | Exp。 Candy M ×3 | `UNIQUE` |
+| `0x08396c24` | Alolan Raichu -- an Alolan Raichu Doll | Raichu (958) | — | `SPECIES_LOCKED` |
+| `0x083a1d60` | Archen Fan -- ten Nest Balls | Archen (566) | Nest Ball ×10 | `ELSEWHERE` |
+| `0x083a9a3b` | Blitzle -- a Rare Candy | Blitzle (522) | Rare Candy ×1 | `ELSEWHERE` |
+| `0x083bdebe` | Tyrunt -- a Protein | Tyrunt (696) | Protein ×1 | `ELSEWHERE` |
+| `0x083dee08` | show a Pikachu -- receive a Pichu | Pikachu (25), Pichu (172) | — | `SPECIES_LOCKED` |
 
-## Why the raw count was never a count
+`CANDIDATE` means a species is named in the dialogue or compared in the window
+and **nobody has read the script yet**. Rewards are those found between this
+call site and the next one; that is a window, not a proof of reachability,
+except for the gates whose scripts were decoded by hand (every
+`SPECIES_LOCKED`, `ELSEWHERE` and `UNIQUE` row).
+
+## What "UNIQUE" is a floor of, not a proof
+
+`UNIQUE` means: the item appears in **no `pokemart` table in this ROM** and at
+**no other site matching the three-command give-item idiom**
+(`setorcopyvar 0x8000,item; setorcopyvar 0x8001,qty; callstd 0`). Three sources
+are invisible to both scans and would each falsify it — a **ground item**
+(the item id lives in the map's object data, not in a script), an item handed
+out by **native code**, and **Pickup**. Treat `UNIQUE` as "no cheap source
+found", the same way `check_gift_eggs.py` treats its inventory as a floor.
+
+## Why every earlier count of this class was wrong
 
 `rowe_parity.md` §13.28 published **5 / 5 / 2 / 0** species gates for Radical
-Red / Unbound / Lazarus / Seaglass, found by decoding forward from dialogue
-anchors — the same primitive `check_gift_eggs.py` uses, and the right one
-there. It is the wrong one here. Measured 2026-09-11, that walk reaches:
+Red / Unbound / Lazarus / Seaglass. §13.37 then decoded those and concluded the
+class costs one TM. Both numbers came from sites reachable by a
+**dialogue-anchored walk** — the primitive `check_gift_eggs.py` uses, and the
+correct one there. It is the wrong primitive here, measurably:
 
-| game | ChoosePartyMon call sites in the ROM | reachable from a dialogue anchor |
+| game | `ChoosePartyMon` call sites | reachable from a dialogue anchor |
 |---|---|---|
 | Radical Red | **43** | 20 |
 | Unbound | **76** | 26 |
 | Lazarus | **19** | 3 |
 | Seaglass | **11** | 2 |
 
-So between 47% and **84%** of the call sites were never seen. The sites the
-walk misses are real — Name Rater, move tutors, the *"Hunh? Your BAG is
-crammed full."* item NPCs, and in Unbound four more sites of the Deoxys
-meteorite and the Rotom appliances, two of the very NPCs §13.28 named. ⭐ **The
-better primitive is the call site itself**: `special <ChoosePartyMon>`
-immediately followed by `waitstate`, which every real site has and which no
-dialogue reachability question can hide. `tools/tests/check_species_gates.py`
-pins the whole set that way.
+⚠️ **And decoding only the reachable subset reproduced the same error one level
+down**: §13.37 read the walk-reachable gates, found them all inert or cheap,
+and generalised to the class. The sites it never opened contain a Master Ball,
+an Eviolite, a Moon Stone, an Air Balloon, a Destiny Knot, a Rare Candy, a
+Protein and two Elixirs. **The fix is to enumerate on the call site itself**
+(`special <ChoosePartyMon>` followed by `waitstate`), which is what the checker
+now pins.
 
-⚠️ **This document does not claim every one of those sites has been decoded.**
-The ones that have are in the table above; the rest are pinned by address, so
-a new one cannot arrive silently, and a decode of the remainder is open work.
+## Two primitives, because each is blind where the other sees
 
-## Three false-positive constants, all of which decode as a species
+- **A species COMPARE** in the window after the call. Blind whenever the test
+  lives in native code — Radical Red's Heracross judge (`special 0x78`) and
+  gender swapper (`callasm`), Unbound's Deoxys and Rotom (`callasm`), and
+  Seaglass's DEOXYS trick (`special 0x224`) have no species operand at all.
+- **A species NAMED in the surrounding dialogue**, matched against this ROM's
+  own species-name table. Blind whenever the NPC never says the name, and
+  blind to species a curated dex has removed — Lazarus's own big-SEEDOT judge
+  is invisible to it, because Seedot is not in Lazarus's dex.
 
-Each sits immediately after a `ChoosePartyMon` and looks exactly like a
-species gate:
+## Four false-positive constants, each of which decodes as a species
 
 - **255** — `PARTY_NOTHING_CHOSEN` in the Emerald pair. Decodes as Torchic.
 - **412** — `SPECIES_EGG` in the FireRed pair. Decodes as Bad Egg.
-- **a small value inside a BP facility is the PRICE IN BP**, not a species.
-  Five Unbound sites compare 16, 25 or 27 right after the choice; those decode
-  as Pidgey, Pikachu and Sandshrew, and all five are Battle-Frontier-style
-  services whose own dialogue says *"You don't have enough BP"*.
-
-## A species test can be invisible to every compare scan
-
-Four of the gates in this workspace test the species in **native code**, so
-the species id never appears as a script operand at all:
-
-| game | NPC | where the test lives |
-|---|---|---|
-| Radical Red | Heracross size judge | `special 0x78` |
-| Radical Red | gender swapper | `callasm 0x09077B59` |
-| Unbound | Deoxys meteorite | `callasm 0x088AB3CD` |
-| Unbound | Rotom appliances | `callasm 0x088AABB9` / `0x088AACCD` |
-| Seaglass | DEOXYS magic trick | `special 0x224` |
-
-They are in the inventory because the **dialogue** was decoded, not because a
-scan found them. Any future count of this class is a floor for the same
-reason `check_gift_eggs.py` documents for `giveegg`.
+- **`SPECIES_EGG` in the Emerald pair is PER-ROM**, one past that ROM's own
+  species table: **1561** in Lazarus, **1524** in Seaglass. The Name Rater and
+  the egg kid compare it in both games.
+- **A small value after the choice is a PRICE or a SCORE, not a species.**
+  Inside a BP facility it is the price in BP (five Unbound sites compare 16, 25
+  or 27 — Pidgey, Pikachu, Sandshrew); inside an **IV judge** it is an IV
+  total (both Emerald ports compare **120 / 150 / 151** — Staryu, Mewtwo, Mew).
 
 ## Re-running it
 
@@ -87,5 +106,5 @@ python3 tools/tests/check_species_gates.py                   # the inventory
 python3 tools/tests/check_species_gates_negative_test.py     # break it on purpose
 ```
 
-The checker reads the **base ROM** and this repo's own vendored
-`tools/charmap.txt`; it builds nothing and changes nothing.
+Both read the **base ROM** and this repo's own vendored `tools/charmap.txt`;
+they build nothing and change nothing.
