@@ -43,6 +43,30 @@ call site and the next one; that is a window, not a proof of reachability,
 except for the gates whose scripts were decoded by hand (every
 `SPECIES_LOCKED`, `ELSEWHERE` and `UNIQUE` row).
 
+## Which of these can be opened WITHOUT catching the species
+
+This is the only part of the class the **PC-withdraw hook** can be blamed for.
+Character Mode's catch gate has always refused an off-roster catch, so a gate
+whose species you could only catch was already unreachable before the hook
+existed. A gate species that arrives as a **gift**, an **egg**, a **trade** or
+from the game's own **starter picker** lands in the party, is swept into the PC
+by enforcement — and before the hook shipped could be withdrawn and shown to
+the NPC.
+
+✅ **None.** All nine gates want a species that can only be caught in this
+game: none appears among the four in-game trades (Seedot, Plusle, Horsea,
+Meowth — and three of those four are not even in this ROM's curated dex), the
+gift eggs, or the nine species its own starter picker offers. There is no
+scripted `givemon` with a literal species anywhere in this ROM's script regions
+— measured, and consistent with this hack handing out Pokémon from native code.
+**Net PC-hook cost in this game: zero.**
+
+Pinned by two checks in `tools/tests/check_species_gates.py`: the in-game trade
+table is verified by content (a moved or edited table fails), and every gift
+that opens a gate must still be that `givemon`. ⚠️ The routes are a **floor**:
+a species handed out by native code, or an egg whose species is computed,
+appears in no operand anywhere. `rowe_parity.md` §13.42.
+
 ## What "UNIQUE" is a floor of, not a proof
 
 `UNIQUE` means: the item appears in **no `pokemart` table in this ROM** and at
