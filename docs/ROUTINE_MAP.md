@@ -3,6 +3,97 @@
 Confirmed addresses only; candidates are marked. Every entry needs XREF or
 live verification before Phase 4 may hook it (standing rule).
 
+## Map tilesets (CONFIRMED 2026-09-16 — content scan + live screenshot)
+
+Located while removing the pride-flag wall decorations (see
+`../../game_plans/lazarus.md` §7). Every address here was derived by **content**,
+not by offset arithmetic, and cross-checked against a real emulator screenshot.
+
+**Tileset table: `0x08E3E21C`** (Seaglass's equivalent is `0x08A2E6AC` — same
+engine, different build). `struct Tileset` is **24 bytes**:
+
+| off | field | notes |
+|---|---|---|
+| +0x00 | flags | ⚠️ a **BITFIELD**, not a bool. Observed values `0,1,3,5,9,17`. **bit0 = isCompressed**; the upper bits are this expansion build's own additions. ⚠️⚠️ **NEVER use bit0 as a validity test** — see below |
+| +0x01 | isSecondary | 0 or 1 |
+| +0x02 | padding[2] | always 0 — a useful validator |
+| +0x04 | tiles | LZ77 (`0x10`) when bit0 set |
+| +0x08 | palettes | 16 palettes x 16 x u16 = 512 B |
+| +0x0C | metatiles | **UNCOMPRESSED**, 16 B per metatile |
+| +0x10 | metatileAttributes | 2 B per metatile |
+| +0x14 | callback | NULL on most; a Thumb pointer on animated ones |
+
+🔴 **THE TABLE IS TWO STRIDE-24 RUNS: `0xE3E21C`..`0xE3E774` (58) and
+`0xE3E794`..`0xE3EADC` (36) — 94 structs**, separated by a single **32-byte**
+step (one stride plus an **8-byte regrid**, so run 2 is off run 1's grid).
+**Walk the region at stride 4 and validate each candidate; never walk stride-24
+from the first entry** — that sees 58 of 94, and stops at the regrid.
+
+⚠️⚠️ **CORRECTED 2026-09-16 (same day). An earlier revision of this section said
+FOUR runs / 87 structs / gaps of 48 / 168 / 56 bytes. THOSE GAPS ARE NOT IN THE
+ROM — they were an artifact of the validator that measured them**, which
+required `flags & 1` (isCompressed) and so rejected this ROM's **8 UNCOMPRESSED
+tilesets**. The rejected entries sit exactly where the three "gaps" appeared:
+`0xE3E474` (gap 1), `0xE3E51C`–`0xE3E594` (the six of gap 2), `0xE3E774`
+(gap 3). Drop the compression test and the runs merge. ⭐ The stated total was
+not even self-consistent: 25+6+19+36 = **86**, not the 87 it claimed.
+
+⭐ **The Seaglass cross-check survives, and is stronger than it was.** Both ROMs
+agree under *each* validator — loose: 2 runs, first run **58** in both, one
+32 B step; strict: 4 runs, **25 / 6 / 19** in both, gaps **48 / 168 / 56** in
+both. The shared 58-entry prefix (and the 8 uncompressed tilesets inside it, at
+the same relative positions) is **vanilla Emerald layout** both hacks inherit;
+each ROM's own tilesets follow the regrid. Lazarus totals **94**, Seaglass
+**75**.
+
+⭐⭐ **THE LESSON, AND IT IS THIS WORKSPACE'S #1 IN A NEW COSTUME: A FILTER THAT
+REJECTS VALID DATA MANUFACTURES STRUCTURE THAT ISN'T THERE.** The false "gaps"
+were then read as a *finding about the ROM* and written up as engine/linker
+layout. `remove_pride_flags.py` inherited the same filter, so `find_flag_tiles`
+never looked inside those 8 tilesets at all — `decompress` raised and the
+`except: continue` swallowed it. ✅ Re-scanned uncompressed: **no flag art in any
+of the 8**, so the shipped patch was complete — but it was complete by luck, not
+by coverage. The script now walks all 94 and asserts `EXPECT_TILESETS`, so a
+short walk fails loudly instead of being silently blind.
+
+⚠️ **`nMetatiles` is NOT reliably `(metatileAttributes - metatiles) / 16`.** The
+two blocks are not always adjacent, and for **24 of this ROM's 94** tilesets the
+difference is not even a positive multiple of 16. (The figure was 15 when
+measured over the short 86-entry walk corrected above.) Derive it from the next tileset's
+`metatiles` pointer, or clamp and treat as a bound.
+
+**Metatile entry** (u16 x 8; slots 0-3 = bottom layer, 4-7 = top layer):
+`tile = v & 0x3FF`, `xflip = v & 0x400`, `yflip = v & 0x800`,
+`palette = (v >> 12) & 0xF`.
+
+⭐⭐ **TILE SOURCE AND PALETTE SOURCE ARE INDEPENDENT.** Tiles `<512` come from
+the **primary**, `>=512` from the secondary (minus 512); palettes `<6` come from
+the **primary**, `>=6` from the secondary. Selecting the palette from whichever
+tileset supplied the *tile* is wrong, renders the art in unrelated colours, and
+makes any colour-based scan blind. This is the bug that produced a **false
+"there are no pride flags in this ROM"** verdict — see `lazarus.md` §7.
+
+⚠️ **A tile id is only meaningful WITHIN its tileset.** `tile 546` is a different
+graphic in every tileset, so a ROM-wide count of "references to tile 546" is
+meaningless (it read 109 here; the real figure scoped to the owning tilesets was
+18).
+
+**Pride-flag art (removed by `tools/remove_pride_flags.py`):**
+
+| tileset | tiles ptr | tile | what | referenced by |
+|---|---|---|---|---|
+| `0x0E3E624` | `0x08D4FC20` | 34 | rainbow flag | m240 T, m243 T |
+| `0x0E3E624` | `0x08D4FC20` | 35 | trans flag | m242 B, m243 T |
+| `0x0E3E944` | `0x08D7A064` | 116 | rainbow flag | m27/m303/m342 T |
+| `0x0E3E944` | `0x08D7A064` | 117 | trans flag | m29/m305 B, m354 T |
+
+Both flags render with **palette slot 3 of the primary at `0x08D2D1C4`**:
+index 13 `#ff2020` red, 14 `#ff8b00` orange, 10 `#ffde5a` yellow, 7 `#52a441`
+green, 12 `#73d5ff` light blue, 15 `#9431de` purple, 11 `#ff8bbd` pink,
+9 `#ffffff` white, 1 `#202008` outline. Row-index signatures: rainbow
+`d,e,a,7,c,f`; trans `c,b,9,9,b,c` (symmetric). **Exactly 4 such tiles exist in
+the whole ROM** (43,331 metatiles scanned).
+
 ### Egg-hatch sweep (2026-09-04)
 
 The field-control step handler runs the script at `0x0834915D` when
