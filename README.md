@@ -9,6 +9,26 @@ evolution families). 123 characters, Generations 1 through 9.
 Ported from the original Character Mode built for Pokemon ROWE, following
 the Radical Red port.
 
+## ▶️ How to turn Character Mode on
+
+> **Character Mode is opt-in. Nothing in the game changes until you do this.**
+
+1. Go to the **desk in Acrisia University** — the professor's building where
+   you start.
+2. Interact with it. It asks for a cheat code.
+3. **Type your character's code** and confirm.
+
+**Your code** is the character's name with spaces and punctuation removed —
+`Cynthia`, `LtSurge`, `Red`. Case does not matter.
+📋 **Full list: [Character codes](#character-codes)** (123 selectable).
+
+**You will know it worked:** a confirmation message naming your character —
+with their portrait beside it — and their signature starter at Lv. 5.
+
+**To turn it back off:** enter the code **`CMDbgOff`** at the same desk.
+
+---
+
 ## What you need
 
 - A **clean Pokemon Emerald (U)** ROM you obtained legally
@@ -40,22 +60,12 @@ flips --apply lazarus_cm.bps lazarus-v2.gba lazarus_cm.gba
 > Character Mode active you'll find it reads as off: just re-enter your
 > character's code once at the university desk and it stays on for good.
 
-## Activating Character Mode
+## What happens after you activate
 
-Lazarus's cheat codes are entered at the **desk in Acrisia University**
-(the professor's building where you start). Interact with the desk and it
-asks for a cheat code — Character Mode rides that same system:
-
-1. At the text-entry screen, **type your character's code** from the
-   tables below (codes are the character's name with spaces and
-   punctuation removed, e.g. `LtSurge` for Lt. Surge — case doesn't
-   matter).
-2. You'll get a confirmation message and your character's starter
-   Pokemon at Lv. 5.
-3. From then on, catching or receiving any Pokemon **not on your
-   character's roster sends it straight to the PC** instead of your
-   party. Everything on-roster (including every evolution of a roster
-   Pokemon) joins your party normally.
+From then on, catching or receiving any Pokemon **not on your character's
+roster sends it straight to the PC** instead of your party. Everything
+on-roster (including every evolution of a roster Pokemon) joins your party
+normally.
 
 Notes:
 - Eggs are always exempt (they join the party; enforcement applies to
