@@ -92,6 +92,21 @@ Notes:
 | `CMDbgGive1` | Test code: gives your character's own starter (on-roster -> joins party) |
 | `CMDbgGive2` | Test code: gives a Lv. 5 Pokemon that is **off the first character's roster** -> goes to the PC. The species is derived from that character's own allow-bitmap at build time, so do not expect a specific one (it was documented as Ekans long after the build started deriving it). |
 
+## Seeing your roster in-game
+
+With Character Mode on, use the **Cheat Code System desk** again (the same
+desk in Acrisia University, or any other terminal that runs it). Instead of
+"Would you like to enter a code?" you get a short menu:
+
+- **View roster**: a list of your character's Pokémon, one row per
+  evolution family (the first stage is shown, and the whole family counts).
+  The highlighted Pokémon's icon appears in a box beside the list. Scroll with
+  Up/Down; A or B closes it.
+- **Enter a code**: straight to the code screen (for your character, `CMDbgOff`,
+  or the game's own cheat codes).
+
+With Character Mode off, the desk works exactly as it always did.
+
 ## Known limitations
 
 - Characters keep the normal player sprite in the overworld. A character
