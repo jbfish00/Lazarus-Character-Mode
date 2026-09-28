@@ -93,8 +93,12 @@ def main():
     d = bytearray(SHIPPED.read_bytes())
 
     cur = struct.unpack_from("<I", d, DESK_BG_PTR_OFF)[0]
-    assert cur == DESK_ORIG_SCRIPT, \
-        f"desk BG ptr drifted: {cur:#x} != {DESK_ORIG_SCRIPT:#x}"
+    # Since 2026-09-27 the desk lands on the roster display's pre-entry, whose
+    # first op is `checkflag 0x2B0; goto_if unset, <stock desk script>`.
+    _o = cur - 0x08000000
+    assert (d[_o:_o + 5] == bytes([0x2B, 0xB0, 0x02, 0x06, 0x00])
+            and struct.unpack_from("<I", d, _o + 5)[0] == DESK_ORIG_SCRIPT), \
+        f"desk BG ptr {cur:#x} is not the roster pre-entry for {DESK_ORIG_SCRIPT:#x}"
 
     # The whole point of this ROM is to run the SHIPPED PC hook. If the splice
     # is not in place the run would exercise the stock tail and report a green

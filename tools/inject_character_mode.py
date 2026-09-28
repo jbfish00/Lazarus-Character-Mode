@@ -198,6 +198,53 @@ EGG_TAIL_ADDR = 0x9670000
 # only in where their goto rejoins). tools/character_mode/pc_hook.py has the RE.
 PC_TAIL_ADDR = 0x9671000
 
+# --- in-game roster display (../game_plans/roster_display.md), PORTED from
+# Seaglass 2026-09-27. The design transfers; every address below was
+# re-derived from THIS binary (docs/ROUTINE_MAP.md "Roster display"). All of it
+# lives in the verified-free run after the PC tails; splice() proves each
+# region clear and non-overlapping. No BL-reach constraint anywhere: the table
+# is reached through literals, the code through the table and `callnative`,
+# the scripts through the desk's BG pointer and `goto`.
+#
+# The family ROOTS of every character's roster (emit_roster_roots.py).
+ROSTER_ROOTS_ADDR = 0x09672000
+_ROOTS_MANIFEST = json.loads(
+    (HERE / "character_mode" / "roster_roots_manifest.json").read_text())
+ROSTER_ROOTS_OFF = _ROOTS_MANIFEST["roots_offset_bytes"]
+# sDynamicListMenuEventCollections, RELOCATED so the roster owns set 2. Found
+# by its load pattern: four `cmp r1,#255` gated loads (0x0820BA6C, 0x0820BBCA,
+# 0x0820BC80, 0x0820BF8E) through these three literals -- the Seaglass shape.
+# NONE is 0xFF here too (the donor enum says 2). The 0x08CEBB34 literal at
+# 0x0820CC0C is a different object 48 B on, not a table reference.
+DYN_EVENT_TABLE_ORIG = 0x08CEBB04
+DYN_EVENT_TABLE_REFS = (0x20BAA8, 0x20BD64, 0x20C078)   # literal-pool file offsets
+DYN_EVENT_ENTRY_SIZE = 12
+DYN_EVENT_ORIG_ENTRIES = 2
+DYN_EVENT_SLOTS = 3
+ROSTER_CB_SET = 2
+DYN_EVENT_TABLE_ADDR = 0x09674000
+# src/roster_display.c. 0x09675000 is left free on purpose: the negative test
+# uses it as a known-free stray target.
+ROSTER_MENU_ADDR = 0x09676000
+# The pre-entry + roster block + row strings: their own region, so nothing in
+# the pinned SCRIPT_ADDR / TRADE_SCRIPT_ADDR blobs moves.
+ROSTER_SCRIPT_ADDR = 0x09677000
+# The cheat-code desk script is reached from FOUR BG events (whole-ROM scan,
+# asserted below): the University desk's two tiles (7,8) and (8,8), and (3,1)
+# in two other maps -- the same spot as Seaglass's bedroom cheat device. All
+# four are repointed, so every one of them gets the same menu with CM on and
+# the unchanged stock script with CM off. (Only (8,8) was repointed at first,
+# and the live test caught it: the player faces (7,8) in cm_red_active.ss.)
+DESK_BG_PTR_OFFS = (0xEA28A0, 0xEA28AC, 0xEAAD54, 0xEAB010)
+# The University desk (8,8): its BG event's script pointer, the stock script,
+# and the point right after its "Would you like to enter a code?" yes/no --
+# `delay 2; loadword "Please enter the code."` -- where "Enter a code" lands so
+# the player is not asked twice.
+DESK_BG_PTR_OFF = 0xEA28AC
+DESK_ORIG_SCRIPT = 0x083287A7
+DESK_AFTER_PROMPT = 0x083287BE
+DESK_AFTER_PROMPT_BYTES = bytes([0x28, 0x02, 0x00, 0x0F, 0x00]) + struct.pack("<I", 0x0832B579)
+
 # CreateWildMon(species, level) — live breakpoint-trace-confirmed 2026-07-17
 # (docs/ROUTINE_MAP.md): the single choke point every wild table (land/cave,
 # surf, rock smash, fishing) funnels species+level through after its roll.
@@ -282,6 +329,21 @@ def op_callstd(n):          return bytes([0x09, n])
 def op_delay(n):            return bytes([0x28]) + struct.pack("<H", n)
 def op_callnative(fn_thumb): return bytes([0x23]) + struct.pack("<I", fn_thumb)
 def op_releaseall():        return bytes([0x6B])
+def op_lockall():           return bytes([0x69])
+def op_checkflag(flag):     return bytes([0x2B]) + struct.pack("<H", flag)
+def op_dynmultichoice(cb_set, names):
+    """dynmultichoice, script-pointer form: left 0, top 0, B allowed, default
+    rows before scroll, unsorted, initial 0. Layout decoded from THIS ROM's
+    handler (0x08209AE9): E3 u16 u16 u8 u8 u8 u16 u8(set) u8(argc) u32[argc]."""
+    return (bytes([0xE3]) + struct.pack("<HH", 0, 0) + bytes([0, 0xFF, 0])
+            + struct.pack("<H", 0) + bytes([cb_set, len(names)])
+            + b"".join(struct.pack("<I", n) for n in names))
+def op_dynmultistack(cb_set):
+    """The STACK form: argc 1 and a NULL word, which the handler peeks but does
+    not consume; it then runs as four `nop` (opcode 0x00 is 0x08208251,
+    `movs r0,#0; bx lr`)."""
+    return (bytes([0xE3]) + struct.pack("<HH", 0, 0) + bytes([0, 0xFF, 0])
+            + struct.pack("<H", 0) + bytes([cb_set, 1]) + struct.pack("<I", 0))
 def op_end():               return bytes([0x02])
 def op_callnative_give(fn_thumb, species, level):
     # exact idiom of the ROM's own MONO/starter gives (docs/SELECTION_MECHANISM.md)
@@ -443,6 +505,43 @@ def main():
 
     SHOW_MUGSHOT = mugshot_sym("CM_ShowCharacterMugshot")
     HIDE_MUGSHOT = mugshot_sym("CM_HideCharacterMugshot")
+
+    # --- roster display: row pusher + callback set 2 (src/roster_display.c) ---
+    roster_roots = (CM / "roster_roots.bin").read_bytes()
+    assert _ROOTS_MANIFEST["characters"] == NUM_CHARACTERS, (
+        "roster_roots.bin was emitted for %d characters, this build has %d -- "
+        "re-run emit_roster_roots.py" % (_ROOTS_MANIFEST["characters"], NUM_CHARACTERS))
+    assert len(roster_roots) == _ROOTS_MANIFEST["blob_size_bytes"]
+    robj, relf, rbin = BUILD / "roster_display.o", BUILD / "roster_display.elf", BUILD / "roster_display.bin"
+    subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
+                    "-O2", "-ffreestanding", "-fno-builtin", "-Wall", "-Wextra",
+                    f"-DNUM_CHARACTERS={NUM_CHARACTERS}",
+                    f"-DROSTER_ROOTS_ADDR={ROSTER_ROOTS_ADDR:#x}",
+                    f"-DROSTER_ROOTS_OFF={ROSTER_ROOTS_OFF}",
+                    "-o", str(robj), str(ROOT / "src" / "roster_display.c")], check=True)
+    subprocess.run(["arm-none-eabi-ld", "-Ttext", f"{ROSTER_MENU_ADDR:#x}",
+                    "--entry", "CM_RosterPushRows",
+                    "-o", str(relf), str(robj)], check=True)
+    subprocess.run(["arm-none-eabi-objcopy", "-O", "binary", str(relf), str(rbin)], check=True)
+    roster_menu = rbin.read_bytes()
+    rsym = subprocess.run(["arm-none-eabi-nm", str(relf)], check=True,
+                          capture_output=True, text=True).stdout
+
+    def roster_sym(name):
+        m = re.search(rf"^([0-9a-f]+) [Tt] {name}$", rsym, re.M)
+        assert m, f"{name} not found in:\n{rsym}"
+        a = int(m.group(1), 16)
+        assert ROSTER_MENU_ADDR <= a < ROSTER_MENU_ADDR + len(roster_menu), \
+            f"{name} at {a:#x} outside the spliced blob"
+        return a | 1
+
+    ROSTER_PUSH = roster_sym("CM_RosterPushRows")
+    ROSTER_CALLBACKS = (roster_sym("CM_RosterMenu_OnInit"),
+                        roster_sym("CM_RosterMenu_OnSelectionChanged"),
+                        roster_sym("CM_RosterMenu_OnDestroy"))
+    print(f"roster display: {len(roster_menu)} bytes @ {ROSTER_MENU_ADDR:#x} "
+          f"(push {ROSTER_PUSH:#x}, set {ROSTER_CB_SET} = "
+          f"{', '.join(f'{c:#x}' for c in ROSTER_CALLBACKS)})")
     print(f"mugshot renderer: {len(mugshot)} bytes @ {CM_MUGSHOT_ADDR:#x} "
           f"(show {SHOW_MUGSHOT:#x}, hide {HIDE_MUGSHOT:#x})")
     print(f"shim: {len(shim)} bytes @ {SHIM_ADDR:#x}; entries: "
@@ -545,6 +644,82 @@ def main():
     splice(WILDMONS_ADDR, wildmons, "wildmons")
     splice(LEGENDARY_ADDR, legendaries, "legendary pool")
     splice(CM_MUGSHOT_ADDR, mugshot, "mugshot renderer")
+
+    # --- roster display: roots blob, relocated callback table, code, scripts ---
+    splice(ROSTER_ROOTS_ADDR, roster_roots, "roster roots")
+    _dyn_orig_off = DYN_EVENT_TABLE_ORIG - 0x08000000
+    _dyn_live = bytes(data[_dyn_orig_off:
+                           _dyn_orig_off + DYN_EVENT_ORIG_ENTRIES * DYN_EVENT_ENTRY_SIZE])
+    for _w in struct.unpack(f"<{len(_dyn_live) // 4}I", _dyn_live):
+        assert 0x08000000 <= _w < 0x0A000000 and _w & 1, (
+            f"callback table at {DYN_EVENT_TABLE_ORIG:#x} holds {_w:#x}, not a "
+            f"Thumb function pointer -- wrong address or wrong ROM")
+    assert DYN_EVENT_SLOTS == ROSTER_CB_SET + 1 == DYN_EVENT_ORIG_ENTRIES + 1
+    splice(DYN_EVENT_TABLE_ADDR, _dyn_live + struct.pack("<III", *ROSTER_CALLBACKS),
+           "dynmultichoice callback table")
+    for _roff in DYN_EVENT_TABLE_REFS:
+        _cur = struct.unpack_from("<I", data, _roff)[0]
+        assert _cur == DYN_EVENT_TABLE_ORIG, (
+            f"callback-table literal {_roff + 0x08000000:#x} holds {_cur:#x}, "
+            f"expected {DYN_EVENT_TABLE_ORIG:#x} -- wrong ROM, or already patched")
+        struct.pack_into("<I", data, _roff, DYN_EVENT_TABLE_ADDR)
+    splice(ROSTER_MENU_ADDR, roster_menu, "roster display code")
+
+    # Pre-entry (the desk's BG pointer lands here) + shared roster block.
+    #   checkflag CM; goto_if unset -> the stock desk script, unchanged
+    #   lockall; dynmultichoice NONE [View roster, Enter a code]
+    #   0 -> roster block; 1 -> the desk right after its yes/no; B -> release
+    _o = DESK_AFTER_PROMPT - 0x08000000
+    assert bytes(data[_o:_o + len(DESK_AFTER_PROMPT_BYTES)]) == DESK_AFTER_PROMPT_BYTES, (
+        f"desk script at {DESK_AFTER_PROMPT:#x} is not `delay 2; loadword "
+        f"\"Please enter the code.\"` -- the desk script has moved")
+    _t_view = enc_text("View roster", cm)
+    _t_code = enc_text("Enter a code", cm)
+
+    def _roster_script(a):
+        b = bytearray()
+        b += op_checkflag(FLAG_CHARACTER_MODE) + op_goto_if(0, DESK_ORIG_SCRIPT)
+        b += op_lockall()
+        b += op_dynmultichoice(0xFF, [a["t_view"], a["t_code"]])
+        b += op_compare(0x800D, 0) + op_goto_if(1, a["roster"])
+        b += op_compare(0x800D, 1) + op_goto_if(1, DESK_AFTER_PROMPT)
+        b += op_releaseall() + op_end()                               # B
+        a["roster_here"] = len(b)
+        b += op_callnative(ROSTER_PUSH)
+        b += op_compare(0x800D, 0) + op_goto_if(1, a["roster_end"])   # no rows
+        b += op_dynmultistack(ROSTER_CB_SET)
+        a["roster_end_here"] = len(b)
+        b += op_releaseall() + op_end()
+        a["t_view_here"] = len(b); b += _t_view
+        a["t_code_here"] = len(b); b += _t_code
+        return b
+
+    _ph = dict(t_view=0, t_code=0, roster=0, roster_end=0)
+    _roster_script(_ph)
+    _ra = dict(t_view=ROSTER_SCRIPT_ADDR + _ph["t_view_here"],
+               t_code=ROSTER_SCRIPT_ADDR + _ph["t_code_here"],
+               roster=ROSTER_SCRIPT_ADDR + _ph["roster_here"],
+               roster_end=ROSTER_SCRIPT_ADDR + _ph["roster_end_here"])
+    roster_script = bytes(_roster_script(_ra))
+    splice(ROSTER_SCRIPT_ADDR, roster_script, "roster display scripts")
+    _pat = struct.pack("<I", DESK_ORIG_SCRIPT)
+    _all, _i = [], bytes(data).find(_pat)
+    _own = range(ROSTER_SCRIPT_ADDR - 0x08000000,
+                 ROSTER_SCRIPT_ADDR - 0x08000000 + len(roster_script))
+    while _i != -1:
+        if _i not in _own:          # the pre-entry's own CM-off goto
+            _all.append(_i)
+        _i = bytes(data).find(_pat, _i + 1)
+    assert sorted(_all) == sorted(DESK_BG_PTR_OFFS), (
+        f"references to the desk script {DESK_ORIG_SCRIPT:#x} are "
+        f"{[hex(a) for a in _all]}, expected exactly {[hex(a) for a in DESK_BG_PTR_OFFS]}")
+    for _off in DESK_BG_PTR_OFFS:
+        struct.pack_into("<I", data, _off, ROSTER_SCRIPT_ADDR)
+    print(f"roster display: roots {len(roster_roots)} B @ {ROSTER_ROOTS_ADDR:#x}; "
+          f"callback table {DYN_EVENT_SLOTS} slots @ {DYN_EVENT_TABLE_ADDR:#x} "
+          f"(was {DYN_EVENT_TABLE_ORIG:#x}, {len(DYN_EVENT_TABLE_REFS)} refs repointed); "
+          f"{len(DESK_BG_PTR_OFFS)} desk BG events -> pre-entry @ {ROSTER_SCRIPT_ADDR:#x} "
+          f"({len(roster_script)} B)")
 
     # --- egg-hatch sweep ---
     # The one enforcement hole reachable in ordinary play: eggs are exempt

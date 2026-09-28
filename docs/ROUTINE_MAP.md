@@ -488,3 +488,49 @@ table directly — the allocator's own bitmap would go out of sync with it.
 
 `callnative` (script command **`0x23`**) is already proven in this ROM: the
 injector retargets 112 inline `callnative` script pointers.
+
+## Roster display (2026-09-27, ported from Seaglass): ✅ SHIPPED, LIVE
+
+Same engine and author as Seaglass, so the design transfers unchanged. Every
+address below was re-derived from THIS binary. Method, in order:
+- the opcode handlers from the command table
+- the callback table from its load pattern
+- the window and sprite API from the ROM's own set 1
+- the icon path, traced live
+
+| what | addr | how it was read |
+|---|---|---|
+| `ScrCmd_dynmultichoice` (0xE3) / `dynmultipush` (0xE4) | `0x08209AE9` / `0x08209C49` | cmd table `0x0828C7DC`; same byte layout as Seaglass |
+| opcode `0x00` | `0x08208251` | `movs r0,#0; bx lr` (a nop; the stack form's NULL word relies on it) |
+| `Alloc(size,0)` / `StringExpandPlaceholders` | `0x080033EC` / `0x080061C0` | dynmultipush |
+| `MultichoiceDynamic_PushElement(name, id)` | `0x0820B93C` | dynmultipush (r0/r1) |
+| `sDynamicListMenuEventCollections` | `0x08CEBB04` → **relocated `0x09674000`** | four `cmp r1,#255`-gated loads `0x0820BA6C` / `0x0820BBCA` / `0x0820BC80` / `0x0820BF8E` through literals `0x0820BAA8` / `0x0820BD64` (shared) / `0x0820C078`; `0x08CEBB34` at `0x0820CC0C` is another object |
+| set 1 (item icon) | `0x0820B6B9` / `0x0820B735` / `0x0820B7DD` | the decoding key for everything below |
+| `sDynamicMenuEventScratchPad` (ptr) | `0x0201EFA0` | set 1 |
+| `gWindows` / `gSprites` | `0x0203D79C` / `0x0203B5CC` | set 1; `gSprites` matches `src/character_sprite.c` (live-verified) |
+| `AddWindow` / `RemoveWindow` | `0x08008EA4` / `0x08009080` | set 1 |
+| `SetStandardWindowBorderStyle` / `ClearStdWindowAndFrame` | `0x08176678` / `0x08176034` | set 1 |
+| `FillWindowPixelBuffer` / `CopyWindowToVram` | `0x08009668` / `0x08009178` | set 1 |
+| `FreeSpriteTilesByTag` / `FreeSpritePaletteByTag` / `DestroySprite` | `0x08005518` / `0x08005828` / `0x08003E04` | set 1 (the first closes the long-open "never located" note) |
+| **`gSpeciesInfo`** | **`0x08C7A338`, stride 212** | `CreateMonIcon`'s literal; the "species name table" `0x08C7A364` is +44 |
+| icon / female icon / palette index | +120 / +124 / low 3 bits of +134 | ✅ live |
+| `gMonIconPaletteTable` | `0x08CCC360` | tags `0xDAC0+i` |
+| `CreateMonIcon(species, cb, x, y, subpri, personality)` | `0x081CFE08` | ✅ live: the party menu passes species 25 |
+| `SpriteCB_MonIcon` / `FreeAndDestroyMonIconSprite` | `0x081D0321` / `0x081D0110` | the latter's entry is the `movs r2,#0` BEFORE its push |
+| `LoadMonIconPalette` / `FreeMonIconPalette` | `0x081D0164` (twin `0x081D01A0`) / `0x081D02C0` (twin `0x081D02F0`) | each entry is one `lsls` before its `push` |
+| desk script / after its yes/no | `0x083287A7` / `0x083287BE` | `delay 2; loadword "Please enter the code."` |
+| desk naming special `0x221` | `0x0813F848` | `gSpecials` `0x0828CBF4` |
+
+- **Four BG events run the desk script:** (7,8) and (8,8) at the University
+  desk, and (3,1) in two other maps (file `0xEA28A0`, `0xEA28AC`, `0xEAAD54`,
+  `0xEAB010`). **All four are repointed** to the pre-entry at `0x09677000`.
+  Only (8,8) was repointed at first, and the live test caught it: the player in
+  `cm_red_active.ss` faces (7,8).
+- **Pre-entry:** `checkflag 0x2B0; goto_if unset → 0x083287A7` (stock). With
+  CM on: *View roster / Enter a code*. "Enter a code" lands at `0x083287BE`,
+  skipping the redundant yes/no.
+- **Evidence:** `verify_artifacts` section 15 (23 checks),
+  `roster_display_negative_test.py` 16/16, `mon_icon_path_probe.lua` 7/7 (plus
+  the offset-116 and stride-208 tampers, which fail), and `cm_roster_menu_test.lua`
+  (roster 10/10 as Misty, char 10; code 3/3; off 3/3, which reaches the stock
+  desk's naming special).

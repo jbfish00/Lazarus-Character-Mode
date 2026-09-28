@@ -76,6 +76,22 @@ run ui_give2_boxing tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_chea
 
 run save_load tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_saveload_test.lua 4
 
+# In-game roster display (2026-09-27, ported from Seaglass). AFTER
+# ui_activate_red, which regenerates cm_red_active.ss (player at the desk, CM
+# on). These layers break on engine addresses, so the debugger stub is needed.
+# CM_CHAR 10 (Misty) is deliberately NOT #1: a per-character test on the first
+# record cannot catch an indexing error. Rows are derived from the manifest.
+export MGBA_HEADLESS_DEBUGGER=1 CM_CHAR=10
+eval "$(python3 tools/tests/roster_menu_env.py 10)" || fail=1
+run mon_icon_path tools/savestates/cm_red_active.ss tools/mgba_scripts/mon_icon_path_probe.lua 7
+MODE=roster; export MODE
+run roster_menu tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_roster_menu_test.lua 10
+MODE=code; export MODE
+run roster_code tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_roster_menu_test.lua 3
+MODE=off; export MODE
+run roster_off tools/savestates/cm_red_active.ss tools/mgba_scripts/cm_roster_menu_test.lua 3
+unset MODE CM_CHAR
+
 sh tools/tests/run_trade_e2e.sh || fail=1
 sh tools/tests/run_egg_e2e.sh || fail=1
 sh tools/tests/run_pc_e2e.sh || fail=1

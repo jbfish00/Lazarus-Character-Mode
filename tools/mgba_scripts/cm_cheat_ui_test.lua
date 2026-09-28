@@ -127,11 +127,22 @@ local before = {}
 -- before f=1300 — desk_to_naming.lua measured ~960 from mid-dialogue)
 local t0 = cfg.open_desk and 1300 or 30
 if cfg.open_desk then
+    -- ⚠️ Since the roster display (2026-09-27), the desk with CM ACTIVE first
+    -- asks "View roster / Enter a code" (a dynmultichoice pre-entry). The old
+    -- A-mash picked row 0 and opened the roster instead of the code screen --
+    -- ui_give2_boxing failed "box0 +1: got 1, want 2" until this chose row 1.
+    -- "Enter a code" skips the desk's own yes/no, so the code screen opens
+    -- far sooner than the old ~960 frames: a long A-mash now TYPES into it,
+    -- fills the buffer, lands on OK and submits ("The code was invalid!" --
+    -- measured). Only "Please enter the code." needs an A; three spaced
+    -- presses cover it, and the 10x B in the key plan clears any stray letter.
     H.onFrame(function(f)
         if f == 30 then H.press(K.A, 6) end
+        if f == 90 then H.press(K.DOWN, 8) end
+        if f == 130 then H.press(K.A, 6) end
+        if f == 220 or f == 300 or f == 380 then H.press(K.A, 6) end
         if f == 1290 then emu:screenshot(DIR .. "ui_reopen.png") end
     end)
-    H.mash(K.A, 60, 1100, 40)
 end
 H.onFrame(function(f)
     if f == 10 then

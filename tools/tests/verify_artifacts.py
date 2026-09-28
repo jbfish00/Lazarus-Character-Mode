@@ -208,7 +208,35 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 143  # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
+EXPECT_CHECKS = 167  # +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+                     # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
+
+
+# --- roster display (section 15). Layout comes from the injector; the facts
+# about the BASE ROM (the table, its literals, the four loads, the desk) are
+# restated on purpose -- they are what the injector must agree with.
+ROSTER_ROOTS_ADDR = _inj_addr("ROSTER_ROOTS_ADDR")
+DYN_EVENT_TABLE_ADDR = _inj_addr("DYN_EVENT_TABLE_ADDR")
+ROSTER_MENU_ADDR = _inj_addr("ROSTER_MENU_ADDR")
+ROSTER_SCRIPT_ADDR = _inj_addr("ROSTER_SCRIPT_ADDR")
+ROSTER_SCRIPT_WINDOW = 0x200
+_ROOTS = json.loads((ROOT / "tools" / "character_mode" / "roster_roots_manifest.json").read_text())
+DYN_EVENT_TABLE_ORIG = 0x08CEBB04
+DYN_EVENT_TABLE_REFS = (0x20BAA8, 0x20BD64, 0x20C078)
+DYN_EVENT_TABLE_LOADS = ((0x0820BA6C, 0x0820BAA8), (0x0820BBCA, 0x0820BD64),
+                         (0x0820BC80, 0x0820BD64), (0x0820BF8E, 0x0820C078))
+DYN_EVENT_ENTRY_SIZE, DYN_EVENT_ORIG_ENTRIES, DYN_EVENT_SLOTS, ROSTER_CB_SET = 12, 2, 3, 2
+DESK_BG_PTR_OFFS = (0xEA28A0, 0xEA28AC, 0xEAAD54, 0xEAB010)
+DESK_ORIG_SCRIPT = 0x083287A7
+DESK_AFTER_PROMPT = 0x083287BE
+FLAG_CHARACTER_MODE = 0x2B0
+
+
+def _elf_syms(elf):
+    out = subprocess.run(["arm-none-eabi-nm", str(ROOT / "build" / elf)],
+                         check=True, capture_output=True, text=True).stdout
+    return {m.group(2): int(m.group(1), 16)
+            for m in re.finditer(r"^([0-9a-f]+) [Tt] (\w+)$", out, re.M)}
 
 
 def check(name, ok, detail=""):
@@ -364,6 +392,20 @@ def main():
          PC_TAIL_ADDR - 0x08000000 + PC_TAIL_SPACING + pc_hook.TAIL_LEN),
         (pc_hook.SITES[0][1], pc_hook.SITES[0][1] + len(pc_hook.SITES[0][2])),
         (pc_hook.SITES[1][1], pc_hook.SITES[1][1] + len(pc_hook.SITES[1][2])),
+        # roster display: roots (sized from the manifest and NUM_CHARACTERS,
+        # not the .bin), the relocated table, its 3 literals, the code (its
+        # .bin, which section 15 proves is what the ROM holds), the scripts,
+        # and the four desk BG pointers.
+        (ROSTER_ROOTS_ADDR - 0x08000000, ROSTER_ROOTS_ADDR - 0x08000000
+         + NUM_CHARACTERS * _ROOTS["entry_size_bytes"] + _ROOTS["total_roots"] * 2),
+        (DYN_EVENT_TABLE_ADDR - 0x08000000,
+         DYN_EVENT_TABLE_ADDR - 0x08000000 + DYN_EVENT_SLOTS * DYN_EVENT_ENTRY_SIZE),
+        *[(r, r + 4) for r in DYN_EVENT_TABLE_REFS],
+        (ROSTER_MENU_ADDR - 0x08000000, ROSTER_MENU_ADDR - 0x08000000
+         + len((ROOT / "build" / "roster_display.bin").read_bytes())),
+        (ROSTER_SCRIPT_ADDR - 0x08000000,
+         ROSTER_SCRIPT_ADDR - 0x08000000 + ROSTER_SCRIPT_WINDOW),
+        *[(r, r + 4) for r in DESK_BG_PTR_OFFS],
     ]
     stray = []
     CHUNK = 4096
@@ -438,13 +480,13 @@ def main():
     check("injector derives NUM_CHARACTERS from the manifest",
           re.search(r"^NUM_CHARACTERS\s*=\s*\d+", _INJ_SRC, re.M) is None
           and "_derive_num_characters()" in _INJ_SRC)
-    for _src in ("character_mode.c", "character_sprite.c"):
+    for _src in ("character_mode.c", "character_sprite.c", "roster_display.c"):
         _txt = (ROOT / "src" / _src).read_text()
         check(f"{_src} takes NUM_CHARACTERS from the injector",
               re.search(r"^#define\s+NUM_CHARACTERS\s+\d+", _txt, re.M) is None
               and "#ifndef NUM_CHARACTERS" in _txt)
-    check(f"injector passes -DNUM_CHARACTERS to both shims",
-          _INJ_SRC.count('f"-DNUM_CHARACTERS={NUM_CHARACTERS}"') == 2)
+    check(f"injector passes -DNUM_CHARACTERS to all three shims",
+          _INJ_SRC.count('f"-DNUM_CHARACTERS={NUM_CHARACTERS}"') == 3)
 
     # --- the playability threshold, read back out of the built ROM ---------
     with open(ROOT / "tools" / "character_mode" / "character_drops.json") as f:
@@ -1130,6 +1172,151 @@ def main():
     _bad = [i for i in range(NUM_CHARACTERS)
             if 0xFF not in _mk[i * _MK_STRIDE:(i + 1) * _MK_STRIDE]]
     check("every marker slot is 0xFF-terminated", not _bad, str(len(_bad)))
+
+
+    print("== 15. roster display (roots, relocated callback table, desk entry, code) ==")
+    # Ported 2026-09-27 from Seaglass's [19]/[20]/[21]. EVERY check reads the
+    # BUILT ROM; expected values come from the manifest, the base ROM, or the
+    # linked ELF -- never from the .bin the ROM was built from.
+    _rr_file = (ROOT / "tools" / "character_mode" / "roster_roots.bin").read_bytes()
+    _rr_off = ROSTER_ROOTS_ADDR - 0x08000000
+    check("roster roots in-ROM == roster_roots.bin",
+          patched[_rr_off:_rr_off + len(_rr_file)] == _rr_file, f"{len(_rr_file)} B")
+    _rr_blob = patched[_rr_off:_rr_off + len(_rr_file)]
+    _rr_esz = _ROOTS["entry_size_bytes"]
+    _rr_rootoff = NUM_CHARACTERS * _rr_esz
+    check("roots[] offset re-derived from NUM_CHARACTERS == manifest",
+          _rr_rootoff == _ROOTS["roots_offset_bytes"])
+    check("roster_roots.bin size == entry table + one u16 per root",
+          len(_rr_file) == _rr_rootoff + _ROOTS["total_roots"] * 2)
+    _rr_nb = int(_ROOTS["species_table_base"], 16)
+    _rr_st = _ROOTS["species_table_stride"]
+    _rr_bad_e, _rr_bad_n, _rr_cur = [], [], 0
+    for _ci, _c in enumerate(chars):
+        _want = list(dict.fromkeys(_c["roster_species_ids"]))
+        _f, _n = struct.unpack_from("<HH", _rr_blob, _ci * _rr_esz)
+        if (_f, _n) != (_rr_cur, len(_want)):
+            _rr_bad_e.append((_c["character"], _f, _n))
+        _lo = _rr_rootoff + _f * 2
+        _got = (list(struct.unpack_from(f"<{_n}H", _rr_blob, _lo))
+                if _n and _lo + _n * 2 <= len(_rr_blob) else ([] if not _n else None))
+        if _got != _want:
+            _rr_bad_e.append((_c["character"], "roots differ"))
+        for _sp in (_got or []):
+            _nm = patched[_rr_nb + _sp * _rr_st:_rr_nb + _sp * _rr_st + 12]
+            if not _nm or _nm[0] in (0xFF, 0x00):
+                _rr_bad_n.append((_c["character"], _sp))
+        _rr_cur += len(_want)
+    check("every character's (first,count) and root slice re-derive from the manifest",
+          not _rr_bad_e, str(_rr_bad_e[:3]))
+    _rr_t, _rr_gap = 0, []
+    for _ci in range(NUM_CHARACTERS):
+        _f, _n = struct.unpack_from("<HH", _rr_blob, _ci * _rr_esz)
+        if _f != _rr_t:
+            _rr_gap.append(_ci)
+        _rr_t += _n
+    check("entries tile roots[] exactly, no gap and no overlap",
+          not _rr_gap and _rr_t == _ROOTS["total_roots"], f"{_rr_t} {_rr_gap[:3]}")
+    check("every root resolves to a non-empty name in the BUILT ROM's species table",
+          not _rr_bad_n, str(_rr_bad_n[:5]))
+    _late = NUM_CHARACTERS - 1
+    _lf, _lc = struct.unpack_from("<HH", _rr_blob, _late * _rr_esz)
+    _lw = list(dict.fromkeys(chars[_late]["roster_species_ids"]))
+    check(f"late probe: character #{_late + 1} reads back its own roots",
+          _lc == len(_lw) and (not _lc or list(struct.unpack_from(
+              f"<{_lc}H", _rr_blob, _rr_rootoff + _lf * 2)) == _lw))
+    _empty = [c["character"] for ci, c in enumerate(chars)
+              if struct.unpack_from("<HH", _rr_blob, ci * _rr_esz)[1] == 0]
+    check("characters with zero roots in-ROM == the emitter's list",
+          _empty == _ROOTS["empty_roster"], f"{_empty}")
+    check("every zero-root character is hidden, so the screen never opens empty",
+          all(chars[ci]["hidden"] for ci in range(NUM_CHARACTERS)
+              if struct.unpack_from("<HH", _rr_blob, ci * _rr_esz)[1] == 0))
+
+    # -- relocated callback table --
+    _dy_new = DYN_EVENT_TABLE_ADDR - 0x08000000
+    _dy_old = DYN_EVENT_TABLE_ORIG - 0x08000000
+    _dy_n = DYN_EVENT_ORIG_ENTRIES * DYN_EVENT_ENTRY_SIZE
+    check("callback table entries [0..1] == the base ROM's table",
+          patched[_dy_new:_dy_new + _dy_n] == orig[_dy_old:_dy_old + _dy_n])
+    _dy_rs = _elf_syms("roster_display.elf")
+    _dy_want = b"".join(struct.pack("<I", _dy_rs[n] | 1) for n in (
+        "CM_RosterMenu_OnInit", "CM_RosterMenu_OnSelectionChanged", "CM_RosterMenu_OnDestroy"))
+    check("slot [2] == the roster set's OnInit/OnSelectionChanged/OnDestroy from the ELF",
+          patched[_dy_new + ROSTER_CB_SET * 12:_dy_new + (ROSTER_CB_SET + 1) * 12] == _dy_want)
+    for _r in DYN_EVENT_TABLE_REFS:
+        _v = struct.unpack_from("<I", patched, _r)[0]
+        check(f"table literal {_r + 0x08000000:#x} -> the relocated table",
+              _v == DYN_EVENT_TABLE_ADDR, hex(_v))
+    _old_refs, _new_refs = [], []
+    for _i in range(len(patched) - 3):
+        _w = struct.unpack_from("<I", patched, _i)[0]
+        if _w == DYN_EVENT_TABLE_ORIG:
+            _old_refs.append(_i)
+        elif _w == DYN_EVENT_TABLE_ADDR:
+            _new_refs.append(_i)
+    check("no reference to the old table remains; the new one has exactly the 3 literals",
+          not _old_refs and sorted(_new_refs) == sorted(DYN_EVENT_TABLE_REFS),
+          f"old {[hex(a) for a in _old_refs]} new {[hex(a) for a in _new_refs]}")
+    _badld = []
+    for _ia, _lit in DYN_EVENT_TABLE_LOADS:
+        _h = struct.unpack_from("<H", patched, _ia - 0x08000000)[0]
+        if _h >> 11 != 0b01001 or ((_ia + 4) & ~3) + (_h & 0xFF) * 4 != _lit:
+            _badld.append(hex(_ia))
+    check("all 4 table loads are pc-relative ldr's of the repointed literals", not _badld, str(_badld))
+    _nocmp = [hex(_ia) for _ia, _ in DYN_EVENT_TABLE_LOADS
+              if not any(struct.unpack_from("<H", patched, _ia - 0x08000000 - k)[0] == 0x29FF
+                         for k in range(2, 18, 2))]
+    check("every table load is gated by `cmp r1, #255` (NONE = 0xFF), so slot [2] is a real set",
+          not _nocmp, str(_nocmp))
+
+    # -- desk entry + code --
+    _rd_bin = (ROOT / "build" / "roster_display.bin").read_bytes()
+    _rd_off = ROSTER_MENU_ADDR - 0x08000000
+    _rd_code = patched[_rd_off:_rd_off + len(_rd_bin)]
+    check("roster code in-ROM == roster_display.bin", _rd_code == _rd_bin)
+    _lits = {struct.unpack_from("<I", _rd_code, i)[0] for i in range(0, len(_rd_code) - 3, 4)}
+    _hws = {struct.unpack_from("<H", _rd_code, i)[0] for i in range(0, len(_rd_code) - 1, 2)}
+    check("compiled roster code carries ROSTER_ROOTS_ADDR, roots[] start, and cmp #NUM_CHARACTERS-1",
+          ROSTER_ROOTS_ADDR in _lits
+          and ROSTER_ROOTS_ADDR + _ROOTS["roots_offset_bytes"] in _lits
+          and any((h & 0xF8FF) == (0x2800 | (NUM_CHARACTERS - 1)) for h in _hws))
+    _desk_pat = struct.pack("<I", DESK_ORIG_SCRIPT)
+    _desk_left = [i for i in range(len(patched) - 3)
+                  if patched[i:i + 4] == _desk_pat
+                  and not (ROSTER_SCRIPT_ADDR - 0x08000000 <= i
+                           < ROSTER_SCRIPT_ADDR - 0x08000000 + ROSTER_SCRIPT_WINDOW)]
+    check("all 4 desk BG events -> the pre-entry, and no other reference to the stock desk script",
+          all(struct.unpack_from("<I", patched, o)[0] == ROSTER_SCRIPT_ADDR for o in DESK_BG_PTR_OFFS)
+          and not _desk_left
+          and all(struct.unpack_from("<I", orig, o)[0] == DESK_ORIG_SCRIPT for o in DESK_BG_PTR_OFFS),
+          f"left {[hex(a) for a in _desk_left]}")
+    _o = ROSTER_SCRIPT_ADDR - 0x08000000
+    _d = patched
+    _pre_ok = (_d[_o:_o + 5] == bytes([0x2B, 0xB0, 0x02, 0x06, 0x00])
+               and struct.unpack_from("<I", _d, _o + 5)[0] == DESK_ORIG_SCRIPT
+               and _d[_o + 9] == 0x69 and _d[_o + 10] == 0xE3
+               and _d[_o + 10 + 10] == 0xFF and _d[_o + 10 + 11] == 2)
+    _rows = _o + 10 + 12 + 2 * 4
+    _tgt = []
+    for _row in range(2):
+        _seg = _d[_rows + _row * 11:_rows + _row * 11 + 11]
+        if _seg[:7] != bytes([0x21, 0x0D, 0x80]) + struct.pack("<H", _row) + bytes([0x06, 0x01]):
+            _pre_ok = False
+        _tgt.append(struct.unpack_from("<I", _seg, 7)[0])
+    check("pre-entry: CM off -> stock desk; lockall; menu (set NONE, 2 rows); rows compared 0,1", _pre_ok)
+    _ap = DESK_AFTER_PROMPT - 0x08000000
+    check("'Enter a code' -> right after the desk's own yes/no (`delay 2; loadword \"Please enter the code.\"`)",
+          len(_tgt) == 2 and _tgt[1] == DESK_AFTER_PROMPT
+          and _d[_ap:_ap + 9] == bytes([0x28, 0x02, 0x00, 0x0F, 0x00]) + struct.pack("<I", 0x0832B579))
+    _rb = (_tgt[0] if _tgt else 0) - 0x08000000
+    _push = _dy_rs["CM_RosterPushRows"] | 1
+    check(f"roster block: callnative CM_RosterPushRows, skip on 0 rows, STACK form with set {ROSTER_CB_SET}",
+          0 <= _rb < len(_d) - 32
+          and _d[_rb] == 0x23 and struct.unpack_from("<I", _d, _rb + 1)[0] == _push
+          and _d[_rb + 5:_rb + 12] == bytes([0x21, 0x0D, 0x80, 0, 0, 0x06, 0x01])
+          and _d[_rb + 16] == 0xE3 and _d[_rb + 26] == ROSTER_CB_SET and _d[_rb + 27] == 1
+          and _d[_rb + 28:_rb + 32] == bytes(4))
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1
