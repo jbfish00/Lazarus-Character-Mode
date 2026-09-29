@@ -9,7 +9,7 @@
 -- If the static offset were wrong, the observed bits would not line up.
 --
 -- Run (bounded — mgba-headless has no shutdown API):
---   timeout 180 ../Seaglass-Character-Mode/tools/mgba_src/build/mgba-headless \
+--   timeout 180 tools/mgba_src/build/mgba-headless \
 --     --script tools/mgba_scripts/verify_flags_offset.lua rom/lazarus-v2.gba \
 --     > /tmp/flagverify.log 2>&1 ; grep HARNESS /tmp/flagverify.log
 local H = dofile("tools/mgba_scripts/harness.lua")

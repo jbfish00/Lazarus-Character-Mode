@@ -208,7 +208,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 167  # +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 175  # +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -245,6 +245,22 @@ def check(name, ok, detail=""):
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}" + (f" — {detail}" if detail and not ok else ""))
     if not ok:
         failures.append(name)
+
+
+def find_all(buf, pat):
+    """Every offset of `pat` in `buf`, UNALIGNED and overlapping -- the same
+    set a `for i in range(len(buf) - 3)` unpack loop yields, in C instead of
+    ~33M Python iterations (measured 6.5 s -> 0.01 s per scan, 2026-09-28)."""
+    out, i = [], buf.find(pat)
+    while i >= 0:
+        out.append(i)
+        i = buf.find(pat, i + 1)
+    return out
+
+
+# A BL's first halfword has 0xF0-0xF7 in its high byte and its second 0xF8-0xFF.
+# The regex finds candidates in C; bl_callers still decodes every one.
+_BL_CANDIDATE = re.compile(rb"(?=[\x00-\xff][\xf0-\xf7][\x00-\xff][\xf8-\xff])", re.S)
 
 
 def decode_bl(halfwords_bytes, site_rom_addr):
@@ -449,10 +465,12 @@ def main():
     DAYCARE_SITE = 0x19FC8E
     def bl_callers(rom, target):
         sites = []
-        for off in range(0, len(rom) - 3, 2):
-            if (rom[off + 1] & 0xF8) == 0xF0 and (rom[off + 3] & 0xF8) == 0xF8:
-                if decode_bl(rom[off:off + 4], 0x08000000 + off) == target:
-                    sites.append(off)
+        for _m in _BL_CANDIDATE.finditer(rom):     # same set as a 2-byte walk
+            off = _m.start()
+            if off & 1 or off > len(rom) - 4:
+                continue
+            if decode_bl(rom[off:off + 4], 0x08000000 + off) == target:
+                sites.append(off)
         return sites
     orig_callers = bl_callers(orig, GIVEMON_ADDR)
     check("original ROM: exactly 3 GiveMonToPlayer BL callers",
@@ -1135,6 +1153,19 @@ def main():
     check("the guard is in the same condition as gateActive() (no RNG burned "
           "inside the pyramid)",
           "gateActive() && !InBattlePyramid()" in _src)
+    # ⭐⭐ 2026-09-28 -- THE TWO CHECKS ABOVE ARE SUBSTRING TESTS STANDING IN FOR
+    # AN EXPRESSION (Platinum's lesson #2). They cannot tell a live guard from
+    # one that is commented out: the text is still there. This reads what the
+    # COMPILER baked in. The shim is ~22 MB from the predicate, far outside
+    # Thumb BL range, so it must reach it through a literal, and that literal
+    # occurs nowhere in the original ROM (measured: 0 there, 1 in the built
+    # shim), so its presence in the shim blob is an exact discriminator.
+    # Ported from Seaglass's [17].
+    _bp_lit = struct.pack("<I", INBP | 1)
+    _bp_n = bytes(patched[_s:_send]).count(_bp_lit)
+    check(f"the COMPILED shim carries InBattlePyramid's address as a literal "
+          f"({_bp_n} in the blob) -- a source-text check passes on a guard that "
+          f"is commented out; this one does not", _bp_n == 1)
 
     # == 14. Encounter marker ==
     print("== 14. encounter marker ==")
@@ -1248,13 +1279,8 @@ def main():
         _v = struct.unpack_from("<I", patched, _r)[0]
         check(f"table literal {_r + 0x08000000:#x} -> the relocated table",
               _v == DYN_EVENT_TABLE_ADDR, hex(_v))
-    _old_refs, _new_refs = [], []
-    for _i in range(len(patched) - 3):
-        _w = struct.unpack_from("<I", patched, _i)[0]
-        if _w == DYN_EVENT_TABLE_ORIG:
-            _old_refs.append(_i)
-        elif _w == DYN_EVENT_TABLE_ADDR:
-            _new_refs.append(_i)
+    _old_refs = find_all(patched, struct.pack("<I", DYN_EVENT_TABLE_ORIG))
+    _new_refs = find_all(patched, struct.pack("<I", DYN_EVENT_TABLE_ADDR))
     check("no reference to the old table remains; the new one has exactly the 3 literals",
           not _old_refs and sorted(_new_refs) == sorted(DYN_EVENT_TABLE_REFS),
           f"old {[hex(a) for a in _old_refs]} new {[hex(a) for a in _new_refs]}")
@@ -1282,9 +1308,8 @@ def main():
           and ROSTER_ROOTS_ADDR + _ROOTS["roots_offset_bytes"] in _lits
           and any((h & 0xF8FF) == (0x2800 | (NUM_CHARACTERS - 1)) for h in _hws))
     _desk_pat = struct.pack("<I", DESK_ORIG_SCRIPT)
-    _desk_left = [i for i in range(len(patched) - 3)
-                  if patched[i:i + 4] == _desk_pat
-                  and not (ROSTER_SCRIPT_ADDR - 0x08000000 <= i
+    _desk_left = [i for i in find_all(patched, _desk_pat)
+                  if not (ROSTER_SCRIPT_ADDR - 0x08000000 <= i
                            < ROSTER_SCRIPT_ADDR - 0x08000000 + ROSTER_SCRIPT_WINDOW)]
     check("all 4 desk BG events -> the pre-entry, and no other reference to the stock desk script",
           all(struct.unpack_from("<I", patched, o)[0] == ROSTER_SCRIPT_ADDR for o in DESK_BG_PTR_OFFS)
@@ -1317,6 +1342,47 @@ def main():
           and _d[_rb + 5:_rb + 12] == bytes([0x21, 0x0D, 0x80, 0, 0, 0x06, 0x01])
           and _d[_rb + 16] == 0xE3 and _d[_rb + 26] == ROSTER_CB_SET and _d[_rb + 27] == 1
           and _d[_rb + 28:_rb + 32] == bytes(4))
+
+    # ⚠️ Every local below is _fp*-prefixed on purpose: a bare name here can
+    # shadow a module-level counter the summary reads (Seaglass once printed
+    # "135160 passed" that way).
+    print("\n== 16. compiled shim constants (read back out of the built ROM) ==")
+    # Every section above checks an emitted .bin, a patched byte range, or the
+    # C source TEXT. None reads the value the COMPILER baked into the shim --
+    # the gap that let Seaglass ship WILDPOOL_STRIDE 104 against 176-byte data
+    # and a stale TOBIAS_CHAR_ID for four days behind a green suite.
+    # src/character_mode.c exports CM_BuildFingerprint into its own .text.*
+    # slice, last in the file; found here by its magic, inside the shim blob.
+    _fp_magic = struct.pack("<I", 0x4D435346)
+    _fp_region = bytes(patched[_s:_send])
+    _fp_n = _fp_region.count(_fp_magic)
+    check(f"exactly one build fingerprint in the shim blob ({_fp_n} found)", _fp_n == 1)
+    if _fp_n == 1:
+        (_fp_sig, _fp_nchars, _fp_wstride, _fp_lstride, _fp_bstride,
+         _fp_mstride, _fp_tobias) = struct.unpack_from(
+            "<7I", _fp_region, _fp_region.find(_fp_magic))
+        _fp_manifest = json.loads((HERE.parent / "character_mode" /
+                                   "characters_manifest.json").read_text())["characters"]
+        _fp_tob = next((i + 1 for i, c in enumerate(_fp_manifest)
+                        if c["character"] == "Tobias"), 0)
+        _fp_mk = (HERE.parent / "character_mode" / "marker_strings.bin").read_bytes()
+        check(f"shim compiled NUM_CHARACTERS={_fp_nchars} == manifest {NUM_CHARACTERS}",
+              _fp_nchars == NUM_CHARACTERS)
+        check(f"shim compiled WILDMON_STRIDE={_fp_wstride}: x{_fp_nchars} == "
+              f"wildmons.bin ({len(wildmons)} B)",
+              _fp_wstride * _fp_nchars == len(wildmons))
+        check(f"shim compiled LEGENDARY_STRIDE={_fp_lstride}: x{_fp_nchars} == "
+              f"legendaries.bin ({len(legendaries)} B)",
+              _fp_lstride * _fp_nchars == len(legendaries))
+        check(f"shim compiled BITMAP_STRIDE={_fp_bstride}: x{_fp_nchars} == "
+              f"rosters_expanded.bin ({len(bitmaps)} B)",
+              _fp_bstride * _fp_nchars == len(bitmaps))
+        check(f"shim compiled MARKER_STRIDE={_fp_mstride}: x{_fp_nchars} == "
+              f"marker_strings.bin ({len(_fp_mk)} B)",
+              _fp_mstride * _fp_nchars == len(_fp_mk))
+        check(f"shim compiled TOBIAS_CHAR_ID={_fp_tobias} == manifest index of "
+              f"Tobias ({_fp_tob}; 0 = trimmed from this roster)",
+              _fp_tobias == _fp_tob)
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

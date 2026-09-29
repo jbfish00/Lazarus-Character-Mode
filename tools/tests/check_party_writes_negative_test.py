@@ -67,7 +67,7 @@ def run(path):
 
 # How many tamper cases this negative test must run. A deliberate
 # LITERAL -- see cm_tally.assert_cases.
-EXPECT_CASES = 8
+EXPECT_CASES = 11
 
 
 def main():
@@ -146,6 +146,18 @@ def main():
             case("a drifted EXPECT_UNGATED pin fails", 1,
                  src[:mu.start()] + "EXPECT_UNGATED = frozenset({0x00000001})"
                  + src[mu.end():])
+
+        # ⭐ 2026-09-28: one case per primitive fix ported from Seaglass. Each
+        # reverts ONE fix; the sites it found vanish, so "every inventoried
+        # copy is still present" must fail. Without these, reverting a fix
+        # would only show up as a shorter scan that nothing notices.
+        case("primitive fix B reverted (WINDOW 96 -> 48) fails", 1,
+             src.replace("WINDOW = 96\n", "WINDOW = 48\n", 1))
+        case("primitive fix A reverted (no Thumb format 5) fails", 1,
+             src.replace("if 0x4400 <= v <= 0x46FF:", "if False:", 1))
+        case("primitive fix C reverted (no k*MON_SIZE seed) fails", 1,
+             src.replace("            if _bulk:\n                r2_is_mon = True\n",
+                         "", 1))
 
         case("control: the real inventory still passes", 0)
     finally:

@@ -6,7 +6,8 @@
 set -e
 cd "$(dirname "$0")/../.."
 
-MGBA=../Seaglass-Character-Mode/tools/mgba_src/build/mgba-headless
+MGBA="${MGBA_HEADLESS:-tools/mgba_src/build/mgba-headless}"
+[ -x "$MGBA" ] || { echo "no headless mGBA at $MGBA -- build it with 'sh tools/build_mgba.sh', or set MGBA_HEADLESS"; exit 2; }
 TESTROM=build/lazarus_cm_tradetest.gba
 
 python3 - <<'EOF'

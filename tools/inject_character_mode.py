@@ -99,6 +99,9 @@ def _derive_num_characters():
 
 
 NUM_CHARACTERS = _derive_num_characters()
+with open(HERE / "character_mode" / "characters_manifest.json") as _f:
+    TOBIAS_CHAR_ID = next((i + 1 for i, c in enumerate(json.load(_f)["characters"])
+                           if c["character"] == "Tobias"), 0)
 
 # --- confirmed layout constants ---
 FREE_FILE_BASE = 0x15F0EA4          # big 0xFF block start (file offset)
@@ -451,6 +454,7 @@ def main():
                     f"-DLEGENDARY_ADDR={LEGENDARY_ADDR:#x}",
                     f"-DLEGENDARY_STRIDE={legendary_stride}",
                     f"-DWILDMON_STRIDE={wildmon_stride}",
+                    f"-DTOBIAS_CHAR_ID={TOBIAS_CHAR_ID}",
                     "-o", str(obj), str(ROOT / "src" / "character_mode.c")],
                    check=True)
     libgcc = subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-mcpu=arm7tdmi",
@@ -703,13 +707,13 @@ def main():
     roster_script = bytes(_roster_script(_ra))
     splice(ROSTER_SCRIPT_ADDR, roster_script, "roster display scripts")
     _pat = struct.pack("<I", DESK_ORIG_SCRIPT)
-    _all, _i = [], bytes(data).find(_pat)
+    _all, _i = [], data.find(_pat)
     _own = range(ROSTER_SCRIPT_ADDR - 0x08000000,
                  ROSTER_SCRIPT_ADDR - 0x08000000 + len(roster_script))
     while _i != -1:
         if _i not in _own:          # the pre-entry's own CM-off goto
             _all.append(_i)
-        _i = bytes(data).find(_pat, _i + 1)
+        _i = data.find(_pat, _i + 1)
     assert sorted(_all) == sorted(DESK_BG_PTR_OFFS), (
         f"references to the desk script {DESK_ORIG_SCRIPT:#x} are "
         f"{[hex(a) for a in _all]}, expected exactly {[hex(a) for a in DESK_BG_PTR_OFFS]}")
@@ -866,12 +870,12 @@ def main():
 
     pat = struct.pack("<I", GIVE_NATIVE)
     n_native = 0
-    i = bytes(data).find(pat)
+    i = data.find(pat)
     sites = []
     while i != -1:
         if data[i - 1] == 0x23:
             sites.append(i)
-        i = bytes(data).find(pat, i + 1)
+        i = data.find(pat, i + 1)
     assert len(sites) == 112, f"expected 112 callnative sites, found {len(sites)}"
     for s in sites:
         struct.pack_into("<I", data, s, hook_native)

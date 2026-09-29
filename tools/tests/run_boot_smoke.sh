@@ -9,7 +9,8 @@ set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 ROM="${1:-$ROOT/build/lazarus_cm.gba}"
-MGBA="$ROOT/../Seaglass-Character-Mode/tools/mgba_src/build/mgba-headless"
+MGBA="${MGBA_HEADLESS:-$ROOT/tools/mgba_src/build/mgba-headless}"
+[ -x "$MGBA" ] || { echo "no headless mGBA at $MGBA -- build it with 'sh tools/build_mgba.sh', or set MGBA_HEADLESS"; exit 2; }
 LOG="$ROOT/build/boot_smoke.$(basename "$ROM" .gba | tr -c 'A-Za-z0-9._-' '_').log"
 
 [ -f "$ROM" ] || { echo "ROM missing: $ROM"; exit 1; }

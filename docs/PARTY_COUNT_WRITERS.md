@@ -151,7 +151,19 @@ has two halves: **a routine that writes a mon into the party without touching
 the count is invisible to the count inventory**, whether it is benign or not.
 Read the two together; neither is sufficient alone.
 
-## 5 inventoried copy site(s)
+## 8 inventoried copy site(s)
+
+### `0x08080ea6` (file `0x00080ea6`) -- **UNVERIFIED**
+
+LINK MULTI-BATTLE PARTY ASSEMBLY, instruction-for-instruction the twin of Seaglass 0x0008040a: `movs r2,#200 ; mov r1,r9 ; ldr r0,=gPlayerParty ; bl CopyMon` at 0x08080EA2 writes gPlayerParty[0..1] from the buffer in r9, and the sibling arm 0x08080E8C writes gPlayerParty[2] (pool 0x08080FB4 = 0x0201BA28 = party + 200), with gEnemyParty arms beside them (0x08080F1C / 0x08080F32 / 0x08080F4A / 0x08080F64), all selected by a state switch on r3. ⚠️ Mons arriving in party slots from ANOTHER CONSOLE is Platinum's real ungated shape. Whether the player's own party is put back afterwards is NOT proven here. GO LOOK
+
+### `0x081fbb22` (file `0x001fbb22`) -- **UNVERIFIED**
+
+RESTORES BOTH PARTIES from a caller-supplied 1200-byte buffer: 0x081FBB10(buf) calls 0x081C0A38 and 0x081C0A58, then loops 6 x CopyMon(gPlayerParty + i*100, buf + i*100, 100) and the same into gEnemyParty from buf + 600. The twin of Seaglass's UNVERIFIED 0x001df426. ⚠️ NOT the save/restore pair the plan guessed (Seaglass 0x001df74e, a fixed-EWRAM 600-byte memcpy): the label by analogy was wrong. Single BL caller 0x081FBB74. Harmless only if the buffer always holds the PLAYER'S OWN party; a rental or borrowed team loaded through it would introduce species. GO LOOK
+
+### `0x08224d26` (file `0x00224d26`) -- **UNVERIFIED**
+
+TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps gPlayerParty[a] and gEnemyParty[b] through a temp buffer (three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live 2026-09-28 (tools/mgba_scripts/trade_party_write_trace.lua): the in-game trade writes the slot once, pc=0x083E7F8C inside CopyMon, r0=0x0201BA28 (&gPlayerParty[2]), r1=0x0201BBB8 (&gEnemyParty[0]), r2=100, party count 3 -> 3, called from 0x08226ADA with (2, 0). The two IN-GAME callers (0x0822558E, 0x08226ADA, both `TradeMons(gSpecialVar_0x8005, 0)`) are gated at the SCRIPT level by CM_TradeCheck before special 0x100/0x101. ⚠️ WHY NOT GATED: the THIRD caller 0x0822733A is the LINK trade, `TradeMons(monIds[0], monIds[1] % 6)`, and nothing in Character Mode gates it. Whether a link trade is reachable in this hack is not measured. Seaglass's twin 0x00208786 has the same three-caller shape
 
 ### `0x081c40e4` (file `0x001c40e4`) -- **GATED**
 

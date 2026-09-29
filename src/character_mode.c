@@ -80,7 +80,15 @@ typedef unsigned int u32;
 #ifndef NUM_CHARACTERS
 #error "compile with -DNUM_CHARACTERS= (derived from characters_manifest.json)"
 #endif
-#define TOBIAS_CHAR_ID 0     /* Tobias TRIMMED from Lazarus (Darkrai/Latios not in this ROM's dex) — id 0 never matches; branch kept for parity with RR/Seaglass */
+/* Derived by the injector: Tobias's 1-based manifest index, 0 if absent. He
+   is PRESENT here (slot 235) but hidden with an empty roster, since Darkrai and
+   Latios aren't in this ROM's dex, so the 1% branch is unreachable today. This
+   was a literal 0 with a comment calling him "trimmed" until 2026-09-28, when
+   the build fingerprint (verify_artifacts section 16) caught the mismatch. A
+   literal would have silently dropped his 1% rule the day he became offerable. */
+#ifndef TOBIAS_CHAR_ID
+#error "compile with -DTOBIAS_CHAR_ID= (derive it from characters_manifest.json; 0 if absent)"
+#endif
 #define NUM_SPECIES    1561
 #define BITMAP_STRIDE  196
 #define CODE_LEN       11
@@ -711,9 +719,9 @@ void CM_CreateWildMonGated(u16 species, u8 level)
         /* Tobias (user spec 2026-07-23): 1% per roll, and his table is
          * legendary-INCLUSIVE (Darkrai/Latios -- see emit_wildmons.py's
          * special case). Everyone else keeps the standard 10%.
-         * DEAD BRANCH HERE: Tobias is trimmed from Lazarus and TOBIAS_CHAR_ID
-         * is 0, which never matches a 1-based id. Kept for cross-repo parity;
-         * the general rule above subsumes it. */
+         * UNREACHABLE TODAY: Tobias is hidden here (empty roster), so no
+         * player can be him. TOBIAS_CHAR_ID is still his real index, so the
+         * branch works the day he becomes offerable. */
         hit = (id == TOBIAS_CHAR_ID) ? ((Random32() % 100) == 0)
                                      : ((Random32() % 10) == 0);
         if (hit) {
@@ -727,3 +735,26 @@ void CM_CreateWildMonGated(u16 species, u8 level)
     }
     OrigCreateWildMon(species, level);
 }
+
+/* Build fingerprint: the values this translation unit ACTUALLY compiled with,
+   parked in the shim blob so verify_artifacts can read them back out of the
+   BUILT ROM rather than re-reading the source text or an emitted .bin. Ported
+   from Seaglass (2026-09-28), where it caught two shipped bugs (a stale
+   WILDPOOL_STRIDE and TOBIAS_CHAR_ID) that a green verifier and live suite had
+   both missed.
+   - .text.*, not .rodata: .rodata would make ld page-align a fresh segment
+     outside the spliced blob.
+   - LAST in the file, so it lands after every function and moves no hook
+     address (savestates embed shim addresses; the ROM diff proves it).
+   The magic is what verify_artifacts scans for. */
+#define CM_FINGERPRINT_MAGIC 0x4D435346u   /* 'FSCM' little-endian */
+__attribute__((used, section(".text.cm_fingerprint")))
+const u32 CM_BuildFingerprint[7] = {
+    CM_FINGERPRINT_MAGIC,
+    NUM_CHARACTERS,
+    WILDMON_STRIDE,
+    LEGENDARY_STRIDE,
+    BITMAP_STRIDE,
+    MARKER_STRIDE,
+    TOBIAS_CHAR_ID,
+};

@@ -62,22 +62,18 @@ SKIP_DIRS = {
 ALLOWED = {'tools/tests/check_repo_selfcontained_negative_test.py': "THIS CHECKER'S OWN NEGATIVE TEST. It must name the forbidden path in order to reintroduce it on purpose in a throwaway tree. Inventoried rather than skipped, so deleting the negative test is itself a failing check.", 'tools/character_mode/sprite_coverage_survey.py': "cross-repo DONOR tool: reads ROWE's sprite_report.txt. Survey only, never on the build or verify path."}
 
 
-_MGBA = ("SHARED TOOL BINARY, not project data: this repo's live suite runs "
-         "Seaglass's built mgba-headless rather than building a second copy of "
-         "the same emulator. 🔴 REAL AND LOAD-BEARING -- the live layers cannot "
-         "run from a fresh clone of THIS repo alone; Seaglass must be checked "
-         "out and its mgba built. Inventoried, not fixed: duplicating the build "
-         "is expensive and the binary is not Character Mode data. Same class as "
-         "the charmap bug §12 closed, on the verify path.")
+# ✅ 2026-09-28: the six live runners used to run Seaglass's built mgba-headless
+# by path (inventoried here as "REAL AND LOAD-BEARING"), so the live suite could
+# not run from a fresh clone of this repo. They now use this repo's own build
+# (tools/build_mgba.sh: pinned upstream commit + tools/patches/), overridable
+# with MGBA_HEADLESS, and fail with exit 2 if it hasn't been built.
 
 # path -> why this SIBLING-REPO reference is allowed to survive.
 ALLOWED_SIBLING = {
-    "tools/tests/run_live_suite.sh": _MGBA,
-    "tools/tests/run_boot_smoke.sh": _MGBA,
-    "tools/tests/run_egg_e2e.sh": _MGBA,
-    "tools/tests/run_pc_e2e.sh": _MGBA,
-    "tools/tests/run_trade_e2e.sh": _MGBA,
-    "tools/tests/harness_guard_test.sh": _MGBA,
+    "tools/build_mgba.sh":
+        "COMMENT only -- provenance: the patch it applies is the one Seaglass "
+        "carries, at the same upstream commit. It clones mGBA from upstream; "
+        "no sibling path is opened.",
     "tools/character_mode/port_sibling_sources.py":
         "cross-repo DONOR tool by design: imports Radical Red's roster_sources. "
         "Never on the build or verify path.",
@@ -93,9 +89,6 @@ ALLOWED_SIBLING = {
     "tools/character_mode/emit_characters.py":
         "COMMENT only -- attribution prose ('adapted from Unbound's'). No path "
         "is opened.",
-    "tools/mgba_scripts/verify_flags_offset.lua":
-        "COMMENT only -- a copy-pasteable example invocation naming the shared "
-        "mgba. No path is opened by the script itself.",
     "tools/mgba_scripts/headless_catch_trace.lua":
         "COMMENT only -- 'HOW TO RUN (from the Seaglass repo root)'. No path is "
         "opened by the script itself.",

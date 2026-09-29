@@ -24,7 +24,8 @@
 set -e
 cd "$(dirname "$0")/../.."
 
-MGBA=../Seaglass-Character-Mode/tools/mgba_src/build/mgba-headless
+MGBA="${MGBA_HEADLESS:-tools/mgba_src/build/mgba-headless}"
+[ -x "$MGBA" ] || { echo "no headless mGBA at $MGBA -- build it with 'sh tools/build_mgba.sh', or set MGBA_HEADLESS"; exit 2; }
 STATE=tools/savestates/cm_red_active.ss
 SCRIPT=tools/mgba_scripts/cm_pc_exit_test.lua
 

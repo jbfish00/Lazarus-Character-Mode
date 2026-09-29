@@ -63,6 +63,15 @@ and not a clean bill of health for the PC (see the UNGATED verdict in the
 FireRed pair, and rowe_parity.md §13.24).
 
 Run:  python3 tools/tests/check_party_writes.py   (0 = ok, 1 = changed)
+
+⭐⭐ 2026-09-28: SEAGLASS'S THREE PRIMITIVE FIXES, PORTED (see Seaglass's
+docstring for how each was found). A. Thumb format 5 is decoded, so a pointer
+parked in r8-r12 stays tracked, and a call clears only r0-r3 and r12
+(callee-saved r4-r11 survive). B. WINDOW 48 -> 96. C. size_seed accepts
+k*MON_SIZE for k >= 2 (the `movs rD,#150 ; lsls rD,rD,#2` = 600 idiom too); the
+k >= 2 restriction is load-bearing. Measured: 5 -> 8 sites. The port also
+merges a DUPLICATE `elif` that Seaglass's version had, which made its r4-r7
+`movs rD,rS` size rule unreachable (no site depends on it in either ROM today).
 """
 import collections
 import os
@@ -141,9 +150,54 @@ INVENTORY = {
                  "the GATED count writer 0x0020DB60; the 112 callnative "
                  "give sites are retargeted to the wrapper and "
                  "verify_artifacts.py check [8] pins them"),
+
+    # --- found 2026-09-28 by porting Seaglass's three primitive fixes (high
+    # registers, WINDOW 48 -> 96, k*MON_SIZE). The plan (lazarus.md §0b)
+    # labelled these by analogy with Seaglass's twins. One label was WRONG
+    # (0x001fbb22), so each verdict below comes from this ROM's disassembly,
+    # and the trade's from a live watchpoint. ---
+    0x00080ea6: ("UNVERIFIED",
+                 "LINK MULTI-BATTLE PARTY ASSEMBLY, instruction-for-instruction "
+                 "the twin of Seaglass 0x0008040a: `movs r2,#200 ; mov r1,r9 ; "
+                 "ldr r0,=gPlayerParty ; bl CopyMon` at 0x08080EA2 writes "
+                 "gPlayerParty[0..1] from the buffer in r9, and the sibling arm "
+                 "0x08080E8C writes gPlayerParty[2] (pool 0x08080FB4 = "
+                 "0x0201BA28 = party + 200), with gEnemyParty arms beside them "
+                 "(0x08080F1C / 0x08080F32 / 0x08080F4A / 0x08080F64), all "
+                 "selected by a state switch on r3. ⚠️ Mons arriving in party "
+                 "slots from ANOTHER CONSOLE is Platinum's real ungated shape. "
+                 "Whether the player's own party is put back afterwards is NOT "
+                 "proven here. GO LOOK"),
+    0x001fbb22: ("UNVERIFIED",
+                 "RESTORES BOTH PARTIES from a caller-supplied 1200-byte buffer: "
+                 "0x081FBB10(buf) calls 0x081C0A38 and 0x081C0A58, then loops "
+                 "6 x CopyMon(gPlayerParty + i*100, buf + i*100, 100) and the "
+                 "same into gEnemyParty from buf + 600. The twin of Seaglass's "
+                 "UNVERIFIED 0x001df426. ⚠️ NOT the save/restore pair the plan "
+                 "guessed (Seaglass 0x001df74e, a fixed-EWRAM 600-byte memcpy): "
+                 "the label by analogy was wrong. Single BL caller 0x081FBB74. "
+                 "Harmless only if the buffer always holds the PLAYER'S OWN "
+                 "party; a rental or borrowed team loaded through it would "
+                 "introduce species. GO LOOK"),
+    0x00224d26: ("UNVERIFIED",
+                 "TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps "
+                 "gPlayerParty[a] and gEnemyParty[b] through a temp buffer "
+                 "(three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live "
+                 "2026-09-28 (tools/mgba_scripts/trade_party_write_trace.lua): "
+                 "the in-game trade writes the slot once, pc=0x083E7F8C inside "
+                 "CopyMon, r0=0x0201BA28 (&gPlayerParty[2]), r1=0x0201BBB8 "
+                 "(&gEnemyParty[0]), r2=100, party count 3 -> 3, called from "
+                 "0x08226ADA with (2, 0). The two IN-GAME callers (0x0822558E, "
+                 "0x08226ADA, both `TradeMons(gSpecialVar_0x8005, 0)`) are "
+                 "gated at the SCRIPT level by CM_TradeCheck before special "
+                 "0x100/0x101. ⚠️ WHY NOT GATED: the THIRD caller 0x0822733A is "
+                 "the LINK trade, `TradeMons(monIds[0], monIds[1] % 6)`, and "
+                 "nothing in Character Mode gates it. Whether a link trade is "
+                 "reachable in this hack is not measured. Seaglass's twin "
+                 "0x00208786 has the same three-caller shape"),
 }
 
-WINDOW = 48
+WINDOW = 96
 BACK = 1024
 PRE = 32
 
@@ -211,14 +265,35 @@ def size_seed(b, i):
     hand were all leftovers of that multiply.
     """
     s = set()
+    imm = {}
+    bulk = [False]
     for k in range(max(0, i - PRE * 2), i, 2):
         v = u16(b, k)
         if (v & 0xF800) == 0x2000:                       # movs rD,#imm
             d, imm8 = (v >> 8) & 7, v & 0xFF
+            imm[d] = imm8
+            if d == 2 and imm8 % MON_SIZE == 0 and 2 <= imm8 // MON_SIZE <= 6:
+                bulk[0] = True
+            elif d == 2:
+                bulk[0] = False
             if d >= 4:
                 s.add(d) if imm8 == MON_SIZE else s.discard(d)
+        elif (v & 0xF800) == 0x0000 and ((v >> 6) & 0x1F):   # lsls rD,rS,#n
+            d, sr, sh = v & 7, (v >> 3) & 7, (v >> 6) & 0x1F
+            val = imm.get(sr, 0) << sh
+            imm[d] = val
+            if d >= 4:
+                s.add(d) if val == MON_SIZE else s.discard(d)
         elif (v & 0xFFC0) == 0x0000 and v != 0:          # movs rD,rS (lsls #0)
+            # ⚠️ ONE branch for this encoding. Seaglass's port of the bulk rule
+            # added a second `elif` with this same test AHEAD of the r4-r7
+            # rule, which made the r4-r7 rule unreachable (the CreateShedinja
+            # blind spot in the docstring came back silently). Keep them merged.
             d, sr = v & 7, (v >> 3) & 7
+            if d == 2:
+                _val = imm.get(sr)
+                bulk[0] = (_val is not None and _val % MON_SIZE == 0
+                           and 2 <= _val // MON_SIZE <= 6)
             if d >= 4:
                 s.add(d) if sr in s else s.discard(d)
         elif (v & 0xF800) == 0x4800:                     # ldr rD,[pc,#imm]
@@ -227,7 +302,7 @@ def size_seed(b, i):
               or (v & 0xF800) == 0xF000 or (v & 0xFF00) == 0x4700
               or (v & 0xFF00) == 0xBD00):
             s.clear()          # control can arrive here from anywhere else
-    return s
+    return s, bulk[0]
 
 
 def copies(b):
@@ -250,7 +325,9 @@ def copies(b):
             if (((i + 4) & ~3) + imm * 4) != pool:
                 continue
             tracked, r2_is_mon = {rX}, False
-            sized = size_seed(b, i)
+            sized, _bulk = size_seed(b, i)
+            if _bulk:
+                r2_is_mon = True
             r1_is_imm = False
             lit = {}                              # rN -> last pc-relative value
             for k in range(i + 2, min(i + 2 + WINDOW * 2, len(b) - 3), 2):
@@ -292,6 +369,34 @@ def copies(b):
                     continue                              # adds rX,#imm
                 if (v & 0xFFC0) == 0x1C00 and ((v >> 3) & 7) in tracked:
                     tracked.add(v & 7); continue          # movs rD,rS
+                # ⭐⭐ THUMB FORMAT 5 -- HIGH REGISTERS. Everything above decodes
+                # only the 3-bit forms, i.e. r0-r7. A compiler is free to park a
+                # pointer in r8-r12, and this one does: Seaglass's in-game trade
+                # loads gPlayerParty into r2 and moves it to sl on the VERY NEXT
+                # instruction (`ldr r2,=gPlayerParty` @0x08208786 ; `mov sl,r2`
+                # @0x08208788), indexes it with `add sl,r3`, and calls
+                # CopyMon(&gPlayerParty[slot], &gEnemyParty[0], 100) 136 bytes
+                # later. Without this block the pointer leaves `tracked` two
+                # instructions after the load and the copy is invisible --
+                # measured live 2026-09-19 with a write watchpoint on the slot.
+                #   0100 01 op H1 H2 Rs Rd   op: 00 ADD, 01 CMP, 10 MOV
+                if 0x4400 <= v <= 0x46FF:
+                    op = (v >> 8) & 3
+                    rd = (v & 7) | ((v >> 4) & 8)
+                    rs = ((v >> 3) & 7) | ((v >> 3) & 8)
+                    if op != 1:                           # CMP writes nothing
+                        if op == 2:                       # MOV rD,rS
+                            tracked.add(rd) if rs in tracked else tracked.discard(rd)
+                            sized.add(rd) if rs in sized else sized.discard(rd)
+                            if rd == 2:
+                                r2_is_mon = 2 in sized
+                            if rd == 1:
+                                r1_is_imm = False
+                        else:                             # ADD rD,rS
+                            if rs in tracked or rd in tracked:
+                                tracked.add(rd)
+                            sized.discard(rd)
+                        continue
                 t = bl_target(b, k)
                 if t is not None:
                     if r2_is_mon and 0 in tracked and not r1_is_imm:
@@ -307,8 +412,11 @@ def copies(b):
                     # the window reads as a mon copy.
                     r2_is_mon = False
                     r1_is_imm = False
-                    sized -= {0, 1, 2, 3}
-                    tracked -= {0, 1, 2, 3}
+                    # r4-r11 are callee-saved under AAPCS, so a tracked
+                    # pointer parked in a high register SURVIVES the call --
+                    # only r0-r3 and r12 (ip) are clobbered.
+                    sized -= {0, 1, 2, 3, 12}
+                    tracked -= {0, 1, 2, 3, 12}
                     for r in (0, 1, 2, 3):
                         lit.pop(r, None)
                     continue

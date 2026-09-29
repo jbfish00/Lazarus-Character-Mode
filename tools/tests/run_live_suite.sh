@@ -8,7 +8,8 @@
 #   python3 tools/tests/verify_artifacts.py    # static artifact verification
 cd "$(dirname "$0")/../.."
 
-MGBA=../Seaglass-Character-Mode/tools/mgba_src/build/mgba-headless
+MGBA="${MGBA_HEADLESS:-tools/mgba_src/build/mgba-headless}"
+[ -x "$MGBA" ] || { echo "no headless mGBA at $MGBA -- build it with 'sh tools/build_mgba.sh', or set MGBA_HEADLESS"; exit 2; }
 ROM=build/lazarus_cm.gba
 fail=0
 

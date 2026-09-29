@@ -178,8 +178,15 @@ encounter while Character Mode is on).
 ## Layer 4 — Live end-to-end (headless mGBA + savestates)
 
 ```
+sh tools/build_mgba.sh                       # once: this repo's patched mgba-headless (~1 min)
 sh tools/tests/run_live_suite.sh             # everything below, ~2 min
 ```
+
+The runners use `tools/mgba_src/build/mgba-headless`, or `$MGBA_HEADLESS` if
+set, and exit 2 if neither exists. `build_mgba.sh` clones upstream mGBA at a
+pinned commit and applies `tools/patches/mgba-headless-local.patch` (a video
+buffer for screenshots, and a debugger for `MGBA_HEADLESS_DEBUGGER=1`). Until
+2026-09-28 the runners used Seaglass's build by path.
 
 | test | savestate | proves |
 |---|---|---|
