@@ -97,7 +97,7 @@ EXPECT_CALLEES = frozenset({0x081c40b0, 0x083e7f2c})
 # KNOWN HOLES, listed on purpose. Empty here -- but see the module docstring:
 # this scan finds no PC-withdraw site in the Emerald pair at all, which is a
 # statement about the SCAN, not a clean bill of health for the PC.
-EXPECT_UNGATED = frozenset()
+EXPECT_UNGATED = frozenset({0x00224d26})   # the link trade, §13.53
 
 # Sites the 2026-09-04 primitive fix removed because they are NOT copies at all.
 # Kept here so the site-count change is explained rather than silently absorbed
@@ -156,7 +156,21 @@ INVENTORY = {
     # labelled these by analogy with Seaglass's twins. One label was WRONG
     # (0x001fbb22), so each verdict below comes from this ROM's disassembly,
     # and the trade's from a live watchpoint. ---
-    0x00080ea6: ("UNVERIFIED",
+    0x00080ea6: ("EXEMPT",
+                 "✅ SETTLED 2026-09-29 (rowe_parity.md §13.53): TEMPORARY. "
+                 "The link battle is bracketed by the vanilla save/restore. "
+                 "(1) On the way in, EnterColosseum @0x0832F3A2 is vanilla: "
+                 "special 0x0 (heal), special 0x28 (SavePlayerParty, gSpecials "
+                 "-> 0x0816EB99), special 0x14D, copyvar 0x4087, 0x8004. "
+                 "(2) On return, LoadPlayerParty 0x0816EBD8 (the next function) "
+                 "is called at 0x080E7190 in the cable-club code, followed by "
+                 "0x0816EEAC and 0x0813F6A8 -- the donor's "
+                 "CB2_ReturnFromCableClubBattle (LoadPlayerParty; SavePlayerBag; "
+                 "UpdateTrainerFansAfterLinkBattle). Partner mons occupy these "
+                 "slots only during the link battle. Lazarus's Colosseum IS "
+                 "reachable (stairs to the PC 2F, attendant flag 0), so this "
+                 "rests on the bracket, not on reachability. Original finding "
+                 "follows. "
                  "LINK MULTI-BATTLE PARTY ASSEMBLY, instruction-for-instruction "
                  "the twin of Seaglass 0x0008040a: `movs r2,#200 ; mov r1,r9 ; "
                  "ldr r0,=gPlayerParty ; bl CopyMon` at 0x08080EA2 writes "
@@ -168,7 +182,19 @@ INVENTORY = {
                  "slots from ANOTHER CONSOLE is Platinum's real ungated shape. "
                  "Whether the player's own party is put back afterwards is NOT "
                  "proven here. GO LOOK"),
-    0x001fbb22: ("UNVERIFIED",
+    0x001fbb22: ("EXEMPT",
+                 "✅ SETTLED 2026-09-29 (rowe_parity.md §13.53): RECORDED-BATTLE "
+                 "PLAYBACK, TEMPORARY. pokeemerald's "
+                 "SetVariablesForRecordedBattle (twin of Seaglass 0x001df426). "
+                 "Its wrapper 0x081FBB68 is called at 0x081FBDA8 in "
+                 "PlayRecordedBattle, in vanilla order: AllocZeroed 0x08003404, "
+                 "CopyRecordedBattleFromSave 0x081FB9FC, "
+                 "RecordedBattle_SaveParties 0x081FBE14 (bl at 0x081FBDA2), "
+                 "THEN this load. RecordedBattle_RestoreSavedParties is "
+                 "0x081FBE44 (same shape as the save half), one caller "
+                 "0x081FBA92: the end-of-playback CB. The recorded parties "
+                 "exist only for the length of a replay. Original finding "
+                 "follows. "
                  "RESTORES BOTH PARTIES from a caller-supplied 1200-byte buffer: "
                  "0x081FBB10(buf) calls 0x081C0A38 and 0x081C0A58, then loops "
                  "6 x CopyMon(gPlayerParty + i*100, buf + i*100, 100) and the "
@@ -179,7 +205,15 @@ INVENTORY = {
                  "Harmless only if the buffer always holds the PLAYER'S OWN "
                  "party; a rental or borrowed team loaded through it would "
                  "introduce species. GO LOOK"),
-    0x00224d26: ("UNVERIFIED",
+    0x00224d26: ("UNGATED",
+                 "🔴 A KNOWN HOLE, pinned 2026-09-29 (rowe_parity.md §13.53): "
+                 "the LINK trade is REACHABLE in Lazarus (vanilla Cable Club; "
+                 "Direct Corner attendant 0x08328773 on PC 2F maps 2.3/3.2/4.6/"
+                 "5.5 with hide-flag 0, each reached by stairs from its 1F; "
+                 "TradeCenter 0x0832F5D8 calls special 0x1E TryTradeLinkup) and "
+                 "nothing gates the link caller. The in-game callers stay gated "
+                 "at the script level (below). Closing this is §13.53's open "
+                 "gate. Original finding follows. "
                  "TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps "
                  "gPlayerParty[a] and gEnemyParty[b] through a temp buffer "
                  "(three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live "

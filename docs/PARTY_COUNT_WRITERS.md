@@ -153,17 +153,9 @@ Read the two together; neither is sufficient alone.
 
 ## 8 inventoried copy site(s)
 
-### `0x08080ea6` (file `0x00080ea6`) -- **UNVERIFIED**
+### `0x08224d26` (file `0x00224d26`) -- **UNGATED**
 
-LINK MULTI-BATTLE PARTY ASSEMBLY, instruction-for-instruction the twin of Seaglass 0x0008040a: `movs r2,#200 ; mov r1,r9 ; ldr r0,=gPlayerParty ; bl CopyMon` at 0x08080EA2 writes gPlayerParty[0..1] from the buffer in r9, and the sibling arm 0x08080E8C writes gPlayerParty[2] (pool 0x08080FB4 = 0x0201BA28 = party + 200), with gEnemyParty arms beside them (0x08080F1C / 0x08080F32 / 0x08080F4A / 0x08080F64), all selected by a state switch on r3. ⚠️ Mons arriving in party slots from ANOTHER CONSOLE is Platinum's real ungated shape. Whether the player's own party is put back afterwards is NOT proven here. GO LOOK
-
-### `0x081fbb22` (file `0x001fbb22`) -- **UNVERIFIED**
-
-RESTORES BOTH PARTIES from a caller-supplied 1200-byte buffer: 0x081FBB10(buf) calls 0x081C0A38 and 0x081C0A58, then loops 6 x CopyMon(gPlayerParty + i*100, buf + i*100, 100) and the same into gEnemyParty from buf + 600. The twin of Seaglass's UNVERIFIED 0x001df426. ⚠️ NOT the save/restore pair the plan guessed (Seaglass 0x001df74e, a fixed-EWRAM 600-byte memcpy): the label by analogy was wrong. Single BL caller 0x081FBB74. Harmless only if the buffer always holds the PLAYER'S OWN party; a rental or borrowed team loaded through it would introduce species. GO LOOK
-
-### `0x08224d26` (file `0x00224d26`) -- **UNVERIFIED**
-
-TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps gPlayerParty[a] and gEnemyParty[b] through a temp buffer (three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live 2026-09-28 (tools/mgba_scripts/trade_party_write_trace.lua): the in-game trade writes the slot once, pc=0x083E7F8C inside CopyMon, r0=0x0201BA28 (&gPlayerParty[2]), r1=0x0201BBB8 (&gEnemyParty[0]), r2=100, party count 3 -> 3, called from 0x08226ADA with (2, 0). The two IN-GAME callers (0x0822558E, 0x08226ADA, both `TradeMons(gSpecialVar_0x8005, 0)`) are gated at the SCRIPT level by CM_TradeCheck before special 0x100/0x101. ⚠️ WHY NOT GATED: the THIRD caller 0x0822733A is the LINK trade, `TradeMons(monIds[0], monIds[1] % 6)`, and nothing in Character Mode gates it. Whether a link trade is reachable in this hack is not measured. Seaglass's twin 0x00208786 has the same three-caller shape
+🔴 A KNOWN HOLE, pinned 2026-09-29 (rowe_parity.md §13.53): the LINK trade is REACHABLE in Lazarus (vanilla Cable Club; Direct Corner attendant 0x08328773 on PC 2F maps 2.3/3.2/4.6/5.5 with hide-flag 0, each reached by stairs from its 1F; TradeCenter 0x0832F5D8 calls special 0x1E TryTradeLinkup) and nothing gates the link caller. The in-game callers stay gated at the script level (below). Closing this is §13.53's open gate. Original finding follows. TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps gPlayerParty[a] and gEnemyParty[b] through a temp buffer (three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live 2026-09-28 (tools/mgba_scripts/trade_party_write_trace.lua): the in-game trade writes the slot once, pc=0x083E7F8C inside CopyMon, r0=0x0201BA28 (&gPlayerParty[2]), r1=0x0201BBB8 (&gEnemyParty[0]), r2=100, party count 3 -> 3, called from 0x08226ADA with (2, 0). The two IN-GAME callers (0x0822558E, 0x08226ADA, both `TradeMons(gSpecialVar_0x8005, 0)`) are gated at the SCRIPT level by CM_TradeCheck before special 0x100/0x101. ⚠️ WHY NOT GATED: the THIRD caller 0x0822733A is the LINK trade, `TradeMons(monIds[0], monIds[1] % 6)`, and nothing in Character Mode gates it. Whether a link trade is reachable in this hack is not measured. Seaglass's twin 0x00208786 has the same three-caller shape
 
 ### `0x081c40e4` (file `0x001c40e4`) -- **GATED**
 
@@ -172,6 +164,10 @@ inside GiveMonToPlayer 0x081C40BC -- THE enforcement choke point, the CopyMon th
 ### `0x0820da96` (file `0x0020da96`) -- **GATED**
 
 in the ScriptGiveMon 0x0820D3F4 give region, alongside the GATED count writer 0x0020DB60; the 112 callnative give sites are retargeted to the wrapper and verify_artifacts.py check [8] pins them
+
+### `0x08080ea6` (file `0x00080ea6`) -- **EXEMPT**
+
+✅ SETTLED 2026-09-29 (rowe_parity.md §13.53): TEMPORARY. The link battle is bracketed by the vanilla save/restore. (1) On the way in, EnterColosseum @0x0832F3A2 is vanilla: special 0x0 (heal), special 0x28 (SavePlayerParty, gSpecials -> 0x0816EB99), special 0x14D, copyvar 0x4087, 0x8004. (2) On return, LoadPlayerParty 0x0816EBD8 (the next function) is called at 0x080E7190 in the cable-club code, followed by 0x0816EEAC and 0x0813F6A8 -- the donor's CB2_ReturnFromCableClubBattle (LoadPlayerParty; SavePlayerBag; UpdateTrainerFansAfterLinkBattle). Partner mons occupy these slots only during the link battle. Lazarus's Colosseum IS reachable (stairs to the PC 2F, attendant flag 0), so this rests on the bracket, not on reachability. Original finding follows. LINK MULTI-BATTLE PARTY ASSEMBLY, instruction-for-instruction the twin of Seaglass 0x0008040a: `movs r2,#200 ; mov r1,r9 ; ldr r0,=gPlayerParty ; bl CopyMon` at 0x08080EA2 writes gPlayerParty[0..1] from the buffer in r9, and the sibling arm 0x08080E8C writes gPlayerParty[2] (pool 0x08080FB4 = 0x0201BA28 = party + 200), with gEnemyParty arms beside them (0x08080F1C / 0x08080F32 / 0x08080F4A / 0x08080F64), all selected by a state switch on r3. ⚠️ Mons arriving in party slots from ANOTHER CONSOLE is Platinum's real ungated shape. Whether the player's own party is put back afterwards is NOT proven here. GO LOOK
 
 ### `0x081542b6` (file `0x001542b6`) -- **EXEMPT**
 
@@ -184,6 +180,10 @@ PARTY REORDER (the party-menu 'switch order' apply step). 0x081A2038 allocates 6
 ### `0x081dd4c4` (file `0x001dd4c4`) -- **EXEMPT**
 
 CompactPartySlots. 0x081DD4B0 walks the 6 slots calling GetMonData(mon, 18 /* species */); on a non-empty slot it memcpy's that mon down to the first free index when the two differ, fixes up the stored cursor index when it points at the mon that moved, and zeroes the tail. Closes holes in the array; introduces nothing
+
+### `0x081fbb22` (file `0x001fbb22`) -- **EXEMPT**
+
+✅ SETTLED 2026-09-29 (rowe_parity.md §13.53): RECORDED-BATTLE PLAYBACK, TEMPORARY. pokeemerald's SetVariablesForRecordedBattle (twin of Seaglass 0x001df426). Its wrapper 0x081FBB68 is called at 0x081FBDA8 in PlayRecordedBattle, in vanilla order: AllocZeroed 0x08003404, CopyRecordedBattleFromSave 0x081FB9FC, RecordedBattle_SaveParties 0x081FBE14 (bl at 0x081FBDA2), THEN this load. RecordedBattle_RestoreSavedParties is 0x081FBE44 (same shape as the save half), one caller 0x081FBA92: the end-of-playback CB. The recorded parties exist only for the length of a replay. Original finding follows. RESTORES BOTH PARTIES from a caller-supplied 1200-byte buffer: 0x081FBB10(buf) calls 0x081C0A38 and 0x081C0A58, then loops 6 x CopyMon(gPlayerParty + i*100, buf + i*100, 100) and the same into gEnemyParty from buf + 600. The twin of Seaglass's UNVERIFIED 0x001df426. ⚠️ NOT the save/restore pair the plan guessed (Seaglass 0x001df74e, a fixed-EWRAM 600-byte memcpy): the label by analogy was wrong. Single BL caller 0x081FBB74. Harmless only if the buffer always holds the PLAYER'S OWN party; a rental or borrowed team loaded through it would introduce species. GO LOOK
 
 ## 2 site(s) removed as NOT-A-COPY (2026-09-04)
 
