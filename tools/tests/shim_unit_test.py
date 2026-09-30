@@ -27,7 +27,7 @@ Lazarus differences from the Radical Red original of this test:
         0x081C4130 CopyMonToPC      = enforcement path
     Execution stops AT these entries; the deep calls never run.
   - The shim entry address is NOT hardcoded: it is decoded from the shipped
-    ROM itself (the trampoline literal at 0x08470A68), so the test exercises
+    ROM itself (the trampoline literal at 0x081DD620), so the test exercises
     exactly what the BL patches reach.
   - Species/character ids for the cases are resolved dynamically from
     characters_manifest.json + rosters_expanded.bin + rom_species_table.json.
@@ -66,10 +66,10 @@ ROOT = HERE.parent.parent
 
 GIVEMON = 0x081C40BC     # pass-through branch point (function entry)
 COPYPC = 0x081C4130      # enforcement branch point (function entry)
-TRAMP_LIT_OFF = 0x470A68  # trampoline literal in ROM = gate entry | 1
+TRAMP_LIT_OFF = 0x1DD620  # trampoline literal in ROM = gate entry | 1 (block 0x081DD61C + 4)
 
 CREATEWILDMON = 0x0824AA54       # observation point: gate always tail-calls here
-WILD_TRAMP_LIT_OFF = 0x470A70    # wild trampoline literal in ROM = wild gate entry | 1
+WILD_TRAMP_LIT_OFF = 0x1DD628    # wild trampoline literal in ROM = wild gate entry | 1
 WILDMONS_OFF = 0x15FC000         # WILDMONS_ADDR - 0x08000000
 
 # trade-gate observation: CM_TradeCheck is void and returns; entry decoded
@@ -112,7 +112,7 @@ TRAMP_ADDR = 0x02032F00  # scratch EWRAM for the ARM->Thumb entry trampoline
 # the shim's decision, exactly the same trick the wild cases use on
 # CreateWildMon. The expander itself never runs.
 EXPAND_STRING = 0x08088928
-MARKER_TRAMP_LIT_OFF = 0x471268     # marker trampoline literal = entry | 1
+MARKER_TRAMP_LIT_OFF = 0x1DD630     # marker trampoline literal = entry | 1
 MARKER_ADDR = 0x09650000
 MARKER_STRIDE = 64
 # The two byte-identical "Wild {FD}{06} appeared!{FB}" copies the shim matches.

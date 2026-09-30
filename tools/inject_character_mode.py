@@ -7,8 +7,9 @@ docs/SELECTION_MECHANISM.md, pinned to rom.sha1):
   1. Compile src/character_mode.c (three entry points) at SHIM_ADDR inside
      the big free block (ROM 0x095F0EA4+). The block is BL-unreachable from
      low ROM, but every reference to it is a full 32-bit pointer except the
-     two BL call-site patches, which go through an 8-byte trampoline at
-     0x08470A64 (verified 0xFF padding inside both sites' BL windows).
+     BL call-site patches, which go through 8-byte trampolines written over a
+     DEAD function near them (TRAMPOLINE_BLOCK below; until 2026-09-29 they
+     sat in 0xFF runs that were really trainer back-sprite pixels).
   2. Splice payloads into a ROM copy (source ROM is never written):
        shim code   @ SHIM_ADDR      confirm script @ SCRIPT_ADDR
        bitmaps     @ BITMAPS_ADDR   codes          @ CODES_ADDR
@@ -163,14 +164,36 @@ CM_SPRITE_BLOBS_ADDR = 0x09620800
 CM_MUGSHOT_ADDR = 0x09648000
 FREE_END_ROM   = 0x08000000 + 0x2000000  # 32 MiB ROM end
 
-TRAMPOLINE_ADDR      = 0x08470A64   # 8B inside a 22B 0xFF run (word-aligned)
-WILD_TRAMPOLINE_ADDR = 0x08470A6C   # next 8B in the same 22B run
-# Encounter marker (../game_plans/rowe_parity.md §3). The 22-byte run above is
-# full (8B + 8B leaves 4), but the ROM has three more runs of the identical
-# shape at 0x800 intervals; this takes the next one. 3.91 MB from the hook at
-# 0x080880B6 -- inside the +-4 MB Thumb BL window with little margin, so
-# re-check the reach if either address moves.
-MARKER_TRAMPOLINE_ADDR = 0x08471264
+# ⚠️⚠️ THE TRAMPOLINES USED TO LIVE IN "0xFF RUNS" THAT WERE PIXELS. The
+# 22-byte runs at 0x08470A5A / 0x0847125A were white pixels inside frames 114
+# and 115 of a 64x64 trainer BACK SPRITE (SpriteFrameImage table 0x084829EC,
+# 146 x 0x800; template #32 of the array at 0x08CCB108), so every catch/gift/
+# wild/marker build drew code bytes on that trainer's head. Measured
+# 2026-09-29 by rendering the frame from the base ROM and the build
+# (rowe_parity.md §13.53). A run of 0xFF is not free space unless nothing
+# points at it; "scans need a validity criterion".
+#
+# They now sit over the standalone IsRemovingLastPartyMon at 0x081DD61C. This
+# build inlines it at all five call sites, so it has no BL callers and no
+# pointer to its entry (verify_artifacts re-checks both on the base ROM), and
+# it is 1.4 MB from the farthest hook (the marker's), well inside BL reach.
+# The whole block is asserted to be the base ROM's function before it is
+# cleared and reused.
+TRAMPOLINE_BLOCK      = 0x081DD61C
+TRAMPOLINE_BLOCK_ORIG = bytes.fromhex(
+    "00b50a4b1b781b060020 1b16012b03d1074b1b78002b01d002bc0847054b1878".replace(" ", ""))
+TRAMPOLINE_ADDR        = TRAMPOLINE_BLOCK + 0    # catch + gift gate
+WILD_TRAMPOLINE_ADDR   = TRAMPOLINE_BLOCK + 8    # wild-encounter gate
+MARKER_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 16   # encounter marker
+# ROWE's second guard in the PC (src/character_mode.c CM_PSSLastMonGuard;
+# docs/ROUTINE_MAP.md "PC second guard"). Five inlined IsRemovingLastPartyMon
+# sites and CanShiftMon's call to CountPartyAliveNonEggMonsExcept (anchor:
+# special 0x88's wrapper calls it) are retargeted through one trampoline.
+PSS_GUARD_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 24
+PSS_COUNT_ALIVE_EXCEPT = 0x081D4EDC
+PSS_GUARD_BL_SITES = (0x1D662E, 0x1D66E8, 0x1D6BC8, 0x1D6C04, 0x1D6C3A)
+PSS_CANSHIFT_BL    = 0x1DD718         # CanShiftMon (0x081DD6F4): bl Count
+PSS_CANSHIFT_TAIL  = 0x1DD71C         # cmp r0,#0 ; bne -> b <epilogue 0x081DD710> ; nop
 # The BL inside BufferStringBattle that every intro string funnels through:
 #   <many> ldr r0, =<string> ; b 0x080880B4
 #   0x080880B4: ldr r1, =gDisplayedStringBattle ; bl BattleStringExpandPlaceholders
@@ -558,6 +581,7 @@ def main():
     hook_wild     = syms["CM_CreateWildMonGated"] | 1
     hook_marker   = syms["CM_BattleStringGated"] | 1
     hook_sweep    = syms["CM_SweepPartyToPCNative"] | 1
+    hook_pss_guard = syms["CM_PSSLastMonGuard"] | 1
 
     # --- 2. confirm script ---
     txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
@@ -809,6 +833,14 @@ def main():
               f"{len(_blobs):,} B @ {CM_SPRITE_BLOBS_ADDR:#x}, table @ {CM_SPRITE_PTRS_ADDR:#x}")
 
 
+    # The trampoline block: prove it is still the base ROM's dead function,
+    # then clear it so splice()'s 0xFF precondition covers it like free space.
+    _tb = TRAMPOLINE_BLOCK - 0x08000000
+    assert bytes(data[_tb:_tb + len(TRAMPOLINE_BLOCK_ORIG)]) == TRAMPOLINE_BLOCK_ORIG, (
+        "the dead IsRemovingLastPartyMon is not at %#x -- re-derive before "
+        "overwriting it" % TRAMPOLINE_BLOCK)
+    data[_tb:_tb + 32] = b"\xff" * 32
+
     # trampoline: ldr r3,[pc,#0]; bx r3; .word gate|1
     tramp = struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_gate)
     assert TRAMPOLINE_ADDR % 4 == 0
@@ -833,6 +865,21 @@ def main():
            "marker trampoline")
     print(f"encounter marker: {len(marker_blob):,} B @ {MARKER_ADDR:#x}, "
           f"stride {MARKER_STRIDE}, trampoline @ {MARKER_TRAMPOLINE_ADDR:#x}")
+
+    # --- PC second guard: one trampoline, six retargeted BLs, one tail ---
+    splice(PSS_GUARD_TRAMPOLINE_ADDR,
+           struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_pss_guard),
+           "PC second-guard trampoline")
+    for _site in PSS_GUARD_BL_SITES + (PSS_CANSHIFT_BL,):
+        _cur = bytes(data[_site:_site + 4])
+        _exp = thumb_bl(0x08000000 + _site, PSS_COUNT_ALIVE_EXCEPT)
+        assert _cur == _exp, f"PC guard site {_site:#x}: {_cur.hex()} != {_exp.hex()}"
+        data[_site:_site + 4] = thumb_bl(0x08000000 + _site, PSS_GUARD_TRAMPOLINE_ADDR)
+    _cur = bytes(data[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4])
+    assert _cur == bytes.fromhex("0028f4d1"), f"CanShiftMon tail: {_cur.hex()}"
+    data[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4] = struct.pack("<HH", 0xE7F8, 0x46C0)
+    print(f"PC second guard: {len(PSS_GUARD_BL_SITES)} deposit/move/release sites + "
+          f"CanShiftMon -> {hook_pss_guard:#x} via {PSS_GUARD_TRAMPOLINE_ADDR:#x}")
 
     # --- 4. patches (verify-then-write) ---
     for site in (BL_SITE_CATCH, BL_SITE_GIFT):

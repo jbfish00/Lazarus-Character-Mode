@@ -156,8 +156,20 @@ LEGENDARY_ADDR = _inj_addr("LEGENDARY_ADDR")
 CM_SPRITE_PTRS_ADDR = _inj_addr("CM_SPRITE_PTRS_ADDR")
 CM_SPRITE_BLOBS_ADDR = _inj_addr("CM_SPRITE_BLOBS_ADDR")
 
-TRAMPOLINE_ADDR = 0x08470A64
-WILD_TRAMPOLINE_ADDR = 0x08470A6C
+# The four trampolines sit over the DEAD standalone IsRemovingLastPartyMon
+# (section 17). Until 2026-09-29 the first three were in "0xFF runs" that were
+# trainer back-sprite pixels; section 17 now asserts those bytes are untouched.
+TRAMPOLINE_BLOCK = 0x081DD61C
+TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK
+WILD_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 8
+MARKER_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 16
+PSS_GUARD_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 24
+OLD_SCAVENGE_RUNS = ((0x08470A5A, 22), (0x0847125A, 22))   # back-sprite pixels
+PSS_COUNT_ALIVE_EXCEPT = 0x081D4EDC
+PSS_GUARD_BL_SITES = (0x1D662E, 0x1D66E8, 0x1D6BC8, 0x1D6C04, 0x1D6C3A)
+PSS_CANSHIFT_BL = 0x1DD718
+PSS_CANSHIFT_TAIL = 0x1DD71C
+PSS_SPECIAL_ANCHOR = 0x88
 BL_SITES = (0x0A7BDA, 0x20D416)
 GIVEMON_ADDR = 0x081C40BC
 CREATEWILDMON_ADDR = 0x0824AA54
@@ -208,7 +220,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 175  # +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 184  # +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -384,13 +396,13 @@ def main():
         (CM_SPRITE_BLOBS_ADDR - 0x08000000, CM_SPRITE_BLOBS_ADDR - 0x08000000 + len(_spr_blobs)),
         (CM_SPRITE_PTRS_ADDR - 0x08000000, CM_SPRITE_PTRS_ADDR - 0x08000000 + len(_spr_ptrs)),
         (CM_MUGSHOT_ADDR - 0x08000000, CM_MUGSHOT_ADDR - 0x08000000 + _mugshot_len),
-        (TRAMPOLINE_ADDR - 0x08000000, TRAMPOLINE_ADDR - 0x08000000 + 8),
-        (WILD_TRAMPOLINE_ADDR - 0x08000000, WILD_TRAMPOLINE_ADDR - 0x08000000 + 8),
+        # the four trampolines: one 32-byte block over the dead function
+        (TRAMPOLINE_BLOCK - 0x08000000, TRAMPOLINE_BLOCK - 0x08000000 + 32),
+        *[(s, s + 4) for s in PSS_GUARD_BL_SITES + (PSS_CANSHIFT_BL, PSS_CANSHIFT_TAIL)],
         # encounter marker: the per-character intro strings, its own trampoline
         # (a different 22-byte scavenge run from the two above), and the single
         # BL inside BufferStringBattle that it retargets.
         (0x09650000 - 0x08000000, 0x09650000 - 0x08000000 + NUM_CHARACTERS * 64),
-        (0x08471264 - 0x08000000, 0x08471264 - 0x08000000 + 8),
         (0x0880B6, 0x0880B6 + 4),
         *[(s, s + 4) for s in BL_SITES],
         *[(s, s + 4) for s in BL_SITES_WILD],
@@ -454,8 +466,10 @@ def main():
           (gate & 1) == 1 and SHIM_ADDR <= (gate & ~1) < SCRIPT_ADDR, hex(gate))
     check("shim code present at gate target",
           patched[(gate & ~1) - 0x08000000] != 0xFF)
-    check("trampoline bytes were free (0xFF) in original",
-          all(b == 0xFF for b in orig[toff:toff + 8]))
+    # NOT "were 0xFF": that criterion is what put this trampoline in a trainer
+    # back sprite's pixels. It overwrites the dead function (section 17).
+    check("trampoline bytes were the dead IsRemovingLastPartyMon in original",
+          bytes(orig[toff:toff + 8]) == bytes.fromhex("00b50a4b1b781b0600201b16012b03d1074b1b78002b01d002bc0847054b1878")[0:8])
 
     # exhaustive GiveMonToPlayer caller scan — the DexNav coverage proof.
     # DexNav (and every other in-battle acquisition) can only reach the
@@ -869,8 +883,8 @@ def main():
           (hook_wild & 1) == 1 and SHIM_ADDR <= (hook_wild & ~1) < SCRIPT_ADDR, hex(hook_wild))
     check("shim code present at wild gate target",
           patched[(hook_wild & ~1) - 0x08000000] != 0xFF)
-    check("wild trampoline bytes were free (0xFF) in original",
-          all(b == 0xFF for b in orig[wtoff:wtoff + 8]))
+    check("wild trampoline bytes were the dead IsRemovingLastPartyMon in original",
+          bytes(orig[wtoff:wtoff + 8]) == bytes.fromhex("00b50a4b1b781b0600201b16012b03d1074b1b78002b01d002bc0847054b1878")[8:16])
 
     # exhaustive CreateWildMon caller scan: every random-roll wild table
     # (land/cave, surf, rock smash, fishing) funnels species+level through
@@ -1170,7 +1184,7 @@ def main():
     # == 14. Encounter marker ==
     print("== 14. encounter marker ==")
     _MK_ADDR, _MK_STRIDE = 0x09650000, 64
-    _MK_BL, _MK_EXPAND, _MK_TRAMP = 0x0880B6, 0x08088928, 0x08471264
+    _MK_BL, _MK_EXPAND, _MK_TRAMP = 0x0880B6, 0x08088928, MARKER_TRAMPOLINE_ADDR
     _MK_STRS = (0x08575304, 0x08575318)
     _mk = (HERE.parent / "character_mode" / "marker_strings.bin").read_bytes()
     check("marker_strings.bin is NUM_CHARACTERS x 64",
@@ -1196,10 +1210,9 @@ def main():
           == struct.pack("<HH", 0x4B00, 0x4718))
     _mh = struct.unpack_from("<I", patched, _MK_TRAMP - 0x08000000 + 4)[0]
     check("its literal is a Thumb pointer into the shim", _mh & 1, hex(_mh))
-    # It shares a 22-byte scavenge run with nothing, but prove it did not land
-    # on the OTHER two trampolines' run by accident.
-    check("marker trampoline is clear of the catch/wild trampoline run",
-          not (TRAMPOLINE_ADDR <= _MK_TRAMP < TRAMPOLINE_ADDR + 22))
+    # Its own 8-byte slot in the trampoline block, not the catch/wild ones.
+    check("marker trampoline is clear of the catch/wild trampoline slots",
+          not (TRAMPOLINE_ADDR <= _MK_TRAMP < TRAMPOLINE_ADDR + 16))
     _bad = [i for i in range(NUM_CHARACTERS)
             if 0xFF not in _mk[i * _MK_STRIDE:(i + 1) * _MK_STRIDE]]
     check("every marker slot is 0xFF-terminated", not _bad, str(len(_bad)))
@@ -1383,6 +1396,48 @@ def main():
         check(f"shim compiled TOBIAS_CHAR_ID={_fp_tobias} == manifest index of "
               f"Tobias ({_fp_tob}; 0 = trimmed from this roster)",
               _fp_tobias == _fp_tob)
+
+    print("\n== 17. trampoline block + PC second guard ==")
+    _tb = TRAMPOLINE_BLOCK - 0x08000000
+    # The block overwrites a function: safe only if nothing calls it or points
+    # at its entry. Both checked on the BASE ROM.
+    check(f"base: the dead function at {TRAMPOLINE_BLOCK:#x} has no BL callers",
+          not bl_callers(orig, TRAMPOLINE_BLOCK))
+    check("base: and no pointer to its entry",
+          not find_all(orig, struct.pack("<I", TRAMPOLINE_BLOCK | 1))
+          and not find_all(orig, struct.pack("<I", TRAMPOLINE_BLOCK)))
+    # ⭐ The defect this block exists to fix: the old runs were pixels of a
+    # trainer back sprite. They must now be byte-identical to the base ROM.
+    check("the two old 0xFF runs (back-sprite pixels) are untouched",
+          all(bytes(patched[a - 0x08000000:a - 0x08000000 + n])
+              == bytes(orig[a - 0x08000000:a - 0x08000000 + n])
+              for a, n in OLD_SCAVENGE_RUNS))
+    _syms = _elf_syms("character_mode.elf")
+    _guard = _syms["CM_PSSLastMonGuard"]
+    check("guard trampoline is ldr r3,[pc]; bx r3 -> CM_PSSLastMonGuard",
+          bytes(patched[PSS_GUARD_TRAMPOLINE_ADDR - 0x08000000:
+                        PSS_GUARD_TRAMPOLINE_ADDR - 0x08000000 + 8])
+          == struct.pack("<HHI", 0x4B00, 0x4718, _guard | 1))
+    _sp88 = struct.unpack_from("<I", orig, 0x28CBF4 + 4 * PSS_SPECIAL_ANCHOR)[0]
+    check(f"base: special {PSS_SPECIAL_ANCHOR:#x}'s wrapper calls {PSS_COUNT_ALIVE_EXCEPT:#x}",
+          any(decode_bl(bytes(orig[(_sp88 & ~1) - 0x08000000 + k:(_sp88 & ~1) - 0x08000000 + k + 4]),
+                        (_sp88 & ~1) + k) == PSS_COUNT_ALIVE_EXCEPT for k in range(0, 12, 2)))
+    _sites = PSS_GUARD_BL_SITES + (PSS_CANSHIFT_BL,)
+    check(f"base: all {len(_sites)} guard sites call CountPartyAliveNonEggMonsExcept",
+          all(decode_bl(bytes(orig[x:x + 4]), 0x08000000 + x) == PSS_COUNT_ALIVE_EXCEPT
+              for x in _sites))
+    check(f"built: all {len(_sites)} sites call the guard trampoline",
+          all(decode_bl(bytes(patched[x:x + 4]), 0x08000000 + x) == PSS_GUARD_TRAMPOLINE_ADDR
+              for x in _sites))
+    check("CanShiftMon tail: cmp r0,#0 ; bne  ->  b <epilogue> ; nop",
+          bytes(orig[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4]) == bytes.fromhex("0028f4d1")
+          and bytes(patched[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4])
+          == struct.pack("<HH", 0xE7F8, 0x46C0))
+    _g0 = (_guard & ~1) - 0x08000000
+    _gcode = bytes(patched[_g0:_g0 + 0x200])
+    _glits = {struct.unpack_from("<I", _gcode, k)[0] for k in range(0, len(_gcode) - 3, 4)}
+    check("compiled guard carries 0x081DD71C, sStorage 0x0201BE44 and the count routine",
+          {0x081DD71C, 0x0201BE44, PSS_COUNT_ALIVE_EXCEPT | 1} <= _glits)
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

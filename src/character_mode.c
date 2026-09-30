@@ -522,6 +522,81 @@ void CM_SweepPartyToPCNative(void)
     gPlayerPartyCount = w;
 }
 
+/* --- ROWE's second guard: never let the PC take your last ON-ROSTER mon ---
+ *
+ * Ported 2026-09-29 from the Seaglass port (same engine and author; every
+ * address below re-derived from THIS binary -- docs/ROUTINE_MAP.md "PC second
+ * guard"). The PC-withdraw hook is undo-on-exit, and the sweep's never-empty
+ * rule KEEPS an off-roster mon when nothing on the roster is left, so "deposit
+ * your only on-roster mon, withdraw an off-roster one, close the PC" still
+ * ends with the off-roster mon. ROWE closes that inside the storage system
+ * (IsRemovingLastAllowedPartyMon); this is the same rule here.
+ *
+ * Five inlined IsRemovingLastPartyMon sites (deposit / move / release) and
+ * CanShiftMon's call to CountPartyAliveNonEggMonsExcept are BL-retargeted,
+ * through ONE trampoline, to CM_PSSLastMonGuard, which tells them apart by
+ * return address. The five get 0 ("that's your last POKEMON") when the cursor
+ * mon is the last alive, non-egg, on-roster one; CanShiftMon's tail is
+ * patched to return the guard's answer directly: vanilla's egg/fainted rule
+ * plus ROWE's "don't swap your last on-roster mon out for an off-roster one".
+ * With Character Mode off, both are exactly vanilla. */
+#define CountPartyAliveNonEggMonsExcept ((u8 (*)(u8)) 0x081D4EDD)
+#define MON_DATA_HP            10      /* CanShiftMon's own GetMonData(moving, 10) @0x081DD730 */
+#define PSS_STORAGE            (*(u8 **) 0x0201BE44)
+#define PSS_MOVING_MON         0x20A4  /* sStorage->movingMon (@0x081DD72C) */
+#define PSS_DISPLAY_MON_IS_EGG 0x0CED  /* sStorage->displayMonIsEgg (@0x081DD724) */
+#define PSS_CANSHIFT_RET       0x081DD71C  /* return address of CanShiftMon's call */
+
+static int removingLastAllowed(u8 slot)
+{
+    const u8 *mon = gPlayerParty + slot * MON_SIZE;
+    u32 species;
+    u16 me;
+    int i;
+
+    if (!gateActive() || slot >= 6)
+        return 0;
+    me = *GetVarPointer(VAR_CM_CHAR);
+    species = GetMonData((void *) mon, MON_DATA_SPECIES, 0);
+    if (species == 0 || GetMonData((void *) mon, MON_DATA_IS_EGG, 0)
+        || !onRoster(me, species))
+        return 0;
+    for (i = 0; i < 6; i++) {
+        if (i == slot)
+            continue;
+        mon = gPlayerParty + i * MON_SIZE;
+        species = GetMonData((void *) mon, MON_DATA_SPECIES, 0);
+        if (species != 0
+            && !GetMonData((void *) mon, MON_DATA_IS_EGG, 0)
+            && GetMonData((void *) mon, MON_DATA_HP, 0) != 0
+            && onRoster(me, species))
+            return 0;
+    }
+    return 1;
+}
+
+u32 CM_PSSLastMonGuard(u8 slot)
+{
+    u32 ret = (u32) __builtin_return_address(0) & ~1u;
+    u8 alive = CountPartyAliveNonEggMonsExcept(slot);
+
+    if (ret == PSS_CANSHIFT_RET) {
+        u8 *storage = PSS_STORAGE;
+        u8 *moving = storage + PSS_MOVING_MON;
+        if (alive == 0 && (storage[PSS_DISPLAY_MON_IS_EGG]
+                           || GetMonData(moving, MON_DATA_HP, 0) == 0))
+            return 0;
+        if (removingLastAllowed(slot)
+            && !onRoster(*GetVarPointer(VAR_CM_CHAR),
+                         GetMonData(moving, MON_DATA_SPECIES, 0)))
+            return 0;
+        return 1;
+    }
+    if (alive != 0 && removingLastAllowed(slot))
+        return 0;
+    return alive;
+}
+
 /* Wild-encounter roster override (new, 2026-07-17). Picks a RANDOM roster
  * family (base + evolution chain), then within that family the stage whose
  * [minLevel,maxLevel] window contains the rolled level; if none contains it
