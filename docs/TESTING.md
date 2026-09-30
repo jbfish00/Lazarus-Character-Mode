@@ -10,13 +10,13 @@ Run everything with:
 ```
 python3 tools/tests/verify_artifacts.py             # 133 checks, ALL PASS
 python3 tools/tests/shim_unit_test.py               # 38/38
-bash    tools/tests/run_live_suite.sh               # ALL PASS, 14 layers
-bash    tools/tests/checker_guard_test.sh           # 8/8
+bash    tools/tests/run_live_suite.sh               # ALL PASS, 22 layers (2026-09-29, own mGBA)
+bash    tools/tests/checker_guard_test.sh           # 16/16
 python3 tools/tests/check_gift_eggs.py              # + _negative_test.py 7/7
 python3 tools/tests/egg_hook_negative_test.py       # 6/6
 python3 tools/tests/check_acquisition_paths.py      # + _negative_test.py 7/7
-python3 tools/tests/check_party_writes.py           # + _negative_test.py 6/6
-python3 tools/tests/check_repo_selfcontained.py     # + _negative_test.py 6/6
+python3 tools/tests/check_party_writes.py           # 8 sites; + _negative_test.py 11/11
+python3 tools/tests/check_repo_selfcontained.py     # + _negative_test.py 8/8
 python3 tools/tests/empty_roster_inventory_test.py  # 5/5
 python3 tools/character_mode/verify_docs.py         # ALL PASS
 ```
