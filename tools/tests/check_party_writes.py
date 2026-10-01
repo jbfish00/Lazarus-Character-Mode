@@ -97,7 +97,7 @@ EXPECT_CALLEES = frozenset({0x081c40b0, 0x083e7f2c})
 # KNOWN HOLES, listed on purpose. Empty here -- but see the module docstring:
 # this scan finds no PC-withdraw site in the Emerald pair at all, which is a
 # statement about the SCAN, not a clean bill of health for the PC.
-EXPECT_UNGATED = frozenset({0x00224d26})   # the link trade, §13.53
+EXPECT_UNGATED = frozenset()   # the link trade (0x00224d26) is GATED since 2026-09-30, §13.53
 
 # Sites the 2026-09-04 primitive fix removed because they are NOT copies at all.
 # Kept here so the site-count change is explained rather than silently absorbed
@@ -205,7 +205,20 @@ INVENTORY = {
                  "Harmless only if the buffer always holds the PLAYER'S OWN "
                  "party; a rental or borrowed team loaded through it would "
                  "introduce species. GO LOOK"),
-    0x00224d26: ("UNGATED",
+    0x00224d26: ("GATED",
+                 "✅ GATED 2026-09-30 by the post-trade sweep (the user chose "
+                 "'sweep after the trade'): both callbacks the link trade "
+                 "installs after its animation and evolution, "
+                 "CB2_SaveAndEndTrade 0x08227424 and "
+                 "CB2_SaveAndEndWirelessTrade 0x08227A98, run "
+                 "CM_LinkTradeSweepThenExpand at state 0 (BLs 0x0822744A, "
+                 "0x08227B28), BEFORE their LinkFullSave_Init, so the save "
+                 "holds the swept party and a reset cannot undo it. "
+                 "verify_artifacts section 18, link_trade_sweep_negative_test.py "
+                 "6/6, live run_link_trade_sweep_e2e.sh on both enders (Red "
+                 "boxes Poliwag, Misty boxes Pikachu, CM off moves nothing, the "
+                 "no-hook ROM fails). The in-game callers stay gated at the "
+                 "script level. History: "
                  "🔴 A KNOWN HOLE, pinned 2026-09-29 (rowe_parity.md §13.53): "
                  "the LINK trade is REACHABLE in Lazarus (vanilla Cable Club; "
                  "Direct Corner attendant 0x08328773 on PC 2F maps 2.3/3.2/4.6/"

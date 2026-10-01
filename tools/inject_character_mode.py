@@ -190,6 +190,16 @@ MARKER_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 16   # encounter marker
 # sites and CanShiftMon's call to CountPartyAliveNonEggMonsExcept (anchor:
 # special 0x88's wrapper calls it) are retargeted through one trampoline.
 PSS_GUARD_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 24
+# Link-trade sweep (src/character_mode.c CM_LinkTradeSweepThenExpand;
+# rowe_parity.md §13.53, the user's "sweep after the trade" choice,
+# 2026-09-30). The BL to StringExpandPlaceholders at state 0 of each trade
+# ender, before its save: CB2_SaveAndEndTrade 0x08227424 (state 2 "Saving"
+# branches into the same BL) and CB2_SaveAndEndWirelessTrade. Its trampoline is
+# bytes 32..39 of the same dead function (which runs to 0x081DD653).
+LINK_TRADE_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 32
+LINK_TRADE_DEAD_BYTES      = bytes.fromhex("f7f74efc43425841")   # bl Count; negs; adcs
+LINK_TRADE_BL_SITES        = (0x22744A, 0x227B28)
+STRING_EXPAND_PLACEHOLDERS = 0x080061C0
 PSS_COUNT_ALIVE_EXCEPT = 0x081D4EDC
 PSS_GUARD_BL_SITES = (0x1D662E, 0x1D66E8, 0x1D6BC8, 0x1D6C04, 0x1D6C3A)
 PSS_CANSHIFT_BL    = 0x1DD718         # CanShiftMon (0x081DD6F4): bl Count
@@ -582,6 +592,7 @@ def main():
     hook_marker   = syms["CM_BattleStringGated"] | 1
     hook_sweep    = syms["CM_SweepPartyToPCNative"] | 1
     hook_pss_guard = syms["CM_PSSLastMonGuard"] | 1
+    hook_link_sweep = syms["CM_LinkTradeSweepThenExpand"] | 1
 
     # --- 2. confirm script ---
     txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
@@ -840,6 +851,11 @@ def main():
         "the dead IsRemovingLastPartyMon is not at %#x -- re-derive before "
         "overwriting it" % TRAMPOLINE_BLOCK)
     data[_tb:_tb + 32] = b"\xff" * 32
+    _lt = LINK_TRADE_TRAMPOLINE_ADDR - 0x08000000
+    assert bytes(data[_lt:_lt + 8]) == LINK_TRADE_DEAD_BYTES, (
+        "bytes 32..39 of the dead IsRemovingLastPartyMon are not the base ROM's "
+        "-- re-derive before overwriting them")
+    data[_lt:_lt + 8] = b"\xff" * 8
 
     # trampoline: ldr r3,[pc,#0]; bx r3; .word gate|1
     tramp = struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_gate)
@@ -878,6 +894,19 @@ def main():
     _cur = bytes(data[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4])
     assert _cur == bytes.fromhex("0028f4d1"), f"CanShiftMon tail: {_cur.hex()}"
     data[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4] = struct.pack("<HH", 0xE7F8, 0x46C0)
+
+    # --- Link-trade sweep: one trampoline, two retargeted BLs ---
+    assert LINK_TRADE_TRAMPOLINE_ADDR % 4 == 0
+    splice(LINK_TRADE_TRAMPOLINE_ADDR,
+           struct.pack("<HH", 0x4B00, 0x4718) + struct.pack("<I", hook_link_sweep),
+           "link-trade sweep trampoline")
+    for _site in LINK_TRADE_BL_SITES:
+        _cur = bytes(data[_site:_site + 4])
+        _exp = thumb_bl(0x08000000 + _site, STRING_EXPAND_PLACEHOLDERS)
+        assert _cur == _exp, f"link-trade site {_site:#x}: {_cur.hex()} != {_exp.hex()}"
+        data[_site:_site + 4] = thumb_bl(0x08000000 + _site, LINK_TRADE_TRAMPOLINE_ADDR)
+    print(f"link-trade sweep: both trade enders' expand BLs -> {hook_link_sweep:#x} "
+          f"via {LINK_TRADE_TRAMPOLINE_ADDR:#x}")
     print(f"PC second guard: {len(PSS_GUARD_BL_SITES)} deposit/move/release sites + "
           f"CanShiftMon -> {hook_pss_guard:#x} via {PSS_GUARD_TRAMPOLINE_ADDR:#x}")
 

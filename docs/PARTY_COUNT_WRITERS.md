@@ -153,10 +153,6 @@ Read the two together; neither is sufficient alone.
 
 ## 8 inventoried copy site(s)
 
-### `0x08224d26` (file `0x00224d26`) -- **UNGATED**
-
-🔴 A KNOWN HOLE, pinned 2026-09-29 (rowe_parity.md §13.53): the LINK trade is REACHABLE in Lazarus (vanilla Cable Club; Direct Corner attendant 0x08328773 on PC 2F maps 2.3/3.2/4.6/5.5 with hide-flag 0, each reached by stairs from its 1F; TradeCenter 0x0832F5D8 calls special 0x1E TryTradeLinkup) and nothing gates the link caller. The in-game callers stay gated at the script level (below). Closing this is §13.53's open gate. Original finding follows. TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps gPlayerParty[a] and gEnemyParty[b] through a temp buffer (three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live 2026-09-28 (tools/mgba_scripts/trade_party_write_trace.lua): the in-game trade writes the slot once, pc=0x083E7F8C inside CopyMon, r0=0x0201BA28 (&gPlayerParty[2]), r1=0x0201BBB8 (&gEnemyParty[0]), r2=100, party count 3 -> 3, called from 0x08226ADA with (2, 0). The two IN-GAME callers (0x0822558E, 0x08226ADA, both `TradeMons(gSpecialVar_0x8005, 0)`) are gated at the SCRIPT level by CM_TradeCheck before special 0x100/0x101. ⚠️ WHY NOT GATED: the THIRD caller 0x0822733A is the LINK trade, `TradeMons(monIds[0], monIds[1] % 6)`, and nothing in Character Mode gates it. Whether a link trade is reachable in this hack is not measured. Seaglass's twin 0x00208786 has the same three-caller shape
-
 ### `0x081c40e4` (file `0x001c40e4`) -- **GATED**
 
 inside GiveMonToPlayer 0x081C40BC -- THE enforcement choke point, the CopyMon that actually places the mon in the party slot. Its count writer 0x001c4118 is the GATED entry in check_acquisition_paths.py
@@ -164,6 +160,10 @@ inside GiveMonToPlayer 0x081C40BC -- THE enforcement choke point, the CopyMon th
 ### `0x0820da96` (file `0x0020da96`) -- **GATED**
 
 in the ScriptGiveMon 0x0820D3F4 give region, alongside the GATED count writer 0x0020DB60; the 112 callnative give sites are retargeted to the wrapper and verify_artifacts.py check [8] pins them
+
+### `0x08224d26` (file `0x00224d26`) -- **GATED**
+
+✅ GATED 2026-09-30 by the post-trade sweep (the user chose 'sweep after the trade'): both callbacks the link trade installs after its animation and evolution, CB2_SaveAndEndTrade 0x08227424 and CB2_SaveAndEndWirelessTrade 0x08227A98, run CM_LinkTradeSweepThenExpand at state 0 (BLs 0x0822744A, 0x08227B28), BEFORE their LinkFullSave_Init, so the save holds the swept party and a reset cannot undo it. verify_artifacts section 18, link_trade_sweep_negative_test.py 6/6, live run_link_trade_sweep_e2e.sh on both enders (Red boxes Poliwag, Misty boxes Pikachu, CM off moves nothing, the no-hook ROM fails). The in-game callers stay gated at the script level. History: 🔴 A KNOWN HOLE, pinned 2026-09-29 (rowe_parity.md §13.53): the LINK trade is REACHABLE in Lazarus (vanilla Cable Club; Direct Corner attendant 0x08328773 on PC 2F maps 2.3/3.2/4.6/5.5 with hide-flag 0, each reached by stairs from its 1F; TradeCenter 0x0832F5D8 calls special 0x1E TryTradeLinkup) and nothing gates the link caller. The in-game callers stay gated at the script level (below). Closing this is §13.53's open gate. Original finding follows. TradeMons(playerIdx, partnerIdx) at 0x08224D18: swaps gPlayerParty[a] and gEnemyParty[b] through a temp buffer (three CopyMons, 0x08224DA4/DAE/DB8). ✅ Measured live 2026-09-28 (tools/mgba_scripts/trade_party_write_trace.lua): the in-game trade writes the slot once, pc=0x083E7F8C inside CopyMon, r0=0x0201BA28 (&gPlayerParty[2]), r1=0x0201BBB8 (&gEnemyParty[0]), r2=100, party count 3 -> 3, called from 0x08226ADA with (2, 0). The two IN-GAME callers (0x0822558E, 0x08226ADA, both `TradeMons(gSpecialVar_0x8005, 0)`) are gated at the SCRIPT level by CM_TradeCheck before special 0x100/0x101. ⚠️ WHY NOT GATED: the THIRD caller 0x0822733A is the LINK trade, `TradeMons(monIds[0], monIds[1] % 6)`, and nothing in Character Mode gates it. Whether a link trade is reachable in this hack is not measured. Seaglass's twin 0x00208786 has the same three-caller shape
 
 ### `0x08080ea6` (file `0x00080ea6`) -- **EXEMPT**
 

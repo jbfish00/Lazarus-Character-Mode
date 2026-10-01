@@ -169,6 +169,13 @@ PSS_COUNT_ALIVE_EXCEPT = 0x081D4EDC
 PSS_GUARD_BL_SITES = (0x1D662E, 0x1D66E8, 0x1D6BC8, 0x1D6C04, 0x1D6C3A)
 PSS_CANSHIFT_BL = 0x1DD718
 PSS_CANSHIFT_TAIL = 0x1DD71C
+# Link-trade sweep (rowe_parity.md §13.53, 2026-09-30): bytes 32..39 of the same
+# dead function, and the expand BL at state 0 of each trade ender.
+LINK_TRADE_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 32
+LINK_TRADE_BL_SITES = (0x22744A, 0x227B28)
+STRING_EXPAND_PLACEHOLDERS = 0x080061C0
+SAVE_AND_END_TRADE, SAVE_AND_END_WIRELESS = 0x08227424, 0x08227A98
+STANDBY_TEXT = 0x08CF9B00
 PSS_SPECIAL_ANCHOR = 0x88
 BL_SITES = (0x0A7BDA, 0x20D416)
 GIVEMON_ADDR = 0x081C40BC
@@ -220,7 +227,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 184  # +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 191  # +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -396,8 +403,9 @@ def main():
         (CM_SPRITE_BLOBS_ADDR - 0x08000000, CM_SPRITE_BLOBS_ADDR - 0x08000000 + len(_spr_blobs)),
         (CM_SPRITE_PTRS_ADDR - 0x08000000, CM_SPRITE_PTRS_ADDR - 0x08000000 + len(_spr_ptrs)),
         (CM_MUGSHOT_ADDR - 0x08000000, CM_MUGSHOT_ADDR - 0x08000000 + _mugshot_len),
-        # the four trampolines: one 32-byte block over the dead function
-        (TRAMPOLINE_BLOCK - 0x08000000, TRAMPOLINE_BLOCK - 0x08000000 + 32),
+        # the five trampolines: one 40-byte block over the dead function
+        (TRAMPOLINE_BLOCK - 0x08000000, TRAMPOLINE_BLOCK - 0x08000000 + 40),
+        *[(s, s + 4) for s in LINK_TRADE_BL_SITES],
         *[(s, s + 4) for s in PSS_GUARD_BL_SITES + (PSS_CANSHIFT_BL, PSS_CANSHIFT_TAIL)],
         # encounter marker: the per-character intro strings, its own trampoline
         # (a different 22-byte scavenge run from the two above), and the single
@@ -1438,6 +1446,48 @@ def main():
     _glits = {struct.unpack_from("<I", _gcode, k)[0] for k in range(0, len(_gcode) - 3, 4)}
     check("compiled guard carries 0x081DD71C, sStorage 0x0201BE44 and the count routine",
           {0x081DD71C, 0x0201BE44, PSS_COUNT_ALIVE_EXCEPT | 1} <= _glits)
+
+    print("\n== 18. link-trade sweep (rowe_parity.md §13.53, 2026-09-30) ==")
+    _std = bytes(orig[STANDBY_TEXT - 0x08000000:STANDBY_TEXT - 0x08000000 + 23])
+
+    def _ender_ok(site, ldr_r1):
+        h = struct.unpack_from("<H", orig, ldr_r1)[0]
+        lit = struct.unpack_from("<I", orig, ((ldr_r1 + 4) & ~3) + (h & 0xFF) * 4)[0]
+        return ((h & 0xFF00) == 0x4900 and lit == STANDBY_TEXT
+                and decode_bl(bytes(orig[site:site + 4]), 0x08000000 + site)
+                == STRING_EXPAND_PLACEHOLDERS)
+    check("base: the text is \"Communication standby…\" (0xB0 0xFF after it)",
+          _std == bytes([0xBD, 0xE3, 0xE1, 0xE1, 0xE9, 0xE2, 0xDD, 0xD7, 0xD5, 0xE8,
+                         0xDD, 0xE3, 0xE2, 0x00, 0xE7, 0xE8, 0xD5, 0xE2, 0xD8, 0xD6,
+                         0xED, 0xB0, 0xFF]))
+    check("base: both enders' state 0 load it into r1 and BL StringExpandPlaceholders at the sites",
+          _ender_ok(LINK_TRADE_BL_SITES[0], 0x227444) and _ender_ok(LINK_TRADE_BL_SITES[1], 0x227B24))
+    check("base: each ender has exactly one pointer to it (CB2_TryLinkTradeEvolution's "
+          "pool, 0x08226D08 / 0x08226D24) and no BL callers",
+          find_all(orig, struct.pack("<I", SAVE_AND_END_TRADE | 1)) == [0x226D08]
+          and find_all(orig, struct.pack("<I", SAVE_AND_END_WIRELESS | 1)) == [0x226D24]
+          and not bl_callers(orig, SAVE_AND_END_TRADE)
+          and not bl_callers(orig, SAVE_AND_END_WIRELESS))
+    _lto = LINK_TRADE_TRAMPOLINE_ADDR - 0x08000000
+    check(f"base: bytes 32..39 of the dead function are vanilla and nothing branches or "
+          f"points to {LINK_TRADE_TRAMPOLINE_ADDR:#x}",
+          bytes(orig[_lto:_lto + 8]) == bytes.fromhex("f7f74efc43425841")
+          and not bl_callers(orig, LINK_TRADE_TRAMPOLINE_ADDR)
+          and not find_all(orig, struct.pack("<I", LINK_TRADE_TRAMPOLINE_ADDR | 1)))
+    check("built: both sites call the link trampoline",
+          all(decode_bl(bytes(patched[x:x + 4]), 0x08000000 + x) == LINK_TRADE_TRAMPOLINE_ADDR
+              for x in LINK_TRADE_BL_SITES))
+    _lshim = _syms["CM_LinkTradeSweepThenExpand"]
+    check("link trampoline is ldr r3,[pc]; bx r3 -> CM_LinkTradeSweepThenExpand",
+          bytes(patched[_lto:_lto + 8]) == struct.pack("<HHI", 0x4B00, 0x4718, _lshim | 1))
+    _l0 = (_lshim & ~1) - 0x08000000
+    _lcode = bytes(patched[_l0:_l0 + 0x20])
+    _lbls = {decode_bl(_lcode[k:k + 4], (_lshim & ~1) + k) for k in range(0, 0x1C, 2)}
+    _llits = {struct.unpack_from("<I", _lcode, k)[0] for k in range(0, 0x1D, 4)}
+    check("compiled link shim (read from the ROM) BLs CM_SweepPartyToPCNative and "
+          "carries StringExpandPlaceholders",
+          (_syms["CM_SweepPartyToPCNative"] & ~1) in _lbls
+          and (STRING_EXPAND_PLACEHOLDERS | 1) in _llits)
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

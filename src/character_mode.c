@@ -811,6 +811,41 @@ void CM_CreateWildMonGated(u16 species, u8 level)
     OrigCreateWildMon(species, level);
 }
 
+/* --- Link trade: sweep the party BEFORE the post-trade save (2026-09-30) ---
+ *
+ * The user chose "sweep after the trade" for link trades (rowe_parity.md
+ * §13.53). TradeMons's link caller (0x0822733A) puts the partner's mon into the
+ * traded slot with nothing gating it, and the link trade is reachable here
+ * (vanilla Cable Club, stairs to every PC 2F). The sweep can't run at TradeMons:
+ * the trade animation and any trade evolution read that slot afterwards. It
+ * also can't run after the trade's own save, or a reset would skip it.
+ *
+ * Both enders the trade installs after the animation and the evolution start
+ * with StringExpandPlaceholders(gStringVar4, "Communication standby..."):
+ *   - CB2_SaveAndEndTrade (0x08227424), state 0, BL at 0x0822744A. State 2
+ *     ("Saving...") branches into the same BL; both are before
+ *     LinkFullSave_Init (state 50).
+ *   - CB2_SaveAndEndWirelessTrade, state 0, BL at 0x08227B28; its save starts
+ *     at state 2.
+ * Both BLs come here through TRAMPOLINE_BLOCK + 32: sweep, then expand exactly
+ * as before. The save then writes the swept party, so a reset can't bring the
+ * mon back. The sweep is idempotent, so running twice is harmless. With
+ * Character Mode off, CM_SweepPartyToPCNative returns at once: vanilla.
+ *
+ * Placed after every other function so no existing hook address moves. */
+#define StringExpandPlaceholders ((u8 * (*)(u8 *, const u8 *)) 0x080061C1)
+
+u8 *CM_LinkTradeSweepThenExpand(u8 *dst, const u8 *src)
+{
+    /* An asm call, on purpose. A C call let GCC split CM_SweepPartyToPCNative
+     * into a .part.0, and taking its address reordered it; either way it moved
+     * FIRST in .text and shifted every hook in the shim (measured 2026-09-30
+     * with nm). The asm is opaque to the call graph, so nothing else moves. */
+    __asm__ volatile ("bl CM_SweepPartyToPCNative"
+                      ::: "r0", "r1", "r2", "r3", "r12", "lr", "memory", "cc");
+    return StringExpandPlaceholders(dst, src);
+}
+
 /* Build fingerprint: the values this translation unit ACTUALLY compiled with,
    parked in the shim blob so verify_artifacts can read them back out of the
    BUILT ROM rather than re-reading the source text or an emitted .bin. Ported

@@ -9,12 +9,17 @@ system. This writes the same ROM with the guard removed: the six retargeted
 BLs and CanShiftMon's tail restored to the BASE ROM's bytes. The layer must
 FAIL on it (the deposit goes through).
 
-Usage: python3 tools/tests/build_pcguard_testrom.py
+`--no-link-sweep` instead restores only the two link-trade BLs
+(LINK_TRADE_BL_SITES): the negative control for the link-trade sweep layer
+(tools/mgba_scripts/cm_link_trade_sweep_test.lua), which reuses this fixture.
+
+Usage: python3 tools/tests/build_pcguard_testrom.py [--no-link-sweep]
 Reads build/lazarus_cm_pctest.gba (run build_pc_testrom.py first).
-Writes build/lazarus_cm_pctest_noguard.gba.
+Writes build/lazarus_cm_pctest_noguard.gba (or ..._nolinksweep.gba).
 """
 import re
 import struct
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,9 +35,13 @@ def _inj(name):
 
 
 def main():
-    body = re.search(r"^PSS_GUARD_BL_SITES\s*=\s*\(([^)]*)\)", _INJ, re.M).group(1)
+    link = "--no-link-sweep" in sys.argv
+    key = "LINK_TRADE_BL_SITES" if link else "PSS_GUARD_BL_SITES"
+    body = re.search(rf"^{key}\s*=\s*\(([^)]*)\)", _INJ, re.M).group(1)
     sites = tuple(int(x, 16) for x in re.findall(r"0x[0-9A-Fa-f]+", body))
-    sites += (_inj("PSS_CANSHIFT_BL"), _inj("PSS_CANSHIFT_TAIL"))
+    if not link:
+        sites += (_inj("PSS_CANSHIFT_BL"), _inj("PSS_CANSHIFT_TAIL"))
+    out = OUT.with_name("lazarus_cm_pctest_nolinksweep.gba") if link else OUT
     d = bytearray(PCTEST.read_bytes())
     base = BASE.read_bytes()
     changed = 0
@@ -40,12 +49,13 @@ def main():
         if d[s:s + 4] != base[s:s + 4]:
             changed += 1
         d[s:s + 4] = base[s:s + 4]
+    what = "link-trade sweep" if link else "guard"
     assert changed == len(sites), (
-        f"only {changed}/{len(sites)} guard sites differed from the base -- "
-        "is the guard in build/lazarus_cm_pctest.gba at all?")
-    OUT.write_bytes(bytes(d))
-    print(f"NEGATIVE CONTROL: {OUT.name}: {changed} guard sites restored to the "
-          "base ROM -- the guard is absent here. Never distributed.")
+        f"only {changed}/{len(sites)} {what} sites differed from the base -- "
+        f"is the {what} in build/lazarus_cm_pctest.gba at all?")
+    out.write_bytes(bytes(d))
+    print(f"NEGATIVE CONTROL: {out.name}: {changed} {what} sites restored to the "
+          f"base ROM -- the {what} is absent here. Never distributed.")
 
 
 if __name__ == "__main__":
