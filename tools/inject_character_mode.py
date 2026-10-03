@@ -265,6 +265,15 @@ ROSTER_MENU_ADDR = 0x09676000
 # The pre-entry + roster block + row strings: their own region, so nothing in
 # the pinned SCRIPT_ADDR / TRADE_SCRIPT_ADDR blobs moves.
 ROSTER_SCRIPT_ADDR = 0x09677000
+# The roster screen's header ("<name>'s roster", plus the user's 2026-10-02
+# hint line): NUM_CHARACTERS x 16 B display names, indexed by TABLE index. The
+# page after the desk scripts; splice() proves it clear (and that the scripts
+# did not grow into it).
+ROSTER_NAMES_ADDR = 0x09678000
+ROSTER_NAME_STRIDE = 16
+# The list opens at top 6 (CreateWindowFromRect adds 1: rows 7-18), under the
+# 4-row header window the set-2 OnInit adds at rows 1-4.
+ROSTER_LIST_TOP = 6
 # The cheat-code desk script is reached from FOUR BG events (whole-ROM scan,
 # asserted below): the University desk's two tiles (7,8) and (8,8), and (3,1)
 # in two other maps -- the same spot as Seaglass's bedroom cheat device. All
@@ -374,11 +383,11 @@ def op_dynmultichoice(cb_set, names):
     return (bytes([0xE3]) + struct.pack("<HH", 0, 0) + bytes([0, 0xFF, 0])
             + struct.pack("<H", 0) + bytes([cb_set, len(names)])
             + b"".join(struct.pack("<I", n) for n in names))
-def op_dynmultistack(cb_set):
+def op_dynmultistack(cb_set, top=0):
     """The STACK form: argc 1 and a NULL word, which the handler peeks but does
     not consume; it then runs as four `nop` (opcode 0x00 is 0x08208251,
-    `movs r0,#0; bx lr`)."""
-    return (bytes([0xE3]) + struct.pack("<HH", 0, 0) + bytes([0, 0xFF, 0])
+    `movs r0,#0; bx lr`). top: CreateWindowFromRect adds 1."""
+    return (bytes([0xE3]) + struct.pack("<HH", 0, top) + bytes([0, 0xFF, 0])
             + struct.pack("<H", 0) + bytes([cb_set, 1]) + struct.pack("<I", 0))
 def op_end():               return bytes([0x02])
 def op_callnative_give(fn_thumb, species, level):
@@ -555,12 +564,25 @@ def main():
                     f"-DNUM_CHARACTERS={NUM_CHARACTERS}",
                     f"-DROSTER_ROOTS_ADDR={ROSTER_ROOTS_ADDR:#x}",
                     f"-DROSTER_ROOTS_OFF={ROSTER_ROOTS_OFF}",
+                    f"-DROSTER_NAMES_ADDR={ROSTER_NAMES_ADDR:#x}",
+                    f"-DROSTER_NAME_STRIDE={ROSTER_NAME_STRIDE}",
                     "-o", str(robj), str(ROOT / "src" / "roster_display.c")], check=True)
     subprocess.run(["arm-none-eabi-ld", "-Ttext", f"{ROSTER_MENU_ADDR:#x}",
                     "--entry", "CM_RosterPushRows",
                     "-o", str(relf), str(robj)], check=True)
     subprocess.run(["arm-none-eabi-objcopy", "-O", "binary", str(relf), str(rbin)], check=True)
     roster_menu = rbin.read_bytes()
+    assert ROSTER_MENU_ADDR + len(roster_menu) <= ROSTER_SCRIPT_ADDR, (
+        f"roster display code ({len(roster_menu)} B) runs into the desk scripts")
+    # Header names, fixed stride, indexed by table index (VAR_CM_CHAR - 1).
+    _names_bin = (CM / "names.bin").read_bytes()
+    _cm_chars = json.loads((CM / "characters_manifest.json").read_text())["characters"]
+    assert len(_cm_chars) == NUM_CHARACTERS
+    roster_names = bytearray()
+    for _c in _cm_chars:
+        _nm = _names_bin[_c["name_offset"]:_names_bin.index(b"\xff", _c["name_offset"])]
+        assert len(_nm) < ROSTER_NAME_STRIDE, (_c["character"], len(_nm))
+        roster_names += _nm + b"\xff" * (ROSTER_NAME_STRIDE - len(_nm))
     rsym = subprocess.run(["arm-none-eabi-nm", str(relf)], check=True,
                           capture_output=True, text=True).stdout
 
@@ -703,6 +725,7 @@ def main():
             f"expected {DYN_EVENT_TABLE_ORIG:#x} -- wrong ROM, or already patched")
         struct.pack_into("<I", data, _roff, DYN_EVENT_TABLE_ADDR)
     splice(ROSTER_MENU_ADDR, roster_menu, "roster display code")
+    splice(ROSTER_NAMES_ADDR, bytes(roster_names), "roster header names")
 
     # Pre-entry (the desk's BG pointer lands here) + shared roster block.
     #   checkflag CM; goto_if unset -> the stock desk script, unchanged
@@ -726,7 +749,7 @@ def main():
         a["roster_here"] = len(b)
         b += op_callnative(ROSTER_PUSH)
         b += op_compare(0x800D, 0) + op_goto_if(1, a["roster_end"])   # no rows
-        b += op_dynmultistack(ROSTER_CB_SET)
+        b += op_dynmultistack(ROSTER_CB_SET, ROSTER_LIST_TOP)
         a["roster_end_here"] = len(b)
         b += op_releaseall() + op_end()
         a["t_view_here"] = len(b); b += _t_view

@@ -227,7 +227,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 191  # +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 194  # +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -239,6 +239,11 @@ DYN_EVENT_TABLE_ADDR = _inj_addr("DYN_EVENT_TABLE_ADDR")
 ROSTER_MENU_ADDR = _inj_addr("ROSTER_MENU_ADDR")
 ROSTER_SCRIPT_ADDR = _inj_addr("ROSTER_SCRIPT_ADDR")
 ROSTER_SCRIPT_WINDOW = 0x200
+# The header's names (2026-10-02): NUM_CHARACTERS x stride, by table index.
+ROSTER_NAMES_ADDR = _inj_addr("ROSTER_NAMES_ADDR")
+_INJ_SRC = (ROOT / "tools" / "inject_character_mode.py").read_text()
+ROSTER_NAME_STRIDE = int(re.search(r"^ROSTER_NAME_STRIDE\s*=\s*(\d+)", _INJ_SRC, re.M).group(1))
+ROSTER_LIST_TOP = int(re.search(r"^ROSTER_LIST_TOP\s*=\s*(\d+)", _INJ_SRC, re.M).group(1))
 _ROOTS = json.loads((ROOT / "tools" / "character_mode" / "roster_roots_manifest.json").read_text())
 DYN_EVENT_TABLE_ORIG = 0x08CEBB04
 DYN_EVENT_TABLE_REFS = (0x20BAA8, 0x20BD64, 0x20C078)
@@ -441,6 +446,8 @@ def main():
          + len((ROOT / "build" / "roster_display.bin").read_bytes())),
         (ROSTER_SCRIPT_ADDR - 0x08000000,
          ROSTER_SCRIPT_ADDR - 0x08000000 + ROSTER_SCRIPT_WINDOW),
+        (ROSTER_NAMES_ADDR - 0x08000000,
+         ROSTER_NAMES_ADDR - 0x08000000 + NUM_CHARACTERS * ROSTER_NAME_STRIDE),
         *[(r, r + 4) for r in DESK_BG_PTR_OFFS],
     ]
     stray = []
@@ -1363,6 +1370,28 @@ def main():
           and _d[_rb + 5:_rb + 12] == bytes([0x21, 0x0D, 0x80, 0, 0, 0x06, 0x01])
           and _d[_rb + 16] == 0xE3 and _d[_rb + 26] == ROSTER_CB_SET and _d[_rb + 27] == 1
           and _d[_rb + 28:_rb + 32] == bytes(4))
+
+    # -- the header (user ruling 2026-10-02: a hint line under "<name>'s roster") --
+    _rdn_names = (ROOT / "tools" / "character_mode" / "names.bin").read_bytes()
+    _rdn_chars = json.loads((ROOT / "tools" / "character_mode"
+                             / "characters_manifest.json").read_text())["characters"]
+    _rdn_off = ROSTER_NAMES_ADDR - 0x08000000
+    _rdn_bad = []
+    for _rdn_i, _rdn_c in enumerate(_rdn_chars):
+        _rdn_n = _rdn_names[_rdn_c["name_offset"]:_rdn_names.index(b"\xff", _rdn_c["name_offset"])]
+        _rdn_rec = patched[_rdn_off + _rdn_i * ROSTER_NAME_STRIDE:
+                           _rdn_off + (_rdn_i + 1) * ROSTER_NAME_STRIDE]
+        if _rdn_rec[:len(_rdn_n)] != _rdn_n or _rdn_rec[len(_rdn_n)] != 0xFF:
+            _rdn_bad.append(_rdn_c["character"])
+    check("every header name record matches names.bin for its character",
+          len(_rdn_chars) == NUM_CHARACTERS and not _rdn_bad, str(_rdn_bad[:3]))
+    # GCC folds (id - 1) * stride into a base of ROSTER_NAMES_ADDR - stride.
+    _rdn_hint = bytes.fromhex("bfeae3e0e9e8dde3e2e700d7e3e9e2e800e8e3e3adff")
+    check("compiled roster code carries the names blob, AddTextPrinterParameterized and the 'Evolutions count too.' hint",
+          (ROSTER_NAMES_ADDR in _lits or ROSTER_NAMES_ADDR - ROSTER_NAME_STRIDE in _lits)
+          and 0x080066A5 in _lits and _rdn_hint in _rd_code)
+    check(f"the list opens at top {ROSTER_LIST_TOP}, under the 4-row header",
+          0 <= _rb < len(_d) - 32 and struct.unpack_from("<H", _d, _rb + 19)[0] == ROSTER_LIST_TOP)
 
     # ⚠️ Every local below is _fp*-prefixed on purpose: a bare name here can
     # shadow a module-level counter the summary reads (Seaglass once printed
