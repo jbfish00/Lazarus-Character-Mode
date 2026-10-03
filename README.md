@@ -110,8 +110,8 @@ With Character Mode off, the desk works exactly as it always did.
 ## Known limitations
 
 - Characters keep the normal player sprite in the overworld. A character
-  portrait is shown when you select one, for the 164 characters art is
-  staged for.
+  portrait is shown when you select one, for the 179 characters art is
+  staged for (105 of the 123 selectable).
 - Some characters' canon rosters include Pokemon that are not obtainable
   in Lazarus's curated dex; their rosters were validated against the
   official Encounters guide so every character has obtainable Pokemon,
