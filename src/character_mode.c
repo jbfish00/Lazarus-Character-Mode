@@ -365,6 +365,28 @@ void CM_BattleStringGated(const u8 *src, u8 *dst)
 #define gBattlerPartyIndexes ((volatile u16 *)  0x02000348)
 #define CATCH_ODDS_SURE      255
 
+/* Off-roster species are UNCATCHABLE (user, 2026-10-09: "you should only be
+ * able to catch pokemon on the roster"). Until now the throw went ahead and the
+ * acquisition gate sent the mon to the PC. With Character Mode on, an
+ * off-roster target is refused the way the engine refuses a trainer's Pokemon:
+ * the ball bounces off (BALL_BLOCK_ANIM), then a battle script that prints
+ * string 0x105, "It dodged the thrown BALL! This POKEMON can't be caught!"
+ * (the trainer-block script's waitmessage/printstring/finishaction, with the
+ * dodge id), and Cmd_handleballthrow returns through its own epilogue
+ * (0x080a725a). CM_CatchOdds returns CATCH_BLOCKED for that; the stub exits. */
+#define EmitBallThrowAnim     ((void (*)(u32, u32, u32)) 0x08064d6d)
+#define MarkBattlerForControllerExec ((void (*)(u32)) 0x080bc209)
+#define gBattlerAttacker      (*(volatile u8 *) 0x02000508)
+#define gBattlescriptCurrInstr (*(const u8 * volatile *) 0x02000510)
+#define BALL_BLOCK_ANIM       5   /* the ball bounces off; 6 (ghost dodge) draws a capture here */
+#define CATCH_BLOCKED         0xFFFFFFFFu
+static const u8 sCatchDodgeScript[] = {
+    0x12, 0x30, 0x00,     /* waitmessage 0x30 */
+    0x10, 0x05, 0x01,     /* printstring 0x105: "It dodged the thrown BALL!..." */
+    0x12, 0x30, 0x00,     /* waitmessage 0x30 */
+    0xF6,                 /* finishaction */
+};
+
 __attribute__((noinline, used)) u32 CM_CatchOdds(u32 odds)
 {
     if (gateActive()) {
@@ -372,9 +394,14 @@ __attribute__((noinline, used)) u32 CM_CatchOdds(u32 odds)
         u32 species = GetMonData(mon, MON_DATA_SPECIES, 0);
         /* onRoster() says "allowed" for an out-of-model species so it never
            blocks; a guarantee needs a real one. */
-        if (species != 0 && species < NUM_SPECIES
-            && onRoster(*GetVarPointer(VAR_CM_CHAR), species))
-            return CATCH_ODDS_SURE;
+        if (species != 0 && species < NUM_SPECIES) {
+            if (onRoster(*GetVarPointer(VAR_CM_CHAR), species))
+                return CATCH_ODDS_SURE;
+            EmitBallThrowAnim(gBattlerAttacker, 0, BALL_BLOCK_ANIM);
+            MarkBattlerForControllerExec(gBattlerAttacker);
+            gBattlescriptCurrInstr = sCatchDodgeScript;
+            return CATCH_BLOCKED;
+        }
     }
     return odds;
 }
@@ -385,13 +412,20 @@ __attribute__((naked)) void CM_CatchOddsStub(void)
         "push {lr}\n\t"
         "mov r0, r6\n\t"
         "bl CM_CatchOdds\n\t"
-        "mov r6, r0\n\t"
         "pop {r1}\n\t"          /* 0x080A7359: the fall-through, Thumb bit set */
+        "add r2, r0, #1\n\t"    /* CATCH_BLOCKED (-1): leave through the epilogue */
+        "beq 2f\n\t"
+        "mov r6, r0\n\t"
         "cmp r6, #254\n\t"
         "bls 1f\n\t"
         "add r1, #12\n\t"       /* 0x080A7365: the original bhi's target */
         "1:\n\t"
-        "bx r1\n\t");
+        "bx r1\n\t"
+        "2:\n\t"
+        "ldr r1, 3f\n\t"
+        "bx r1\n\t"
+        ".align 2\n"
+        "3: .word 0x080a725b\n\t");   /* Cmd_handleballthrow's epilogue */
 }
 
 u8 CM_GiveMonToPlayerGated(void *mon)

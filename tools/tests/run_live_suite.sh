@@ -100,7 +100,7 @@ sh tools/tests/run_pc_guard_e2e.sh || fail=1
 sh tools/tests/run_link_trade_sweep_e2e.sh || fail=1
 
 # 100% catch for on-roster species (2026-10-09). Wild Hoppip at full HP:
-# Erika (12) has it, Red (1) does not. The odds are read at the hooked
+# Erika (12) has it, Red (1) does not: his ball is refused. The odds are read at the hooked
 # decision's successors. Seed 2 breaks out with CM off, so the sure runs on it
 # are the hook's doing; a copy with the compare restored must FAIL "sure".
 export MGBA_HEADLESS_DEBUGGER=1
@@ -108,7 +108,7 @@ for seed in 1 2 3; do
     CM_ON=1 CM_CHAR=12 SEED=$seed EXPECT=sure; export CM_ON CM_CHAR SEED EXPECT
     run sure_catch_$seed tools/savestates/battle_bag.ss tools/mgba_scripts/cm_sure_catch_test.lua 2
 done
-CM_ON=1 CM_CHAR=1 SEED=1 EXPECT=vanilla; export CM_ON CM_CHAR SEED EXPECT
+CM_ON=1 CM_CHAR=1 SEED=1 EXPECT=dodged; export CM_ON CM_CHAR SEED EXPECT
 run sure_catch_offroster tools/savestates/battle_bag.ss tools/mgba_scripts/cm_sure_catch_test.lua 2
 CM_ON=0 SEED=2 EXPECT=miss; export CM_ON SEED EXPECT
 run sure_catch_cmoff tools/savestates/battle_bag.ss tools/mgba_scripts/cm_sure_catch_test.lua 2

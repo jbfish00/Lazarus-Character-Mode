@@ -626,7 +626,7 @@ def main():
     hook_link_sweep = syms["CM_LinkTradeSweepThenExpand"] | 1
 
     # --- 2. confirm script ---
-    txt_on  = enc_text("Character Mode is now active!\nOff-roster catches go to the PC.", cm)
+    txt_on  = enc_text("Character Mode is now active!\nOnly roster Pokémon are caught.", cm)
     txt_off = enc_text("Character Mode is now off.", cm)
 
     # layout: [entry][act][off][txt_on][txt_off] — compute sizes first

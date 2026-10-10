@@ -227,7 +227,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 200  # +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 201  # +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -832,7 +832,7 @@ def main():
     t_on = text_at(patched, txt_on_addr)
     t_off = text_at(patched, txt_off_addr)
     check("activation text decodes",
-          t_on == "Character Mode is now active!\nOff-roster catches go to the PC.",
+          t_on == "Character Mode is now active!\nOnly roster Pokémon are caught.",
           repr(t_on))
     check("off text decodes", t_off == "Character Mode is now off.", repr(t_off))
 
@@ -1548,14 +1548,25 @@ def main():
     check(f"built: the veneer is ldr r3,[pc]; bx r3 -> CM_CatchOddsStub {_stub | 1:#x}",
           bytes(patched[_cv:_cv + 8]) == struct.pack("<HHI", 0x4B00, 0x4718, _stub | 1))
     _so = (_stub & ~1) - 0x08000000
-    _sh = struct.unpack_from("<10H", patched, _so)
+    _sh = struct.unpack_from("<12H", patched, _so)
     check("built: the stub passes r6 to CM_CatchOdds, writes it back, and returns to "
-          "0x080A7364 when it is above 254, else to 0x080A7358",
+          "0x080A7364 when it is above 254, else to 0x080A7358; CATCH_BLOCKED exits via the "
+          "epilogue 0x080A725A",
           _sh[0] == 0xB500 and _sh[1] == 0x1C30
           and decode_bl(bytes(patched[_so + 4:_so + 8]), (_stub & ~1) + 4) == (_fn & ~1)
-          and _sh[4] == 0x1C06 and _sh[5] == 0xBC02 and _sh[6] == 0x2EFE
-          and _sh[7] == 0xD900 and _sh[8] == 0x310C and _sh[9] == 0x4708
+          and _sh[4] == 0xBC02 and _sh[5] == 0x1C42 and _sh[6] == 0xD004
+          and _sh[7] == 0x1C06 and _sh[8] == 0x2EFE and _sh[9] == 0xD900
+          and _sh[10] == 0x310C and _sh[11] == 0x4708
+          and struct.unpack_from("<I", patched, _so + 28)[0] == 0x080A725B
           and CATCH_ODDS_SITE + 0x08000000 + 4 + 12 == 0x080A7364)
+    _fc2 = bytes(patched[(_fn & ~1) - 0x08000000:_so])
+    _fl2 = {struct.unpack_from("<I", _fc2, k)[0] for k in range(0, len(_fc2) - 3, 4)}
+    _dsc = [v for v in _fl2 if 0x08000000 <= v < 0x0A000000
+            and bytes(patched[v - 0x08000000:v - 0x08000000 + 10]) == bytes.fromhex("123000100501123000f6")]
+    check("built: an off-roster target is refused: CM_CatchOdds calls EmitBallThrowAnim and "
+          "MarkBattlerForControllerExec for gBattlerAttacker and sets gBattlescriptCurrInstr to a "
+          "script printing string 0x105 (\"It dodged the thrown BALL!\")",
+          {0x08064D6D, 0x080BC209, 0x02000508, 0x02000510} <= _fl2 and len(_dsc) == 1)
     _fo = (_fn & ~1) - 0x08000000
     _fc = bytes(patched[_fo:_so])
     _fl = {struct.unpack_from("<I", _fc, k)[0] for k in range(0, len(_fc) - 3, 4)}

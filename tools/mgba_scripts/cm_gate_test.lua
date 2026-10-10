@@ -1,7 +1,7 @@
 -- Phase 4 catch-gate test. Run on build/lazarus_cm.gba from battle_bag.ss
 -- (battle bag open on Items pocket, wild Hoppip = species 187, off Red's
 -- roster). Reads build/cm_test_mode.lua for {cm_on=true|false}.
---   cm_on:  expect Hoppip redirected to PC (party stays 1, box gains a mon)
+--   cm_on:  expect the ball refused (Hoppip is uncatchable: party stays 1, box unchanged)
 --   cm_off: expect normal catch (party grows to 2) — control run
 -- Usage:
 --   mgba-headless -t tools/savestates/battle_bag.ss \
@@ -50,7 +50,9 @@ H.onFrame(function(f)
         if cfg.cm_on then
             H.assertEq("party unchanged (gated)", party, before.party)
             H.assertEq("slot1 still empty", slot1pid, 0)
-            H.assertEq("box0 gained the mon", box, before.box + 1)
+            -- Since 2026-10-09 an off-roster species is uncatchable: the ball is
+            -- refused before the catch, so nothing reaches the PC either.
+            H.assertEq("box0 unchanged (off-roster is uncatchable)", box, before.box)
         else
             H.assertEq("party grew (control)", party, before.party + 1)
         end
