@@ -198,6 +198,14 @@ PSS_GUARD_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 24
 # bytes 32..39 of the same dead function (which runs to 0x081DD653).
 LINK_TRADE_TRAMPOLINE_ADDR = TRAMPOLINE_BLOCK + 32
 LINK_TRADE_DEAD_BYTES      = bytes.fromhex("f7f74efc43425841")   # bl Count; negs; adcs
+# 100% catch for on-roster species (2026-10-09). The dead function's tail
+# (b, nop, then its literal pool) runs to 0x081DD653 and nothing outside it
+# points, BLs or pc-loads into 0x081DD640..0x081DD653 (verify_artifacts §20).
+# The veneer takes 0x081DD644..0x081DD64B.
+CATCH_VENEER_ADDR = 0x081DD644
+CATCH_VENEER_ORIG = bytes.fromhex("f6e7c046b4be0102")
+CATCH_ODDS_SITE   = 0x0A7354          # Cmd_handleballthrow: cmp r6,#254 ; bhi 0x080A7364
+CATCH_ODDS_ORIG   = bytes.fromhex("fe2e05d8")
 LINK_TRADE_BL_SITES        = (0x22744A, 0x227B28)
 STRING_EXPAND_PLACEHOLDERS = 0x080061C0
 PSS_COUNT_ALIVE_EXCEPT = 0x081D4EDC
@@ -513,7 +521,8 @@ def main():
     syms = {m.group(2): int(m.group(1), 16)
             for m in re.finditer(r"^([0-9a-f]+) [Tt] (\w+)$", sym_out, re.M)}
     for need in ("CM_CheatDispatchHook", "CM_GiveMonToPlayerGated",
-                 "CM_GiveMonNativeGated", "CM_TradeCheck", "CM_CreateWildMonGated"):
+                 "CM_GiveMonNativeGated", "CM_TradeCheck", "CM_CreateWildMonGated",
+                 "CM_CatchOddsStub", "CM_CatchOdds"):
         assert need in syms, f"missing symbol {need}"
     assert len(shim) <= SHIM_MAX, (
         f"shim too big: {len(shim)} > {SHIM_MAX} -- it would run into "
@@ -917,6 +926,19 @@ def main():
     _cur = bytes(data[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4])
     assert _cur == bytes.fromhex("0028f4d1"), f"CanShiftMon tail: {_cur.hex()}"
     data[PSS_CANSHIFT_TAIL:PSS_CANSHIFT_TAIL + 4] = struct.pack("<HH", 0xE7F8, 0x46C0)
+
+    # --- 100% catch for on-roster species (src/character_mode.c CM_CatchOddsStub) ---
+    _cv = CATCH_VENEER_ADDR - 0x08000000
+    assert bytes(data[_cv:_cv + 8]) == CATCH_VENEER_ORIG, (
+        "the dead function's tail is not at %#x" % CATCH_VENEER_ADDR)
+    assert CATCH_VENEER_ADDR % 4 == 0
+    data[_cv:_cv + 8] = struct.pack("<HHI", 0x4B00, 0x4718, syms["CM_CatchOddsStub"] | 1)
+    assert bytes(data[CATCH_ODDS_SITE:CATCH_ODDS_SITE + 4]) == CATCH_ODDS_ORIG, (
+        "Cmd_handleballthrow's odds compare is not at %#x" % CATCH_ODDS_SITE)
+    data[CATCH_ODDS_SITE:CATCH_ODDS_SITE + 4] = thumb_bl(0x08000000 + CATCH_ODDS_SITE,
+                                                         CATCH_VENEER_ADDR)
+    print(f"100% roster catch: odds compare @ {0x08000000 + CATCH_ODDS_SITE:#x} -> veneer "
+          f"{CATCH_VENEER_ADDR:#x} -> {syms['CM_CatchOddsStub']:#x}")
 
     # --- Link-trade sweep: one trampoline, two retargeted BLs ---
     assert LINK_TRADE_TRAMPOLINE_ADDR % 4 == 0

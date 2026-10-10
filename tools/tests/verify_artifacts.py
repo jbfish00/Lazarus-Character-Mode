@@ -227,7 +227,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 194  # +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 200  # +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -254,6 +254,9 @@ DESK_BG_PTR_OFFS = (0xEA28A0, 0xEA28AC, 0xEAAD54, 0xEAB010)
 DESK_ORIG_SCRIPT = 0x083287A7
 DESK_AFTER_PROMPT = 0x083287BE
 FLAG_CHARACTER_MODE = 0x2B0
+# 100% catch for on-roster species (section 19, 2026-10-09; injector CATCH_*). Restated.
+CATCH_ODDS_SITE = 0x0A7354           # Cmd_handleballthrow: cmp r6,#254 ; bhi 0x080A7364
+CATCH_VENEER_ADDR = 0x081DD644       # the dead IsRemovingLastPartyMon's tail
 
 
 def _elf_syms(elf):
@@ -411,6 +414,9 @@ def main():
         # the five trampolines: one 40-byte block over the dead function
         (TRAMPOLINE_BLOCK - 0x08000000, TRAMPOLINE_BLOCK - 0x08000000 + 40),
         *[(s, s + 4) for s in LINK_TRADE_BL_SITES],
+        # 100% roster catch (section 19): the odds compare and its veneer
+        (CATCH_ODDS_SITE, CATCH_ODDS_SITE + 4),
+        (CATCH_VENEER_ADDR - 0x08000000, CATCH_VENEER_ADDR - 0x08000000 + 8),
         *[(s, s + 4) for s in PSS_GUARD_BL_SITES + (PSS_CANSHIFT_BL, PSS_CANSHIFT_TAIL)],
         # encounter marker: the per-character intro strings, its own trampoline
         # (a different 22-byte scavenge run from the two above), and the single
@@ -1517,6 +1523,46 @@ def main():
           "carries StringExpandPlaceholders",
           (_syms["CM_SweepPartyToPCNative"] & ~1) in _lbls
           and (STRING_EXPAND_PLACEHOLDERS | 1) in _llits)
+
+    print("\n== 19. 100% catch for on-roster species (2026-10-09) ==")
+    check("base: Cmd_handleballthrow's `cmp r6,#254 ; bhi 0x080A7364` is at the site, "
+          "followed by the sure-catch flag test",
+          bytes(orig[CATCH_ODDS_SITE:CATCH_ODDS_SITE + 4]) == bytes.fromhex("fe2e05d8")
+          and decode_bl(bytes(orig[CATCH_ODDS_SITE + 6:CATCH_ODDS_SITE + 10]),
+                        0x08000000 + CATCH_ODDS_SITE + 6) == 0x081148A0)
+    _lo, _hi = 0x081DD640, 0x081DD654
+    _ldrs = []
+    for _a in range(_lo - 1024, _hi, 2):
+        _h = struct.unpack_from("<H", orig, _a - 0x08000000)[0]
+        if _h >> 11 == 0b01001 and not (TRAMPOLINE_BLOCK <= _a < _hi):
+            if _lo <= ((_a + 4) & ~3) + (_h & 0xFF) * 4 < _hi:
+                _ldrs.append(_a)
+    check("base: nothing points, BLs or pc-loads into the dead function's tail 0x081DD640..53",
+          not _ldrs and not bl_callers(orig, CATCH_VENEER_ADDR)
+          and not any(find_all(orig, struct.pack("<I", v)) for v in range(_lo, _hi)))
+    check("built: the odds compare is a BL to the catch veneer",
+          decode_bl(bytes(patched[CATCH_ODDS_SITE:CATCH_ODDS_SITE + 4]),
+                    0x08000000 + CATCH_ODDS_SITE) == CATCH_VENEER_ADDR)
+    _stub, _fn = _syms["CM_CatchOddsStub"], _syms["CM_CatchOdds"]
+    _cv = CATCH_VENEER_ADDR - 0x08000000
+    check(f"built: the veneer is ldr r3,[pc]; bx r3 -> CM_CatchOddsStub {_stub | 1:#x}",
+          bytes(patched[_cv:_cv + 8]) == struct.pack("<HHI", 0x4B00, 0x4718, _stub | 1))
+    _so = (_stub & ~1) - 0x08000000
+    _sh = struct.unpack_from("<10H", patched, _so)
+    check("built: the stub passes r6 to CM_CatchOdds, writes it back, and returns to "
+          "0x080A7364 when it is above 254, else to 0x080A7358",
+          _sh[0] == 0xB500 and _sh[1] == 0x1C30
+          and decode_bl(bytes(patched[_so + 4:_so + 8]), (_stub & ~1) + 4) == (_fn & ~1)
+          and _sh[4] == 0x1C06 and _sh[5] == 0xBC02 and _sh[6] == 0x2EFE
+          and _sh[7] == 0xD900 and _sh[8] == 0x310C and _sh[9] == 0x4708
+          and CATCH_ODDS_SITE + 0x08000000 + 4 + 12 == 0x080A7364)
+    _fo = (_fn & ~1) - 0x08000000
+    _fc = bytes(patched[_fo:_so])
+    _fl = {struct.unpack_from("<I", _fc, k)[0] for k in range(0, len(_fc) - 3, 4)}
+    check("built: CM_CatchOdds reads gBattlerTarget, gBattlerPartyIndexes, gEnemyParty via "
+          "GetMonData and returns 255",
+          {0x02000509, 0x02000348, 0x0201BBB8, 0x081C2FB9} <= _fl
+          and any(struct.unpack_from("<H", _fc, k)[0] == 0x20FF for k in range(0, len(_fc) - 1, 2)))
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

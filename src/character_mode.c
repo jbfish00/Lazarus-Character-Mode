@@ -344,6 +344,56 @@ void CM_BattleStringGated(const u8 *src, u8 *dst)
     OrigExpandString(src, dst);
 }
 
+/* --- 100%% catch for on-roster species (user, 2026-10-09) ---
+ * Cmd_handleballthrow (inlined odds, older expansion) decides at 0x080A7354:
+ *     cmp r6, #254 ; bhi 0x080A7364 <caught>        (r6 = capture odds)
+ * then, not caught yet, `ldr r0,=0x863 ; bl FlagGet` (the hack's own sure-catch
+ * flag) at 0x080A7358. Those 4 bytes become a BL to an 8-byte veneer (the dead
+ * tail of IsRemovingLastPartyMon, 0x081DD644) that jumps to CM_CatchOddsStub.
+ * There is no room to keep the `bhi`, so the stub takes the branch itself: it
+ * returns to 0x080A7364 when the odds are above 254, else to 0x080A7358, exactly
+ * where the original pair would have gone. With Character Mode on and the
+ * target's species on the active roster the odds become 255 (three shakes,
+ * "Gotcha!"); otherwise they are untouched.
+ *
+ * The species is the party Pokemon's (gEnemyParty[gBattlerPartyIndexes
+ * [gBattlerTarget]]), not gBattleMons[]: Transform overwrites the battle species
+ * (Platinum, 2026-10-08). The addresses are the literals Cmd_handleballthrow
+ * itself loads (0x080A7590, 0x080A75C0, 0x080A75C4). r0-r3 and r12 are dead at
+ * the site: both successors reload them. */
+#define gBattlerTarget       (*(volatile u8 *)  0x02000509)
+#define gBattlerPartyIndexes ((volatile u16 *)  0x02000348)
+#define CATCH_ODDS_SURE      255
+
+__attribute__((noinline, used)) u32 CM_CatchOdds(u32 odds)
+{
+    if (gateActive()) {
+        u8 *mon = gEnemyParty + gBattlerPartyIndexes[gBattlerTarget] * 100;
+        u32 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+        /* onRoster() says "allowed" for an out-of-model species so it never
+           blocks; a guarantee needs a real one. */
+        if (species != 0 && species < NUM_SPECIES
+            && onRoster(*GetVarPointer(VAR_CM_CHAR), species))
+            return CATCH_ODDS_SURE;
+    }
+    return odds;
+}
+
+__attribute__((naked)) void CM_CatchOddsStub(void)
+{
+    __asm__ volatile(
+        "push {lr}\n\t"
+        "mov r0, r6\n\t"
+        "bl CM_CatchOdds\n\t"
+        "mov r6, r0\n\t"
+        "pop {r1}\n\t"          /* 0x080A7359: the fall-through, Thumb bit set */
+        "cmp r6, #254\n\t"
+        "bls 1f\n\t"
+        "add r1, #12\n\t"       /* 0x080A7365: the original bhi's target */
+        "1:\n\t"
+        "bx r1\n\t");
+}
+
 u8 CM_GiveMonToPlayerGated(void *mon)
 {
     if (gateActive() && gPlayerPartyCount != 0
