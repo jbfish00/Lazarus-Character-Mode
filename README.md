@@ -63,7 +63,7 @@ flips --apply lazarus_cm.bps lazarus-v2.gba lazarus_cm.gba
 ## What happens after you activate
 
 From then on, catching or receiving any Pokemon **not on your character's
-roster sends it straight to the PC** instead of your party. Everything
+roster is refused or sent to the PC**: a wild off-roster Pokémon can't be caught at all, and off-roster gifts, eggs and trades go to the PC. Everything
 on-roster (including every evolution of a roster Pokemon) joins your party
 normally.
 
@@ -91,6 +91,16 @@ Notes:
 | `CMDbgOff` | Turn Character Mode off (clears the flag and character selection) |
 | `CMDbgGive1` | Test code: gives your character's own starter (on-roster -> joins party) |
 | `CMDbgGive2` | Test code: gives a Lv. 5 Pokemon that is **off the first character's roster** -> goes to the PC. The species is derived from that character's own allow-bitmap at build time, so do not expect a specific one (it was documented as Ekans long after the build started deriving it). |
+
+## Quality-of-life rules (added 2026-10)
+
+While Character Mode is on:
+- **Every on-roster Pokémon is caught at 100%**, with any ball. **Off-roster wild Pokémon cannot be caught at all**
+  (the ball is dodged or bounces off with no shakes). Gifts, eggs and trades keep their PC routing.
+- **TMs are reusable.** Native to Lazarus.
+- **Exp. Share, party-wide.** Native to Lazarus.
+- **HMs** are already badge-only in Lazarus, so any party Pokémon can use them.
+- Overworld sprite for Lazarus is on hold.
 
 ## Seeing your roster in-game
 
