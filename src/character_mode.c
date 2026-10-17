@@ -952,3 +952,59 @@ const u32 CM_BuildFingerprint[7] = {
     MARKER_STRIDE,
     TOBIAS_CHAR_ID,
 };
+
+
+/* ---- QoL (user 2026-10-17): the move relearner also teaches egg moves ---------------------------------------------
+ * The list = the hack's own GetMoveRelearnerMoves (0x081C71E8, the BL in CreateLearnableMovesList), then the egg moves of
+ * the mon's hatch species (GetEggSpecies 0x080FB7AC + GetEggMoves 0x080FBD14, symmatch high against expansion 1.9.4, on a
+ * copy whose species is set to the hatch species), minus known and listed moves; cap 24 (MAX_RELEARNER_MOVES 25).
+ * GetNumberOfRelearnableMoves (0x081C73D0) is replaced at its entry by CM_NumRelearnable (all its callers: the party menu,
+ * the relearner's party screen), and its dead body holds the list site's veneer. */
+#define CM_GetMoveRelearnerMoves ((u8 (*)(void *, u16 *)) (0x081C71E8 | 1))
+#define CM_GetEggSpecies         ((u16 (*)(u16)) (0x080FB7AC | 1))
+#define CM_GetEggMoves           ((u8 (*)(void *, u16 *)) (0x080FBD14 | 1))
+#define CM_SetMonDataX           ((void (*)(void *, int, const void *)) (0x081C36D0 | 1))
+#define CM_MON_DATA_MOVE1        20
+#define CM_RELEARNER_MAX         24
+#define CM_EGG_MOVES_MAX         19
+
+u8 CM_RelearnerMoves(void *mon, u16 *moves)
+{
+    u32 copy[25];       /* struct Pokemon, 100 bytes */
+    u16 egg[CM_EGG_MOVES_MAX + 1];
+    u16 species, base, mv;
+    u8 n, k, i, j;
+
+    n = CM_GetMoveRelearnerMoves(mon, moves);
+    species = GetMonData(mon, MON_DATA_SPECIES, 0);
+    if (!species || GetMonData(mon, MON_DATA_IS_EGG, 0))
+        return n;
+    for (i = 0; i < 25; i++)
+        copy[i] = ((const u32 *) mon)[i];
+    base = CM_GetEggSpecies(species);
+    CM_SetMonDataX(copy, MON_DATA_SPECIES, &base);
+    k = CM_GetEggMoves(copy, egg);
+    if (k > CM_EGG_MOVES_MAX)
+        k = CM_EGG_MOVES_MAX;
+    for (i = 0; i < k && n < CM_RELEARNER_MAX; i++) {
+        mv = egg[i];
+        for (j = 0; j < 4; j++)
+            if (GetMonData(mon, CM_MON_DATA_MOVE1 + j, 0) == mv)
+                break;
+        if (j < 4)
+            continue;
+        for (j = 0; j < n; j++)
+            if (moves[j] == mv)
+                break;
+        if (j == n)
+            moves[n++] = mv;
+    }
+    return n;
+}
+
+u8 CM_NumRelearnable(void *mon)
+{
+    u16 moves[25];
+
+    return CM_RelearnerMoves(mon, moves);
+}

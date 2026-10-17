@@ -227,7 +227,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 201  # +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 204  # +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -288,6 +288,25 @@ def find_all(buf, pat):
 # A BL's first halfword has 0xF0-0xF7 in its high byte and its second 0xF8-0xFF.
 # The regex finds candidates in C; bl_callers still decodes every one.
 _BL_CANDIDATE = re.compile(rb"(?=[\x00-\xff][\xf0-\xf7][\x00-\xff][\xf8-\xff])", re.S)
+
+
+# QoL 2026-10-17 (section 20): free relearner + Frontier tutors, egg moves in the relearner
+FT_GATE, FT_BP_CONFIRM, FT_TEXT = 0x082B3865, 0x08319D08, 0x09FF0000
+EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM = 0x081C73D0, 0x08181CBC, 0x081C71E8
+_FT_BP = re.compile(rb"\x16\x08\x80(..)(?:\x16\x05\x80..)?\x05" + re.escape(struct.pack("<I", FT_BP_CONFIRM)), re.S)
+
+
+def _free_tutor_regions(orig):
+    g = FT_GATE - 0x08000000
+    pm = re.search(rb"\x21\x04\x80\x00\x00\x06\x01(.{4})(?:\x28\x02\x00)?(\x0f\x00.{4}\x09\x04\x45\x98\x00\x01\x00)",
+                   bytes(orig[g:g + 0x100]), re.S)
+    bye = struct.unpack_from("<I", orig, g + 12)[0] - 0x08000000
+    r = [(g, g + 16), (g + pm.start(2), g + pm.start(2) + 13), (FT_TEXT - 0x08000000, FT_TEXT - 0x08000000 + 0x100),
+         (EGG_COUNT_FN - 0x08000000, EGG_COUNT_FN - 0x08000000 + 20), (EGG_LIST_SITE - 0x08000000, EGG_LIST_SITE - 0x08000000 + 4)]
+    r += [(i + 2, i + 6) for i in list(range(g - 0x40, g + 0x100)) + list(range(bye, bye + 8))
+          if orig[i] == 0x0F and orig[i + 1] == 0]
+    r += [(m.start() + 3, m.start() + 5) for m in _FT_BP.finditer(bytes(orig))]
+    return r
 
 
 def decode_bl(halfwords_bytes, site_rom_addr):
@@ -455,6 +474,7 @@ def main():
         (ROSTER_NAMES_ADDR - 0x08000000,
          ROSTER_NAMES_ADDR - 0x08000000 + NUM_CHARACTERS * ROSTER_NAME_STRIDE),
         *[(r, r + 4) for r in DESK_BG_PTR_OFFS],
+        *_free_tutor_regions(orig),
     ]
     stray = []
     CHUNK = 4096
@@ -1574,6 +1594,24 @@ def main():
           "GetMonData and returns 255",
           {0x02000509, 0x02000348, 0x0201BBB8, 0x081C2FB9} <= _fl
           and any(struct.unpack_from("<H", _fc, k)[0] == 0x20FF for k in range(0, len(_fc) - 1, 2)))
+
+    print("== 20. free move tutors + egg moves in the relearner (QoL 2026-10-17) ==")
+    _g = FT_GATE - 0x08000000
+    check("relearner: Heart Scale gate -> goto, no removeitem HEART_SCALE left (base: both)",
+          patched[_g] == 0x05 and bytes(orig[_g:_g + 5]) == bytes.fromhex("4798000100")
+          and b"\x45\x98\x00\x01\x00" not in bytes(patched[_g:_g + 0x100]))
+    _pr = [struct.unpack("<H", m.group(1))[0] for m in _FT_BP.finditer(bytes(patched))]
+    _pb = sorted({struct.unpack("<H", m.group(1))[0] for m in _FT_BP.finditer(bytes(orig))})
+    check("20 Battle Frontier tutor prices are 0 BP (base 16/24/48)", len(_pr) == 20 and set(_pr) == {0} and _pb == [16, 24, 48])
+    _es = _elf_syms("character_mode.elf")
+    _c = EGG_COUNT_FN - 0x08000000
+    _s = EGG_LIST_SITE - 0x08000000
+    check("egg moves: GetNumberOfRelearnableMoves -> CM_NumRelearnable; the list BL -> veneer -> CM_RelearnerMoves",
+          bytes(patched[_c:_c + 4]) == bytes.fromhex("004b1847")
+          and struct.unpack_from("<I", patched, _c + 4)[0] == _es["CM_NumRelearnable"] | 1
+          and decode_bl(bytes(patched[_s:_s + 4]), EGG_LIST_SITE) == EGG_COUNT_FN + 8
+          and struct.unpack_from("<I", patched, _c + 16)[0] == _es["CM_RelearnerMoves"] | 1
+          and decode_bl(bytes(orig[_s:_s + 4]), EGG_LIST_SITE) == EGG_GMRM)
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

@@ -130,6 +130,20 @@ fi
 unset CM_ON CM_CHAR SEED EXPECT MGBA_HEADLESS_DEBUGGER
 python3 tools/tests/sure_catch_negative_test.py || fail=1
 
+# QoL 2026-10-17: egg moves in the relearner. The desk runs the real special ChooseMonForMoveRelearner; picking the
+# lead sets VAR_0x8005 = the relearnable count. Shipped: its egg moves (> 0); CM_NO_EGGRELEARN control: 0.
+python3 tools/tests/build_relearn_testrom.py >/dev/null && python3 tools/tests/build_relearn_testrom.py --control >/dev/null || fail=1
+for c in "reltest pos" "reltest_ctl zero"; do
+    set -- $c
+    CM_EXPECT_CHECKS=2 TAG=$1 WANT=$2 MGBA_HEADLESS_DEBUGGER=1 timeout 200 "$MGBA" -t tools/savestates/cm_red_active.ss \
+        --script tools/mgba_scripts/cm_relearn_test.lua build/lazarus_cm_$1.gba > build/live_relearn_$1.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: PASS" build/live_relearn_$1.log; then
+        echo "[PASS] relearner $1 ($(grep -ao 'RELEARN count=[0-9]*' build/live_relearn_$1.log | tail -1))"
+    else
+        echo "[FAIL] relearner $1 (build/live_relearn_$1.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail
