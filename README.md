@@ -98,7 +98,8 @@ While Character Mode is on:
 - **Every on-roster Pokémon is caught at 100%**, with any ball. **Off-roster wild Pokémon cannot be caught at all**
   (the ball is dodged or bounces off with no shakes). Gifts, eggs and trades keep their PC routing.
 - **TMs are reusable.** Native to Lazarus.
-- **Exp. Share, party-wide.** Native to Lazarus.
+- **Exp. Share, party-wide.** Native to Lazarus: every player gets it (Character Mode on or off) in the Rotom Phone
+  scene after the delivery errand, before gym 1 (live-tested 2026-10-21).
 - **HMs** are already badge-only in Lazarus, so any party Pokémon can use them.
 - Overworld sprite for Lazarus is on hold.
 
@@ -119,7 +120,9 @@ With Character Mode off, the desk works exactly as it always did.
 
 ## Known limitations
 
-- Characters keep the normal player sprite in the overworld. A character
+- Sycamore keeps Caterpie as his starter: Gible's family is not in Lazarus.
+- Characters keep the normal player sprite in the overworld (a version where it follows the character is in
+  progress on branch `wip/ow-sprite-2026-10-21`, not yet tested). A character
   portrait is shown when you select one, for the 179 characters art is
   staged for (105 of the 123 selectable).
 - Some characters' canon rosters include Pokemon that are not obtainable
