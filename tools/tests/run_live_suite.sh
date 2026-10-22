@@ -144,6 +144,31 @@ for c in "reltest pos" "reltest_ctl zero"; do
     fi
 done
 
+# Early party-wide Exp. Share with CM OFF (user, 2026-10-21). Native and CM-independent:
+# (1) the base game's own pre-gym-1 Rotom Phone give (0x08382D5F) run from the desk with CM off
+#     sets flag 0x495 and adds item 461; the control ROM enters after the setflag and must FAIL;
+# (2) a real battle with CM off: with 0x495 set a bench mon gains EXP; with it clear it doesn't.
+python3 tools/tests/build_expshare_testrom.py >/dev/null && python3 tools/tests/build_expshare_testrom.py --control >/dev/null || fail=1
+for c in "expgive PASS" "expgive_ctl FAIL"; do
+    set -- $c
+    CM_EXPECT_CHECKS=4 CM_SHOTS=build/live_$1 timeout 110 "$MGBA" -t tools/savestates/cm_red_active.ss \
+        --script tools/mgba_scripts/cm_exp_share_give_test.lua build/lazarus_cm_$1.gba > build/live_$1.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: $2" build/live_$1.log; then
+        echo "[PASS] exp_share give $1 (want $2)"
+    else
+        echo "[FAIL] exp_share give $1 (want $2, see build/live_$1.log)"; fail=1
+    fi
+done
+for sh in 1 0; do
+    SHARE=$sh CM_EXPECT_CHECKS=4 timeout 110 "$MGBA" -t tools/savestates/battle_menu.ss \
+        --script tools/mgba_scripts/cm_exp_share_test.lua "$ROM" > build/live_exp_share_$sh.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: PASS" build/live_exp_share_$sh.log; then
+        echo "[PASS] exp_share battle share=$sh ($(grep -ao 'slot1 exp [0-9]* -> [0-9]*' build/live_exp_share_$sh.log | tail -1))"
+    else
+        echo "[FAIL] exp_share battle share=$sh (see build/live_exp_share_$sh.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

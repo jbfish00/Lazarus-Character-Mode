@@ -227,7 +227,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 204  # +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 206  # +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -1612,6 +1612,23 @@ def main():
           and decode_bl(bytes(patched[_s:_s + 4]), EGG_LIST_SITE) == EGG_COUNT_FN + 8
           and struct.unpack_from("<I", patched, _c + 16)[0] == _es["CM_RelearnerMoves"] | 1
           and decode_bl(bytes(orig[_s:_s + 4]), EGG_LIST_SITE) == EGG_GMRM)
+
+    print("== 21. early party-wide Exp. Share, CM on or off (native; 2026-10-21) ==")
+    # The pre-gym-1 Rotom Phone scene gives it to every player: delay 5; additem 461 (Exp. Share), 1;
+    # setflag 0x495; additem 0x33C, 1. No Character Mode check is involved, so CM off gets it too
+    # (live: cm_exp_share_give_test.lua / cm_exp_share_test.lua in run_live_suite.sh).
+    _eg = 0x382D5F
+    _egb = bytes.fromhex("280500" "44cd010100" "299504" "443c030100")
+    check("built: the Rotom Phone scene still gives the Exp. Share and sets flag 0x495 (bytes = base)",
+          bytes(patched[_eg:_eg + len(_egb)]) == _egb == bytes(orig[_eg:_eg + len(_egb)]))
+    _ie = 0x0D1270
+    _iec = [o + 0x08000000 for o in (0x0951B6, 0x0953A4, 0x095610, 0x095700)]
+    check("built: IsExpShareEnabled 0x080D1270 is FlagGet(0x495) and its 4 getexp callers still call it",
+          bytes(patched[_ie:_ie + 4]) == bytes.fromhex("00b50248")
+          and decode_bl(bytes(patched[_ie + 4:_ie + 8]), 0x080D1274) == 0x081148A0
+          and struct.unpack_from("<I", patched, _ie + 12)[0] == 0x495
+          and all(decode_bl(bytes(patched[a - 0x08000000:a - 0x08000000 + 4]), a) == 0x080D1270 for a in _iec)
+          and bytes(patched[_ie:_ie + 16]) == bytes(orig[_ie:_ie + 16]))
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1
