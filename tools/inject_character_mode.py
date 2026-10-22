@@ -688,6 +688,49 @@ def main():
     hook_pss_guard = syms["CM_PSSLastMonGuard"] | 1
     hook_link_sweep = syms["CM_LinkTradeSweepThenExpand"] | 1
 
+    # --- overworld sprite (2026-10-21, ../game_plans/overworld_sprites.md;
+    # Seaglass's design): the data is planned against the BASE ROM (all of it
+    # lands in owp.OW_REGIONS, the base ROM's untouched 0xFF tail), then
+    # src/ow_sprite.c is linked at OW_CODE_ADDR with the tables' addresses.
+    # Spliced at the end (section 4c), each byte re-checked 0xFF. ---
+    sys.path.insert(0, str(HERE / "character_mode"))
+    import lazarus_ow_player as owp
+    (ow_writes, ow_patches, ow_table, ow_ids, ow_nids, ow_ptrs,
+     ow_sources) = owp.build(ROM_IN.read_bytes(), chars)
+    oobj, oelf, obin = BUILD / "ow_sprite.o", BUILD / "ow_sprite.elf", BUILD / "ow_sprite.bin"
+    subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
+                    "-O2", "-ffreestanding", "-fno-builtin", "-Wall", "-Wextra",
+                    f"-DOW_INFO_TABLE={ow_table:#x}",
+                    f"-DOW_IDS={ow_ids:#x}", f"-DNUM_OW_IDS={ow_nids}",
+                    f"-DNUM_CHARACTERS={NUM_CHARACTERS}",
+                    f"-DGET_INFO_RESUME={(owp.GET_INFO + 8) | 1:#x}",
+                    f"-DSWEEP_PARTY={hook_sweep:#x}",
+                    "-o", str(oobj), str(ROOT / "src" / "ow_sprite.c")], check=True)
+    subprocess.run(["arm-none-eabi-ld", "-Ttext", f"{owp.OW_CODE_ADDR:#x}",
+                    "--entry", "CM_GetObjectEventGraphicsInfo",
+                    "-o", str(oelf), str(oobj)], check=True)
+    subprocess.run(["arm-none-eabi-objcopy", "-O", "binary", str(oelf), str(obin)], check=True)
+    ow_code = obin.read_bytes()
+    assert len(ow_code) <= owp.OW_CODE_MAX, f"ow_sprite.c grew to {len(ow_code)} B"
+    _osym = subprocess.run(["arm-none-eabi-nm", str(oelf)], check=True,
+                           capture_output=True, text=True).stdout
+
+    def _ow_sym(name):
+        m = re.search(rf"^([0-9a-f]+) [Tt] {name}$", _osym, re.M)
+        assert m, f"{name} not found in:\n{_osym}"
+        a = int(m.group(1), 16)
+        assert owp.OW_CODE_ADDR <= a < owp.OW_CODE_ADDR + len(ow_code), name
+        return a | 1
+
+    hook_ow_info = _ow_sym("CM_GetObjectEventGraphicsInfo")
+    hook_ow_sweep_refresh = _ow_sym("CM_SweepThenRefresh")
+    _ow_off = sum(1 for c in chars if not c.get("hidden"))
+    print(f"overworld sprite: {len(ow_code)} B code @ {owp.OW_CODE_ADDR:#x}; "
+          f"{sum(1 for v in ow_sources.values() if v == 'sheet')} sheets + "
+          f"{sum(1 for v in ow_sources.values() if v == 'native')} native = "
+          f"{sum(1 for p in ow_ptrs if p)}/{_ow_off} offered, {ow_nids} on-foot ids, "
+          f"{sum(len(b) for _, b in ow_writes):,} B data; info table @ {ow_table:#x}")
+
     # --- 2. confirm script ---
     txt_on  = enc_text("Character Mode is now active!\nOnly roster Pokémon are caught.", cm)
     txt_off = enc_text("Character Mode is now off.", cm)
@@ -716,7 +759,10 @@ def main():
            # Sweep AFTER the give, never before: beforehand the party holds only
            # the vanilla starter, which is off-roster, and the never-empty rule
            # would keep it and box nothing. See CM_SweepPartyToPCNative.
-           + op_callnative(hook_sweep)
+           # ... then the player takes on the character's look: CM_SweepThenRefresh
+           # (src/ow_sprite.c) runs the same sweep first. Same 5 bytes, so the
+           # script keeps its length (2026-10-21).
+           + op_callnative(hook_ow_sweep_refresh)
            + op_goto(RECEIVED_MSG_SUB))  # fanfare + "received!" + nickname/PC, ends script
     off_h = (op_setvar(VAR_CM_STARTER, 0)
              + op_delay(2) + op_loadword(0)  # txt_off ptr fixed below
@@ -1107,6 +1153,22 @@ def main():
           f"{len(BL_SITES_WILD)} wild-encounter BL sites "
           f"(wildmons @ {WILDMONS_ADDR:#x}, stride {wildmon_stride}, {len(wildmons)} B; "
           f"legendaries @ {LEGENDARY_ADDR:#x}, stride {legendary_stride}, {len(legendaries)} B)")
+
+    # --- 4c. overworld sprite: code, data, palette-table literals, entry trampoline ---
+    splice(owp.OW_CODE_ADDR, ow_code, "overworld sprite code")
+    for _off, _blob in ow_writes:
+        splice(0x08000000 + _off, _blob, f"overworld data @ {_off:#x}")
+    for _off, _old, _new in ow_patches:
+        _cur = struct.unpack_from("<I", data, _off)[0]
+        assert _cur == _old, f"overworld patch @{_off:#x}: {_cur:#x} != {_old:#x}"
+        struct.pack_into("<I", data, _off, _new)
+    _gi = owp.GET_INFO - 0x08000000
+    assert bytes(data[_gi:_gi + 8]) == owp.GET_INFO_ORIG and _gi % 4 == 0
+    # ldr r3,[pc,#0]; bx r3; .word hook -- r3 is overwritten by the original's
+    # own third instruction, so it carries nothing in.
+    data[_gi:_gi + 8] = struct.pack("<HHI", 0x4B00, 0x4718, hook_ow_info)
+    print(f"overworld sprite: GetObjectEventGraphicsInfo @ {owp.GET_INFO:#x} -> "
+          f"{hook_ow_info:#x}; {len(ow_patches)} palette-table literals repointed")
 
     # --- 5. outputs ---
     out_rom = BUILD / "lazarus_cm.gba"
