@@ -534,3 +534,17 @@ address below was re-derived from THIS binary. Method, in order:
   the offset-116 and stride-208 tampers, which fail), and `cm_roster_menu_test.lua`
   (roster 10/10 as Misty, char 10; code 3/3; off 3/3, which reaches the stock
   desk's naming special).
+
+## Exp. Share (2026-10-21): native, party-wide, CM on or off ✅ LIVE
+
+| what | addr | notes |
+|---|---|---|
+| Rotom Phone give | script `0x08382D5F` | `delay 5; additem 461, 1; setflag 0x495; additem 0x33C, 1` then "The EXP Share and Outfit Box were added to the Bag!". Pre-gym-1, after the delivery errand (NOT the intro). No CM check. |
+| `IsExpShareEnabled` | `0x080D1270` | `FlagGet(0x495)`; BL callers `0x080951B6`, `0x080953A4`, `0x08095610`, `0x08095700` (getexp) + `0x0816280E` |
+| item 461 | Exp. Share | the Gen 6+ toggle item |
+| `gBattleMons` | `0x02000360`, stride 0x60 | speed +0x06, moves +0x0C, hp +0x2A |
+
+Evidence: verify §21 (2 checks), `exp_share_negative_test.py` 5/5; live `cm_exp_share_give_test.lua`
+(real give run from the desk with CM off; control enters after the setflag and FAILS) and
+`cm_exp_share_test.lua` (CM off, a real won battle: a bench mon gains EXP only with 0x495 set).
+Species 443-445 (Gible line) are all-zero `gSpeciesInfo` entries: not in this game.
