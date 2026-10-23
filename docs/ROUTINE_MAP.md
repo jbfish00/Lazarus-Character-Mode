@@ -548,3 +548,25 @@ Evidence: verify §21 (2 checks), `exp_share_negative_test.py` 5/5; live `cm_exp
 (real give run from the desk with CM off; control enters after the setflag and FAILS) and
 `cm_exp_share_test.lua` (CM off, a real won battle: a bench mon gains EXP only with 0x495 set).
 Species 443-445 (Gible line) are all-zero `gSpeciesInfo` entries: not in this game.
+
+## Overworld sprite (2026-10-22)
+
+The player's walk/run sprite follows the chosen character (`src/ow_sprite.c`, planner
+`tools/character_mode/lazarus_ow_player.py`). Same design as Seaglass, addresses re-derived:
+- `GetObjectEventGraphicsInfo 0x081183B8` (orig `404a94460304180c`, literal `0xFE1C0000` at
+  `0x081184BC`; the only reader of `gObjectEventGraphicsInfoPointers 0x087AC934`) -> 8-byte entry
+  trampoline -> `CM_GetObjectEventGraphicsInfo`. With CM on and the id one of the 29 on-foot outfit ids
+  (`gOutfits 0x085E4C38`, 15 x 0x4C, `avatarGfxIds[2][4]` at +0x1C; 0x1D8 excluded, two map NPCs use
+  it), it returns the character's info from a u32[NUM_CHARACTERS] table; otherwise it replays the
+  original and resumes.
+- `ObjectEventSetGraphicsId 0x08117C70`, `gObjectEvents 0x0200566C` (stride 0x24): the activation
+  callnative is now `CM_SweepThenRefresh` (the party sweep, then a sprite refresh). The egg and PC
+  tails still call the sweep directly.
+- Palette table `0x087B6704` (104 entries + `0x11FF` terminator) is copied with the characters'
+  palettes appended (tags `0x1400+`) and its 17 literals repointed. Player anims `0x087B1338`.
+- Native costumes: Johto / Kalos / Alolan Fashion = Ethan + Lyra, Calem + Serena, Elio + Selene.
+- Code `0x09800000` (<= 0x400 B), data `0x09800400`-`0x09C00000`.
+
+Evidence: verify §22 (5 checks; tampering a sheet or restoring the entry bytes fails it); live
+`tools/tests/run_ow_sprite_test.sh` (in `run_live_suite.sh`): MISTY 16x32, LUCAS 32x32, PAUL generated,
+ETHAN native (images table), ZZZ refused, and a no-hook control that fails.

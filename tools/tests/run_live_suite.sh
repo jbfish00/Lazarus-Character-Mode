@@ -169,6 +169,13 @@ for sh in 1 0; do
     fi
 done
 
+# overworld sprite (2026-10-22): five cases + a no-hook negative control
+if bash tools/tests/run_ow_sprite_test.sh > build/live_ow_sprite.log 2>&1; then
+    echo "[PASS] overworld sprite ($(grep -c '  PASS' build/live_ow_sprite.log) cases incl. negative control)"
+else
+    echo "[FAIL] overworld sprite (see build/live_ow_sprite.log)"; grep -a '  FAIL' build/live_ow_sprite.log; fail=1
+fi
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

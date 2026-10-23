@@ -222,12 +222,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                 "..", "character_mode"))
 import egg_hook  # noqa: E402
 import pc_hook  # noqa: E402
+import lazarus_ow_player as owp  # noqa: E402
 
 EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 206  # +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 211  # +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -416,6 +417,7 @@ def main():
     while not all(b == 0xFF for b in patched[_send:_send + 32]):
         _send += 32
 
+    _OW = owp.build(bytes(orig), json.loads(owp.CHAR_MANIFEST.read_text())["characters"])
     intended = [
         (_s, _send),
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
@@ -475,6 +477,14 @@ def main():
          ROSTER_NAMES_ADDR - 0x08000000 + NUM_CHARACTERS * ROSTER_NAME_STRIDE),
         *[(r, r + 4) for r in DESK_BG_PTR_OFFS],
         *_free_tutor_regions(orig),
+        # overworld sprite (2026-10-22): the hook unit, the planner's data
+        # (replayed against the base ROM; section 22 checks the CONTENT against
+        # the source art), the palette-table literals and the entry trampoline.
+        (owp.OW_CODE_ADDR - 0x08000000, owp.OW_CODE_ADDR - 0x08000000
+         + len((ROOT / "build" / "ow_sprite.bin").read_bytes())),
+        *[(o, o + len(b)) for o, b in _OW[0]],
+        *[(o, o + 4) for o, _old, _new in _OW[1]],
+        (owp.R(owp.GET_INFO), owp.R(owp.GET_INFO) + 8),
     ]
     stray = []
     CHUNK = 4096
@@ -558,8 +568,9 @@ def main():
         check(f"{_src} takes NUM_CHARACTERS from the injector",
               re.search(r"^#define\s+NUM_CHARACTERS\s+\d+", _txt, re.M) is None
               and "#ifndef NUM_CHARACTERS" in _txt)
-    check(f"injector passes -DNUM_CHARACTERS to all three shims",
-          _INJ_SRC.count('f"-DNUM_CHARACTERS={NUM_CHARACTERS}"') == 3)
+    check(f"injector passes -DNUM_CHARACTERS to all four shims (incl. ow_sprite.c, which #errors without it)",
+          _INJ_SRC.count('f"-DNUM_CHARACTERS={NUM_CHARACTERS}"') == 4
+          and "!defined(NUM_CHARACTERS)" in (ROOT / "src" / "ow_sprite.c").read_text())
 
     # --- the playability threshold, read back out of the built ROM ---------
     with open(ROOT / "tools" / "character_mode" / "character_drops.json") as f:
@@ -745,11 +756,22 @@ def main():
     # decodes positionally, so an edit that moved it before the give fails here.
     ok &= expect("callnative sweep-party (AFTER the give)", bytes([0x23]))
     sweep_ptr = take_u32()
-    ok &= (sweep_ptr & 1) == 1 and SHIM_ADDR <= (sweep_ptr & ~1) < SCRIPT_ADDR
+    # Since 2026-10-22 that callnative is src/ow_sprite.c's CM_SweepThenRefresh,
+    # which calls the sweep and then refreshes the player's sprite. The sweep is
+    # the ONE shim routine its compiled code carries; everything below keeps
+    # checking against that.
+    _wo = (sweep_ptr & ~1) - 0x08000000
+    _wcode = bytes(patched[_wo:_wo + 0x60])
+    _wl = {struct.unpack_from("<I", _wcode, k)[0] for k in range(0, len(_wcode) - 3, 4)}
+    _shim_l = sorted(v for v in _wl if (v & 1) and SHIM_ADDR <= (v & ~1) < SCRIPT_ADDR)
+    ok &= ((sweep_ptr & 1) == 1
+           and sweep_ptr == _elf_syms("ow_sprite.elf")["CM_SweepThenRefresh"] | 1
+           and len(_shim_l) == 1)
+    sweep_ptr = _shim_l[0] if len(_shim_l) == 1 else sweep_ptr
     ok &= sweep_ptr != hook_native
     ok &= expect("goto received-msg tail",
                  bytes([0x05]) + struct.pack("<I", RECEIVED_MSG_SUB))
-    check("activation handler decodes (incl. give via shim ptr)", ok)
+    check("activation handler decodes (incl. give via shim ptr; the sweep via the overworld wrapper)", ok)
 
     # --- the egg-hatch sweep (../game_plans/rowe_parity.md §13.16/§13.18) ----
     # Checked here because the strongest assertion available is that the hatch
@@ -1629,6 +1651,66 @@ def main():
           and struct.unpack_from("<I", patched, _ie + 12)[0] == 0x495
           and all(decode_bl(bytes(patched[a - 0x08000000:a - 0x08000000 + 4]), a) == 0x080D1270 for a in _iec)
           and bytes(patched[_ie:_ie + 16]) == bytes(orig[_ie:_ie + 16]))
+
+    print("== 22. overworld sprite follows the character (2026-10-22) ==")
+    # Expected art from sprites/ow_player/ and the BASE ROM, not the planner's
+    # output: a build that wrote the wrong bytes fails here. Live:
+    # tools/tests/run_ow_sprite_test.sh (with a no-hook negative control).
+    _R = owp.R
+    _osyms = _elf_syms("ow_sprite.elf")
+    _hook = _osyms["CM_GetObjectEventGraphicsInfo"]
+    try:
+        owp.check_engine(bytes(orig))
+        _eng = True
+    except AssertionError as _e:
+        _eng = f"{_e}"
+    check("base: GetObjectEventGraphicsInfo, its one table reader, ObjectEventSetGraphicsId and the palette readers",
+          _eng is True, f"{_eng}")
+    _gi = _R(owp.GET_INFO)
+    check("built: GetObjectEventGraphicsInfo's entry is ldr r3,[pc]; bx r3 -> CM_GetObjectEventGraphicsInfo",
+          bytes(patched[_gi:_gi + 8]) == struct.pack("<HHI", 0x4B00, 0x4718, _hook | 1))
+    _chars = json.loads(owp.CHAR_MANIFEST.read_text())["characters"]
+    _sheets = owp.sheets()
+    _feet = {(k, g): i for k, g, i in owp.outfit_on_foot(bytes(orig))}
+    _tab = _OW[2]
+    _ptrs = struct.unpack_from(f"<{len(_chars)}I", patched, _R(_tab))
+    _want = [None if c.get("hidden") else "native" if c["character"] in owp.NATIVE
+             else "sheet" if c["character"] in _sheets else None for c in _chars]
+    check(f"built: the info table gives every offered character with art an info, and no one else "
+          f"({sum(1 for p in _ptrs if p)} infos; natives = their outfit's base-ROM info)",
+          all((p != 0) == (k is not None) for p, k in zip(_ptrs, _want))
+          and all(p == owp.info_ptr(orig, _feet[owp.NATIVE[c["character"]]])
+                  for p, k, c in zip(_ptrs, _want, _chars) if k == "native"))
+    _prefs = {struct.unpack_from("<I", patched, _R(r))[0] for r in owp.PAL_TABLE_REFS}
+    _pt = _R(next(iter(_prefs)))
+    _bpt = bytes(orig[_R(owp.PAL_TABLE):_R(owp.PAL_TABLE) + owp.PAL_TABLE_ENTRIES * 8])
+    _pals, _i = {}, 0
+    while struct.unpack_from("<IH", patched, _pt + 8 * _i)[1] != owp.PAL_TAG_NONE and _i < 400:
+        _pp, _tt = struct.unpack_from("<IH", patched, _pt + 8 * _i)
+        _pals[_tt] = _pp
+        _i += 1
+    check("built: every palette reader shares one copy that starts with the base table verbatim",
+          len(_prefs) == 1 and bytes(patched[_pt:_pt + len(_bpt)]) == _bpt)
+    _bad = []
+    for p, k, c in zip(_ptrs, _want, _chars):
+        if k != "sheet" or p == 0:
+            continue
+        e = _sheets[c["character"]]
+        fb = e["width"] * e["height"] // 2
+        gfx = (owp.SHEETS / f"{e['stem']}.4bpp").read_bytes()
+        pal = (owp.SHEETS / f"{e['stem']}.gbapal").read_bytes()
+        tag, refl, size, w, h = struct.unpack_from("<HHHhh", patched, _R(p) + 2)
+        oam, sub, anims, imgs = struct.unpack_from("<IIII", patched, _R(p) + 0x10)
+        good = ((w, h, size) == (e["width"], e["height"], fb) and anims == owp.PLAYER_ANIMS
+                and (oam, sub) == owp.OAM_SUB[(w, h)] and tag in _pals
+                and bytes(patched[_R(_pals[tag]):_R(_pals[tag]) + 32]) == pal)
+        for f in range(18):
+            d, sz = struct.unpack_from("<IH", patched, _R(imgs) + 8 * f)
+            good = good and sz == fb and bytes(patched[_R(d):_R(d) + fb]) == gfx[f * fb:(f + 1) * fb]
+        if not good:
+            _bad.append(c["character"])
+    check(f"built: every sheet character's info, 18 frames and palette equal the source sheet (bad: {_bad[:5]})",
+          not _bad and sum(1 for k in _want if k == "sheet") > 0)
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

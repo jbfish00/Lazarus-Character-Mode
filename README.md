@@ -101,7 +101,9 @@ While Character Mode is on:
 - **Exp. Share, party-wide.** Native to Lazarus: every player gets it (Character Mode on or off) in the Rotom Phone
   scene after the delivery errand, before gym 1 (live-tested 2026-10-21).
 - **HMs** are already badge-only in Lazarus, so any party Pokémon can use them.
-- Overworld sprite for Lazarus is on hold.
+- **Your overworld sprite becomes the character** (walking and running) for all 123 selectable characters: 117 use
+  a character sheet, and Ethan, Lyra, Calem, Serena, Elio and Selene wear Lazarus's own Johto/Kalos/Alolan Fashion
+  outfits. Tested live 2026-10-22.
 
 ## Seeing your roster in-game
 
@@ -121,8 +123,7 @@ With Character Mode off, the desk works exactly as it always did.
 ## Known limitations
 
 - Sycamore keeps Caterpie as his starter: Gible's family is not in Lazarus.
-- Characters keep the normal player sprite in the overworld (a version where it follows the character is in
-  progress on branch `wip/ow-sprite-2026-10-21`, not yet tested). A character
+- A character
   portrait is shown when you select one, for the 179 characters art is
   staged for (105 of the 123 selectable).
 - Some characters' canon rosters include Pokemon that are not obtainable

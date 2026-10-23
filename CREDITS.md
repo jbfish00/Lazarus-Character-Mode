@@ -218,3 +218,24 @@ and Lucy; overworld sheets of Lusamine, Gladion, Lillie and Lucy. Byte-identical
 to Emerald Enhanced's own files. Used with the permission of Enhanced Projects,
 whose README asks for it ("We rarely decline such requests, we just need to know
 who is using what").
+
+## Overworld sprites now in the patch (added 2026-10-22)
+
+The player's walk/run sprite follows the chosen character. The 117 sheets used come from `sprites/ow_player/`
+(ROWE's built player-grade sheets, vendored by `tools/character_mode/import_ow_sheets.py`); their donors are the
+ones credited in this file (Emerald Rogue with its full credits roll, Team Aqua's Asset Repo, kalarie, and the
+ROWE project's own sheets from pokefirered, pokeemerald-platinum, pokemonHnS, DiegoWT and StreakOfSprites).
+Ethan, Lyra, Calem, Serena, Elio and Selene use Lazarus's own outfit sprites, referenced, not copied.
+
+### Generated overworld sheets (`sprites/ow_player/gen_*`)
+
+Made in the Character Hacks workspace (`game_plans/ow_generated/`) for characters with no player-grade sheet.
+Most are base edits (recoloured and reshaped) of Gen 3 sheets already shipped here; Red, Leaf, Brendan, May and
+Gary come from the official player graphics. Outside art used:
+- **Alain**: "Pokemon Trainer Alain in Gen. 3 Style" by RichardPT (DeviantArt), sprite credited to Derlo
+  (Pokemon Stone Dragon 2).
+- **Tobias** and **Sawyer**: downscaled from vitorluiscolnago's "TOBIAS" and "SAWYER" sheets (DeviantArt).
+- **Lysandre**: PizzaSun's "Lysandre Gen IV Pokemon Sprite Sheet" (DeviantArt; base Zender1752) at its original
+  1x size in a 32x32 sheet; only the palette was reduced to 15 colours.
+- **Ritchie, Paul, Zoey, Nando**: the standing-south frame is Pokesho's field frame.
+Pokemon Showdown trainer sprites, Zender1752 and ShiningStar5022 fan sprites were references only.
