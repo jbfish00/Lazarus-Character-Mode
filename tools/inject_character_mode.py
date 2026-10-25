@@ -555,6 +555,8 @@ def main():
     elf = BUILD / "character_mode.elf"
     binf = BUILD / "character_mode.bin"
     subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
+                    *(["-DCM_NO_ANYLEVEL"] if os.environ.get("CM_NO_ANYLEVEL") == "1" else []),   # test control (QoL A2)
+                    *(["-DCM_TEST_NO_EGG"] if os.environ.get("CM_TEST_NO_EGG") == "1" else []),   # test only (QoL A2)
                     "-O2", "-ffreestanding", "-fno-builtin", "-fno-jump-tables",
                     f"-DCODES_ADDR={CODES_ADDR:#x}",
                     f"-DSTARTERS_ADDR={STARTERS_ADDR:#x}",

@@ -100,6 +100,8 @@ While Character Mode is on:
 - **TMs are reusable.** Native to Lazarus.
 - **Exp. Share, party-wide.** Native to Lazarus: every player gets it (Character Mode on or off) in the Rotom Phone
   scene after the delivery errand, before gym 1 (live-tested 2026-10-21).
+- **Move relearner, any level** (Character Mode on or off, 2026-10-24): the relearner offers every level-up move of the
+  Pokémon, not only the ones up to its level, then its egg moves (24 at most).
 - **HMs** are already badge-only in Lazarus, so any party Pokémon can use them.
 - **Your overworld sprite becomes the character** (walking and running) for all 123 selectable characters: 117 use
   a character sheet, and Ethan, Lyra, Calem, Serena, Elio and Selene wear Lazarus's own Johto/Kalos/Alolan Fashion

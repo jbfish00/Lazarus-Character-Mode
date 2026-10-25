@@ -132,9 +132,15 @@ python3 tools/tests/sure_catch_negative_test.py || fail=1
 
 # QoL 2026-10-17: egg moves in the relearner. The desk runs the real special ChooseMonForMoveRelearner; picking the
 # lead sets VAR_0x8005 = the relearnable count. Shipped: its egg moves (> 0); CM_NO_EGGRELEARN control: 0.
-python3 tools/tests/build_relearn_testrom.py >/dev/null && python3 tools/tests/build_relearn_testrom.py --control >/dev/null || fail=1
-for c in "reltest pos" "reltest_ctl zero"; do
+# QoL A2 (2026-10-24): every level-up move too; the CM_NO_ANYLEVEL control (egg moves only) must count fewer.
+# This lead's egg moves alone fill all 24 slots, so A2 is measured on test builds without them (CM_TEST_NO_EGG): the
+# any-level list must count more than the same build with the level cut (CM_NO_ANYLEVEL): 24 (the cap) vs 16 here.
+python3 tools/tests/build_relearn_testrom.py >/dev/null && python3 tools/tests/build_relearn_testrom.py --control >/dev/null \
+    && python3 tools/tests/build_relearn_testrom.py --noegg >/dev/null \
+    && python3 tools/tests/build_relearn_testrom.py --noegg --anylevel-control >/dev/null || fail=1
+for c in "reltest pos" "reltest_ctl zero" "reltest_noegg pos" "reltest_noegg_lv less"; do
     set -- $c
+    [ "$2" = less ] && set -- $1 "less:$(grep -ao 'RELEARN count=[0-9]*' build/live_relearn_reltest_noegg.log | tail -1 | cut -d= -f2)"
     CM_EXPECT_CHECKS=2 TAG=$1 WANT=$2 MGBA_HEADLESS_DEBUGGER=1 timeout 200 "$MGBA" -t tools/savestates/cm_red_active.ss \
         --script tools/mgba_scripts/cm_relearn_test.lua build/lazarus_cm_$1.gba > build/live_relearn_$1.log 2>&1 || true
     if grep -aq "HARNESS RESULT: PASS" build/live_relearn_$1.log; then
