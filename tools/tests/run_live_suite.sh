@@ -197,6 +197,22 @@ for c in "lazarus_cm 1" "lazarus_cm_noanim 0" "lazarus_cm_noanim 1"; do
     fi
 done
 
+# QoL A3 instant HP bar (2026-10-28): a full-HP foe KO'd by Pound (battle_menu.ss) drains its bar in <= 4 frames an
+# update on the shipped ROM, more on the CM_NO_INSTANTHP control, and the control asked for instant must FAIL
+CM_NO_INSTANTHP=1 python3 tools/inject_character_mode.py > build/hp_ctl_build.log 2>&1 \
+    && python3 tools/inject_character_mode.py > build/hp_build.log 2>&1 || { echo "[FAIL] instant HP builds"; fail=1; }
+for c in "lazarus_cm 1" "lazarus_cm_nohp 0" "lazarus_cm_nohp 1"; do
+    set -- $c
+    WANT_INSTANT=$2 CM_EXPECT_CHECKS=2 MGBA_HEADLESS_DEBUGGER=1 timeout 200 "$MGBA" -t tools/savestates/battle_menu.ss \
+        --script tools/mgba_scripts/cm_instant_hp_test.lua build/$1.gba > build/live_hp_$1_$2.log 2>&1 || true
+    want=PASS; [ "$1 $2" = "lazarus_cm_nohp 1" ] && want=FAIL     # the control must not pass as 'instant'
+    if grep -aq "HARNESS RESULT: $want" build/live_hp_$1_$2.log; then
+        echo "[PASS] instant HP bar: $1 WANT_INSTANT=$2 -> $want"
+    else
+        echo "[FAIL] instant HP bar: $1 WANT_INSTANT=$2 (want $want, see build/live_hp_$1_$2.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

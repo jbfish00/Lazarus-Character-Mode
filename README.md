@@ -103,6 +103,9 @@ While Character Mode is on:
 - **Move relearner, any level** (Character Mode on or off, 2026-10-24): the relearner offers every level-up move of the
   Pokémon, not only the ones up to its level, then its egg moves (24 at most).
 - **HMs** are already badge-only in Lazarus, so any party Pokémon can use them.
+- **Battle animations off on new games** (Character Mode on or off, 2026-10-28): Options turns them back on; an
+  existing save keeps its own setting.
+- **Instant HP bar** (every save, 2026-10-28): the HP bar jumps straight to its new value in battle.
 - **Your overworld sprite becomes the character** (walking and running) for all 123 selectable characters: 117 use
   a character sheet, and Ethan, Lyra, Calem, Serena, Elio and Selene wear Lazarus's own Johto/Kalos/Alolan Fashion
   outfits. Tested live 2026-10-22.
