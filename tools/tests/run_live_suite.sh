@@ -182,6 +182,21 @@ else
     echo "[FAIL] overworld sprite (see build/live_ow_sprite.log)"; grep -a '  FAIL' build/live_ow_sprite.log; fail=1
 fi
 
+# QoL A3 (2026-10-28): a new game starts with battle animations off (cold boot, real intro); control = CM_NO_ANIMDEFAULT
+CM_NO_ANIMDEFAULT=1 python3 tools/inject_character_mode.py > build/anim_ctl_build.log 2>&1 \
+    && python3 tools/inject_character_mode.py > build/anim_build.log 2>&1 || { echo "[FAIL] A3 builds"; fail=1; }
+for c in "lazarus_cm 1" "lazarus_cm_noanim 0" "lazarus_cm_noanim 1"; do
+    set -- $c
+    WANT=$2 CM_EXPECT_CHECKS=3 MGBA_HEADLESS_DEBUGGER=1 timeout 600 "$MGBA" \
+        --script tools/mgba_scripts/cm_anim_default_test.lua build/$1.gba > build/live_anim_$1_$2.log 2>&1 || true
+    want=PASS; [ "$1 $2" = "lazarus_cm_noanim 1" ] && want=FAIL     # the control must not pass as 'off'
+    if grep -aq "HARNESS RESULT: $want" build/live_anim_$1_$2.log; then
+        echo "[PASS] new game battle animations: $1 WANT=$2 -> $want"
+    else
+        echo "[FAIL] new game battle animations: $1 WANT=$2 (want $want, see build/live_anim_$1_$2.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

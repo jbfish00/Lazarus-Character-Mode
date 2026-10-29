@@ -450,6 +450,26 @@ def free_tutors(data, cm, gate, bp_confirm, text_addr):
         data[b + 3:b + 5] = b"\x00\x00"
     return {"relearner": 1, "bp_prices": len(bp)}
 
+# ---- QoL A3 (2026-10-28): new games start with battle animations off -----------------------------------------------
+# Lazarus's SetDefaultOptions (0x08189604, found by a write watchpoint on SaveBlock2+0x14..0x15 during the real intro)
+# clears bits 0-11 of the options halfword (+0x14) and ORs in r2 = 2 (text speed fast). Its `lsrs r3,#12 ; lsls r3,#12`
+# becomes `movs r3,#0x80 ; lsls r3,#3`, so the OR stores 0x402: text speed fast + optionsBattleSceneOff (bit 10 =
+# +0x15 bit 2, the bit the option menu loads second at 0x0818BC9E). Bits 12-15 are zeroed instead of kept (they read
+# 0 at every call seen). The Options menu still turns animations back on. CM_NO_ANIMDEFAULT=1 builds the control.
+ANIM_DEFAULT_FN = 0x08189604
+ANIM_DEFAULT_ORIG = bytes.fromhex("10b5e5f7b9f902220c4c2068838a1b0b1b03134383820422")
+ANIM_DEFAULT_NEW = bytes.fromhex("10b5e5f7b9f902220c4c2068838a8023db00134383820422")
+
+
+def anim_default(data):
+    if os.environ.get("CM_NO_ANIMDEFAULT") == "1":
+        return False
+    o = ANIM_DEFAULT_FN - 0x08000000
+    assert bytes(data[o:o + len(ANIM_DEFAULT_ORIG)]) == ANIM_DEFAULT_ORIG, "SetDefaultOptions not at %08X" % ANIM_DEFAULT_FN
+    data[o:o + len(ANIM_DEFAULT_NEW)] = ANIM_DEFAULT_NEW
+    return True
+
+
 def egg_relearner(data, syms, count_fn, list_site, gmrm):
     """QoL 2026-10-17: GetNumberOfRelearnableMoves -> CM_NumRelearnable at its entry; its dead body holds the veneer the
     relearner list site (CreateLearnableMovesList's BL to GetMoveRelearnerMoves) now calls: CM_RelearnerMoves."""
@@ -1177,6 +1197,9 @@ def main():
     free = free_tutors(data, cm, FREE_TUTOR_GATE, FREE_TUTOR_BP_CONFIRM, FREE_TUTOR_TEXT)
     print("free tutors:", free)
     print("egg moves in the relearner:", egg_relearner(data, syms, EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM))
+    print("battle animations off on new games:", anim_default(data))
+    if os.environ.get("CM_NO_ANIMDEFAULT") == "1":
+        out_rom = BUILD / "lazarus_cm_noanim.gba"
     out_rom.write_bytes(data)
     print(f"wrote {out_rom} sha1={hashlib.sha1(data).hexdigest()}")
 

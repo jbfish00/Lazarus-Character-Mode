@@ -228,7 +228,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 211  # +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 212  # +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -485,6 +485,7 @@ def main():
         *[(o, o + len(b)) for o, b in _OW[0]],
         *[(o, o + 4) for o, _old, _new in _OW[1]],
         (owp.R(owp.GET_INFO), owp.R(owp.GET_INFO) + 8),
+        (0x189612, 0x189616),   # QoL A3 (2026-10-28): SetDefaultOptions' two shifts (section 23 pins the bytes)
     ]
     stray = []
     CHUNK = 4096
@@ -1711,6 +1712,13 @@ def main():
             _bad.append(c["character"])
     check(f"built: every sheet character's info, 18 frames and palette equal the source sheet (bad: {_bad[:5]})",
           not _bad and sum(1 for k in _want if k == "sheet") > 0)
+
+    print("== 23. new games start with battle animations off (QoL A3, 2026-10-28) ==")
+    _a3 = 0x189604
+    check("SetDefaultOptions ORs 0x402 (text speed fast + battle scene off): `movs r3,#0x80 ; lsls r3,#3` replaces "
+          "`lsrs r3,#12 ; lsls r3,#12` (base bytes pinned)",
+          bytes(orig[_a3:_a3 + 24]) == bytes.fromhex("10b5e5f7b9f902220c4c2068838a1b0b1b03134383820422")
+          and bytes(patched[_a3:_a3 + 24]) == bytes.fromhex("10b5e5f7b9f902220c4c2068838a8023db00134383820422"))
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1
