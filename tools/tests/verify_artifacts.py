@@ -228,7 +228,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 213  # +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 219  # +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -258,6 +258,14 @@ FLAG_CHARACTER_MODE = 0x2B0
 # 100% catch for on-roster species (section 19, 2026-10-09; injector CATCH_*). Restated.
 CATCH_ODDS_SITE = 0x0A7354           # Cmd_handleballthrow: cmp r6,#254 ; bhi 0x080A7364
 CATCH_VENEER_ADDR = 0x081DD644       # the dead IsRemovingLastPartyMon's tail
+# EXP rate (section 24, QoL 2026-10-29; injector EXPRATE_* / START_*). RE facts restated; the data block's place is
+# parsed from the injector.
+EXPRATE_ADDR = _inj_addr("EXPRATE_ADDR")
+EXPRATE_VENEER_ADDR = 0x081DD64C     # the dead IsRemovingLastPartyMon's last 8 bytes (its literal pool)
+EXPRATE_BL_SITE = 0x0809562E         # Cmd_getexp: bl ApplyExperienceMultipliers(&gBattleMoveDamage, mon, fainted)
+APPLY_EXP_MULTIPLIERS = 0x080A90F8
+START_ITEMS, START_ITEMS_LITS = 0x08CF0CBC, (0x0821BC08, 0x0821BEFC)
+START_BUILD_TAIL, START_INPUT_SITE = 0x0821B5D8, 0x0821BE54
 
 
 def _elf_syms(elf):
@@ -487,6 +495,14 @@ def main():
         (owp.R(owp.GET_INFO), owp.R(owp.GET_INFO) + 8),
         (0x189612, 0x189616),   # QoL A3 (2026-10-28): SetDefaultOptions' two shifts (section 23 pins the bytes)
         (0x7D5E8, 0x7D5EE), (0x7D5FA, 0x7D5FC),   # QoL A3 instant HP bar: toAdd 255 + branch, scale 0 (section 23)
+        # EXP rate (section 24): veneer, getexp BL, data block (table + strings, script at +0x100), the two
+        # sStartMenuItems literals, the builder tail and the input handler's compare block (rewritten in place)
+        (EXPRATE_VENEER_ADDR - 0x08000000, EXPRATE_VENEER_ADDR - 0x08000000 + 8),
+        (EXPRATE_BL_SITE - 0x08000000, EXPRATE_BL_SITE - 0x08000000 + 4),
+        (EXPRATE_ADDR - 0x08000000, EXPRATE_ADDR - 0x08000000 + 0x180),
+        *[(a - 0x08000000, a - 0x08000000 + 4) for a in START_ITEMS_LITS],
+        (START_BUILD_TAIL - 0x08000000, START_BUILD_TAIL - 0x08000000 + 28),
+        (START_INPUT_SITE - 0x08000000, START_INPUT_SITE - 0x08000000 + 56),
     ]
     stray = []
     CHUNK = 4096
@@ -1725,6 +1741,54 @@ def main():
           "(`movs r2,#0`) (base bytes pinned)",
           bytes(orig[_hp:_hp + 20]) == bytes.fromhex("0120172e05dd18213000cef199ff0004000c0622")
           and bytes(patched[_hp:_hp + 20]) == bytes.fromhex("ff2006e0c04618213000cef199ff0004000c0022"))
+
+    print("== 24. EXP rate: START > Exp. Rate, Cmd_getexp scales the award (QoL, 2026-10-29) ==")
+    _sy = _elf_syms("character_mode.elf")
+    _R = lambda a: a - 0x08000000
+    _shim = (ROOT / "build" / "character_mode.bin").read_bytes()
+    check("getexp: the BL at 0x0809562E called ApplyExperienceMultipliers and now calls the veneer, whose literal is "
+          "CM_ApplyExpMultipliers (ldr r3,[pc]; bx r3; base bytes = the dead function's pool)",
+          decode_bl(orig[_R(EXPRATE_BL_SITE):_R(EXPRATE_BL_SITE) + 4], EXPRATE_BL_SITE) == APPLY_EXP_MULTIPLIERS
+          and decode_bl(patched[_R(EXPRATE_BL_SITE):_R(EXPRATE_BL_SITE) + 4], EXPRATE_BL_SITE) == EXPRATE_VENEER_ADDR
+          and bytes(orig[_R(EXPRATE_VENEER_ADDR):_R(EXPRATE_VENEER_ADDR) + 8]) == bytes.fromhex("b6be0102b5be0102")
+          and struct.unpack_from("<HHI", patched, _R(EXPRATE_VENEER_ADDR))
+          == (0x4B00, 0x4718, _sy["CM_ApplyExpMultipliers"] | 1))
+    _f = _sy["CM_ApplyExpMultipliers"] - SHIM_ADDR
+    _body = _shim[_f:_f + 0x60]
+    check("compiled CM_ApplyExpMultipliers: calls ApplyExperienceMultipliers (literal 0x080A90F9), reads VAR 0x40E1, "
+          "and the shim holds the x/2 table 02 03 04 06 01 (a CM_NO_EXPRATE build has neither the var nor the table)",
+          struct.pack("<I", APPLY_EXP_MULTIPLIERS | 1) in _body and struct.pack("<H", 0x40E1) in _body
+          and bytes([2, 3, 4, 6, 1]) in _shim)
+    _lits = [struct.unpack_from("<I", patched, _R(a))[0] for a in START_ITEMS_LITS]
+    _tab = patched[_R(EXPRATE_ADDR):_R(EXPRATE_ADDR) + 17 * 8]
+    _t16, _f16 = struct.unpack_from("<II", _tab, 16 * 8)
+    _cm_enc, _cm_dec = load_charmap()
+    _txt = "".join(_cm_dec.get(b, "?") for b in patched[_R(_t16):_R(_t16) + 12].split(b"\xff")[0])
+    check("START: both sStartMenuItems readers point at the copy, whose first 16 rows are the base table verbatim and "
+          f"whose row 16 is 'Exp. Rate' -> CM_StartMenuExpRate (text '{_txt}')",
+          all(struct.unpack_from("<I", orig, _R(a))[0] == START_ITEMS for a in START_ITEMS_LITS)
+          and _lits == [EXPRATE_ADDR] * 2 and _tab[:16 * 8] == orig[_R(START_ITEMS):_R(START_ITEMS) + 16 * 8]
+          and _txt == "Exp. Rate" and _f16 == _sy["CM_StartMenuExpRate"] | 1)
+    check("START: BuildNormalStartMenu's tail appends 4, 5, 6, 16 (base: 4, 5, 6; bytes pinned)",
+          bytes(orig[_R(START_BUILD_TAIL):_R(START_BUILD_TAIL) + 28])
+          == bytes.fromhex("04220521e2545a1c1206120ea1549a1c1206120e013103332b70a154")
+          and bytes(patched[_R(START_BUILD_TAIL):_R(START_BUILD_TAIL) + 28])
+          == bytes.fromhex("e41804222270052262700622a2701022e27004332b70c046c046c046"))
+    check("START: HandleStartMenuInput skips the fade for action 16 and keeps the five no-fade callbacks and the "
+          "FadeScreen BL (bytes pinned)",
+          bytes(orig[_R(START_INPUT_SITE):_R(START_INPUT_SITE) + 56]) == bytes.fromhex(
+              "2c4a9a1a511e8a412b49591a481e814111402a4a9a1a501e82410a402849591a481e81411142d7d0264a9342d4d00021012029f71bf9cfe7")
+          and bytes(patched[_R(START_INPUT_SITE):_R(START_INPUT_SITE) + 56]) == bytes.fromhex(
+              "3178695c1029e7d02a4a9342e4d02a4a9342e1d0294a9342ded0294a9342dbd0284a9342d8d00021012029f71ff9d3e7"
+              "c046c046c046c046"))
+    _sc = patched[_R(EXPRATE_ADDR + 0x100):_R(EXPRATE_ADDR + 0x100) + 0x40]
+    check("the chooser script: lockall; callnative CM_ExpRatePrep; message; waitmessage; dynmultichoice (initial = "
+          "VAR_0x8000, 5 rows); callnative CM_ExpRateSet; closemessage; releaseall; end",
+          _sc[0] == 0x69 and _sc[1] == 0x23 and struct.unpack_from("<I", _sc, 2)[0] == _sy["CM_ExpRatePrep"] | 1
+          and _sc[6] == 0x67 and _sc[11] == 0x66 and _sc[12] == 0xE3
+          and struct.unpack_from("<H", _sc, 20)[0] == 0x8000 and _sc[22:24] == bytes([0xFF, 5])
+          and _sc[44] == 0x23 and struct.unpack_from("<I", _sc, 45)[0] == _sy["CM_ExpRateSet"] | 1
+          and _sc[49:53] == bytes([0x68, 0x6B, 0x02, 0xFF]))
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

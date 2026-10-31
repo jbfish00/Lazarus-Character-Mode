@@ -213,6 +213,47 @@ for c in "lazarus_cm 1" "lazarus_cm_nohp 0" "lazarus_cm_nohp 1"; do
     fi
 done
 
+# EXP rate (QoL, user 2026-10-29): the Exp. Share battle (CM off) at every rate gives x1 * N / 2 to the battler and
+# the bench mon (pinned below); the CM_NO_EXPRATE control ignores the rate, so asked for x2 it must FAIL, and its shim
+# fails verify_artifacts' compiled-code check. START > Exp. Rate: three chooser cases, and the same ROM with the input
+# handler's original bytes back (it fades to black first) must FAIL the "opened over the field" check.
+CM_NO_EXPRATE=1 python3 tools/inject_character_mode.py > build/er_ctl_build.log 2>&1 || { echo "[FAIL] EXP rate control build"; fail=1; }
+if python3 tools/tests/verify_artifacts.py 2>&1 | grep -aq "\[FAIL\] compiled CM_ApplyExpMultipliers"; then
+    echo "[PASS] EXP rate: verify_artifacts' compiled-code check FAILS on the CM_NO_EXPRATE shim"
+else
+    echo "[FAIL] EXP rate: the compiled-code check did not fail on the control shim"; fail=1
+fi
+python3 tools/inject_character_mode.py > build/er_build.log 2>&1 || { echo "[FAIL] EXP rate build"; fail=1; }
+for c in "lazarus_cm 0 35 18 PASS" "lazarus_cm 1 52 27 PASS" "lazarus_cm 2 70 36 PASS" "lazarus_cm 3 105 54 PASS" \
+         "lazarus_cm 4 17 9 PASS" "lazarus_cm_noexprate 2 70 36 FAIL" "lazarus_cm_noexprate 2 35 18 PASS"; do
+    set -- $c
+    RATE=$2 WANT0=$3 WANT1=$4 CM_EXPECT_CHECKS=4 timeout 110 "$MGBA" -t tools/savestates/battle_menu.ss \
+        --script tools/mgba_scripts/cm_exp_rate_test.lua build/$1.gba > build/live_er_$1_$2_$3.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: $5" build/live_er_$1_$2_$3.log; then
+        echo "[PASS] EXP rate: $1 rate $2 -> +$3 / +$4 is $5 ($(grep -ao 'battler +[0-9]*, bench +[0-9]*' build/live_er_$1_$2_$3.log | tail -1))"
+    else
+        echo "[FAIL] EXP rate: $1 rate $2 want +$3 / +$4 $5 (see build/live_er_$1_$2_$3.log)"; fail=1
+    fi
+done
+python3 - <<'PY'
+d = bytearray(open("build/lazarus_cm.gba", "rb").read())
+o = 0x21BE54
+d[o:o + 56] = bytes.fromhex("2c4a9a1a511e8a412b49591a481e814111402a4a9a1a501e82410a40"
+                            "2849591a481e81411142d7d0264a9342d4d00021012029f71bf9cfe7")
+open("build/lazarus_cm_erfade.gba", "wb").write(d)
+PY
+for c in "lazarus_cm DDA 2 PASS" "lazarus_cm UA 4 PASS" "lazarus_cm B 0 PASS" "lazarus_cm_erfade DDA 2 FAIL"; do
+    set -- $c
+    KEYS=$2 WANT=$3 CM_EXPECT_CHECKS=4 timeout 60 "$MGBA" -t tools/savestates/cm_red_active.ss \
+        --script tools/mgba_scripts/cm_exp_rate_ui_test.lua build/$1.gba > build/live_erui_$1_$2.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: $4" build/live_erui_$1_$2.log \
+       && { [ "$4" = PASS ] || grep -aq "FAIL the chooser opened over the field" build/live_erui_$1_$2.log; }; then
+        echo "[PASS] EXP rate START row: $1 keys $2 -> $3 is $4"
+    else
+        echo "[FAIL] EXP rate START row: $1 keys $2 want $4 (see build/live_erui_$1_$2.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

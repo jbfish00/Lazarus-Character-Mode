@@ -106,6 +106,9 @@ While Character Mode is on:
 - **Battle animations off on new games** (Character Mode on or off, 2026-10-28): Options turns them back on; an
   existing save keeps its own setting.
 - **Instant HP bar** (every save, 2026-10-28): the HP bar jumps straight to its new value in battle.
+- **EXP rate** (every save, Character Mode on or off, 2026-10-30): START > **Exp. Rate** (the last row) sets battle
+  EXP to x0.5, x1, x1.5, x2 or x3; the current rate is preselected and B keeps it. It multiplies what the game already
+  pays (after the Lucky Egg and Exp. Share), and an existing save starts at x1.
 - **Your overworld sprite becomes the character** (walking and running) for all 123 selectable characters: 117 use
   a character sheet, and Ethan, Lyra, Calem, Serena, Elio and Selene wear Lazarus's own Johto/Kalos/Alolan Fashion
   outfits. Tested live 2026-10-22.

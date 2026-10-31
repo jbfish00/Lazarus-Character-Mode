@@ -570,3 +570,27 @@ The player's walk/run sprite follows the chosen character (`src/ow_sprite.c`, pl
 Evidence: verify §22 (5 checks; tampering a sheet or restoring the entry bytes fails it); live
 `tools/tests/run_ow_sprite_test.sh` (in `run_live_suite.sh`): MISTY 16x32, LUCAS 32x32, PAUL generated,
 ETHAN native (images table), ZZZ refused, and a no-hook control that fails.
+
+## EXP rate (QoL, user 2026-10-29; built 2026-10-30): ✅ SHIPPED, LIVE
+
+START > "Exp. Rate" sets VAR 0x40E1 (0 = x1, 1 = x1.5, 2 = x2, 3 = x3, 4 = x0.5); Cmd_getexp scales each mon's award
+by N / 2. Every save, CM on or off. Code: `src/character_mode.c` "EXP rate", injector `exp_rate()`.
+
+| what | addr | notes |
+|---|---|---|
+| `ApplyExperienceMultipliers(s32 *exp, u8 monId, u8 fainted)` | `0x080A90F8` | Lucky Egg / traded / 1.5x boosts on `gBattleMoveDamage` (`0x020004EC`) |
+| its only caller | BL `0x0809562E` in Cmd_getexp | after `str r6,[&gBattleMoveDamage]`; the "gained N EXP" buffer (`0x080956D8`) and case 3's exp update read the value after it |
+| veneer | `0x081DD64C` | the dead IsRemovingLastPartyMon's last 8 bytes (its pool; base `b6be0102b5be0102`) |
+| `sStartMenuItems` | `0x08CF0CBC`, 16 x {text, callback} | 0 Pokédex, 1 Pokémon, 2 Bag, 3 Phone, 4 name, 5 Save, 6 Option, 7 Exit, 8 Retire, 9 link player, 10 Rest, 11 Retire, 12 Bag (pyramid), 13 Debug, 14 DexNav, 15 Quests. Readers: literals `0x0821BC08`, `0x0821BEFC`. Copied to `0x0967C000` with row 16 |
+| `sCurrentStartMenuActions` / count / cursor | `0x0201F098` / `0x0201F097` / `0x0201F096` | |
+| AddStartMenuAction | `0x0821B57C` | inlined everywhere |
+| BuildNormalStartMenu | `0x0821B594` (caller `0x0821B56E`) | Phone if 0x862, Pokémon if 0x860, Bag, DexNav if 0x88F, name, Save, Option (no Exit row). Tail `0x0821B5D8` (28 B) rewritten to append 4, 5, 6, 16 |
+| HandleStartMenuInput | `0x0821BE14` | A: PlaySE, Pokédex special case, `gMenuCallback` (`0x03003BB8`) = callback; FadeScreen(1, 0) (`0x081450C0`) unless Exit `0x0821C0C5` / Save `0x0821C065` / Debug `0x0821C0ED` / Retire `0x0821C10D` / Pyramid retire `0x0821C189`. The compare block `0x0821BE54` (56 B) is rewritten in place with "action 16" added |
+| StartMenuExitCallback | `0x0821C0C4` | the row's callback runs it, then ScriptContext_SetupScript |
+| ScriptContext_SetupScript | `0x0820B2B0` | ctx `0x03003A50`, sLockFieldControls `0x03003B38` |
+| VarGet | `0x08114644` | dynmultichoice reads left/top/initial through it, so initial can be VAR_0x8000 |
+| chooser script | `0x0967C100` | lockall; callnative CM_ExpRatePrep; message; waitmessage; dynmultichoice; callnative CM_ExpRateSet; closemessage; releaseall; end |
+
+Evidence: verify §24 (6), `exprate_negative_test.py` 7/7, live `cm_exp_rate_test.lua` (x1 35/18, x1.5 52/27, x2 70/36,
+x3 105/54, x0.5 17/9; CM_NO_EXPRATE asked x2 FAILS) and `cm_exp_rate_ui_test.lua` (3 chooser cases + the fade control),
+all in `run_live_suite.sh`.

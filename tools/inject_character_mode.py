@@ -489,6 +489,136 @@ def anim_default(data):
     return True
 
 
+# --- EXP rate (QoL, user 2026-10-29; ../game_plans/EXP_RATE_PLAN.md) ---
+# src/character_mode.c "EXP rate" has the design. Everything here is in every build (CM on or off).
+EXPRATE_ADDR = 0x0967C000            # relocated START table + strings; base 0xFF, nothing points into it
+EXPRATE_SCRIPT_ADDR = EXPRATE_ADDR + 0x100   # the chooser script (src/character_mode.c CM_StartMenuExpRate)
+EXPRATE_BL_SITE = 0x0809562E         # Cmd_getexp: bl ApplyExperienceMultipliers(&gBattleMoveDamage, mon, fainted)
+EXPRATE_BL_ORIG = bytes.fromhex("13f063fd")
+APPLY_EXP_MULTIPLIERS = 0x080A90F8
+# The last 8 bytes of the dead IsRemovingLastPartyMon (its literal pool; verify_artifacts section 20 shows nothing
+# points, BLs or pc-loads into 0x081DD640..0x081DD653). 1.3 MB from the getexp BL.
+EXPRATE_VENEER_ADDR = 0x081DD64C
+EXPRATE_VENEER_ORIG = bytes.fromhex("b6be0102b5be0102")
+START_ITEMS = 0x08CF0CBC             # sStartMenuItems: 16 x {text, callback}; Exit = 7, DexNav = 14, Quests = 15
+START_ITEMS_COUNT = 16
+START_ITEMS_LITS = (0x0821BC08, 0x0821BEFC)   # PrintStartMenuActions, HandleStartMenuInput
+MENU_ACTION_EXPRATE = 16
+# BuildNormalStartMenu (0x0821B594) inlines AddStartMenuAction; its tail appends Name (4), Save (5), Option (6).
+# Rewritten in place to append 4, 5, 6, 16 (r4 = sCurrentStartMenuActions, r3 = count, r5 = &count).
+START_BUILD_TAIL = 0x0821B5D8
+START_BUILD_ORIG = bytes.fromhex("04220521e2545a1c1206120ea1549a1c1206120e013103332b70a154")
+# HandleStartMenuInput (A pressed): after `str r3,[gMenuCallback]` (r3 = the row's callback, r5 =
+# sCurrentStartMenuActions, r6 = &sStartMenuCursorPos) it fades to black unless the callback is Exit/Save/Debug/
+# Retire/Pyramid retire (5 literals at 0x0821BF08..0x0821BF18). Rewritten in place with the same five compares plus
+# "the row is action 16", so the EXP rate row opens over the field.
+START_INPUT_SITE = 0x0821BE54
+START_INPUT_ORIG = bytes.fromhex("2c4a9a1a511e8a412b49591a481e814111402a4a9a1a501e82410a40"
+                                 "2849591a481e81411142d7d0264a9342d4d00021012029f71bf9cfe7")
+START_INPUT_SKIP = 0x0821BE2C        # return FALSE
+START_INPUT_NOFADE_LITS = (0x0821BF08, 0x0821BF0C, 0x0821BF10, 0x0821BF14, 0x0821BF18)
+FADE_SCREEN = 0x081450C0
+
+
+def _t_ldr_pc(rd, at, lit):
+    imm = lit - ((at + 4) & ~3)
+    assert imm % 4 == 0 and 0 <= imm < 1024, (hex(at), hex(lit))
+    return struct.pack("<H", 0x4800 | rd << 8 | imm >> 2)
+
+
+def _t_beq(at, to):
+    off = to - (at + 4)
+    assert off % 2 == 0 and -256 <= off < 256, (hex(at), hex(to))
+    return struct.pack("<H", 0xD000 | ((off >> 1) & 0xFF))
+
+
+def _t_b(at, to):
+    off = to - (at + 4)
+    assert off % 2 == 0 and -2048 <= off < 2048, (hex(at), hex(to))
+    return struct.pack("<H", 0xE000 | ((off >> 1) & 0x7FF))
+
+
+def exp_rate(data, syms, cm, splice):
+    """Every build. Returns a one-line summary."""
+    def at(a, n):
+        return bytes(data[a - 0x08000000:a - 0x08000000 + n])
+
+    def put(a, b):
+        data[a - 0x08000000:a - 0x08000000 + len(b)] = b
+
+    # 1. multiply: veneer + the getexp BL
+    assert at(EXPRATE_VENEER_ADDR, 8) == EXPRATE_VENEER_ORIG and EXPRATE_VENEER_ADDR % 4 == 0
+    put(EXPRATE_VENEER_ADDR, struct.pack("<HHI", 0x4B00, 0x4718, syms["CM_ApplyExpMultipliers"] | 1))
+    assert at(EXPRATE_BL_SITE, 4) == EXPRATE_BL_ORIG == thumb_bl(EXPRATE_BL_SITE, APPLY_EXP_MULTIPLIERS)
+    put(EXPRATE_BL_SITE, thumb_bl(EXPRATE_BL_SITE, EXPRATE_VENEER_ADDR))
+
+    # 2. data block: chooser script, its strings, the START table with row 16
+    t_row = enc_text("Exp. Rate", cm)
+    t_msg = enc_text("Battle EXP rate?", cm)
+    t_items = [enc_text(x, cm) for x in ("x0.5", "x1", "x1.5", "x2", "x3")]
+    table_addr = EXPRATE_ADDR                                  # 17 x 8, word-aligned
+    blob = bytearray(b"\0" * (8 * (START_ITEMS_COUNT + 1)))
+    strs = {}
+    for name, b in [("row", t_row), ("msg", t_msg)] + [(f"i{i}", b) for i, b in enumerate(t_items)]:
+        strs[name] = EXPRATE_ADDR + len(blob)
+        blob += b
+    assert len(blob) <= EXPRATE_SCRIPT_ADDR - EXPRATE_ADDR, len(blob)
+    blob += b"\xff" * (EXPRATE_SCRIPT_ADDR - EXPRATE_ADDR - len(blob))
+    script_addr = EXPRATE_ADDR + len(blob)
+    assert script_addr == EXPRATE_SCRIPT_ADDR, (hex(script_addr), hex(EXPRATE_SCRIPT_ADDR))
+    blob += (op_lockall() + op_callnative(syms["CM_ExpRatePrep"] | 1)
+             + bytes([0x67]) + struct.pack("<I", strs["msg"]) + bytes([0x66])    # message; waitmessage
+             + bytes([0xE3]) + struct.pack("<HH", 0, 0) + bytes([0, 0xFF, 0]) + struct.pack("<H", 0x8000)
+             + bytes([0xFF, 5]) + b"".join(struct.pack("<I", strs[f"i{i}"]) for i in range(5))
+             + op_callnative(syms["CM_ExpRateSet"] | 1)
+             + bytes([0x68]) + op_releaseall() + op_end())                    # closemessage
+    items = at(START_ITEMS, 8 * START_ITEMS_COUNT)
+    for i in range(START_ITEMS_COUNT):
+        t, f = struct.unpack_from("<II", items, 8 * i)
+        assert 0x08000000 <= t < 0x0A000000 and f & 1, f"sStartMenuItems[{i}] = {t:#x}, {f:#x}"
+    blob[0:8 * START_ITEMS_COUNT] = items
+    blob[8 * START_ITEMS_COUNT:8 * START_ITEMS_COUNT + 8] = struct.pack("<II", strs["row"],
+                                                                       syms["CM_StartMenuExpRate"] | 1)
+    splice(EXPRATE_ADDR, bytes(blob), "EXP rate block")
+    for lit in START_ITEMS_LITS:
+        assert struct.unpack_from("<I", data, lit - 0x08000000)[0] == START_ITEMS, hex(lit)
+        struct.pack_into("<I", data, lit - 0x08000000, table_addr)
+
+    # 3. BuildNormalStartMenu's tail: append 4, 5, 6, 16
+    assert at(START_BUILD_TAIL, len(START_BUILD_ORIG)) == START_BUILD_ORIG
+    tail = struct.pack("<11H", 0x18E4, 0x2204, 0x7022, 0x2205, 0x7062, 0x2206, 0x70A2,
+                       0x2200 | MENU_ACTION_EXPRATE, 0x70E2, 0x3304, 0x702B)
+    tail += b"\xc0\x46" * ((len(START_BUILD_ORIG) - len(tail)) // 2)
+    assert len(tail) == len(START_BUILD_ORIG)
+    put(START_BUILD_TAIL, tail)
+
+    # 4. HandleStartMenuInput: no fade for action 16
+    assert at(START_INPUT_SITE, len(START_INPUT_ORIG)) == START_INPUT_ORIG
+    lits = [struct.unpack_from("<I", data, a - 0x08000000)[0] for a in START_INPUT_NOFADE_LITS]
+    assert lits == [0x0821C0C5, 0x0821C065, 0x0821C0ED, 0x0821C10D, 0x0821C189], [hex(x) for x in lits]
+    code, pc = bytearray(), START_INPUT_SITE
+
+    def emit(b):
+        nonlocal pc
+        code.extend(b)
+        pc += len(b)
+    emit(struct.pack("<3H", 0x7831, 0x5C69, 0x2900 | MENU_ACTION_EXPRATE))   # ldrb r1,[r6]; ldrb r1,[r5,r1]; cmp r1,#16
+    emit(_t_beq(pc, START_INPUT_SKIP))
+    for lit in START_INPUT_NOFADE_LITS:
+        emit(_t_ldr_pc(2, pc, lit))
+        emit(struct.pack("<H", 0x4293))                                        # cmp r3, r2
+        emit(_t_beq(pc, START_INPUT_SKIP))
+    emit(struct.pack("<2H", 0x2100, 0x2001))                                   # movs r1,#0; movs r0,#1
+    emit(thumb_bl(pc, FADE_SCREEN))
+    emit(_t_b(pc, START_INPUT_SKIP))
+    code += b"\xc0\x46" * ((len(START_INPUT_ORIG) - len(code)) // 2)
+    assert len(code) == len(START_INPUT_ORIG)
+    put(START_INPUT_SITE, bytes(code))
+    return (f"getexp BL @ {EXPRATE_BL_SITE:#x} -> veneer {EXPRATE_VENEER_ADDR:#x} -> "
+            f"{syms['CM_ApplyExpMultipliers'] | 1:#x}; START row {MENU_ACTION_EXPRATE} (table {table_addr:#x}), "
+            f"script @ {script_addr:#x}" + (" [CONTROL: rate ignored]" if os.environ.get("CM_NO_EXPRATE") == "1" else ""))
+
+
 def egg_relearner(data, syms, count_fn, list_site, gmrm):
     """QoL 2026-10-17: GetNumberOfRelearnableMoves -> CM_NumRelearnable at its entry; its dead body holds the veneer the
     relearner list site (CreateLearnableMovesList's BL to GetMoveRelearnerMoves) now calls: CM_RelearnerMoves."""
@@ -596,6 +726,8 @@ def main():
     subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
                     *(["-DCM_NO_ANYLEVEL"] if os.environ.get("CM_NO_ANYLEVEL") == "1" else []),   # test control (QoL A2)
                     *(["-DCM_TEST_NO_EGG"] if os.environ.get("CM_TEST_NO_EGG") == "1" else []),   # test only (QoL A2)
+                    *(["-DCM_NO_EXPRATE"] if os.environ.get("CM_NO_EXPRATE") == "1" else []),     # control (EXP rate)
+                    f"-DEXPRATE_SCRIPT_ADDR={EXPRATE_SCRIPT_ADDR:#x}",
                     "-O2", "-ffreestanding", "-fno-builtin", "-fno-jump-tables",
                     f"-DCODES_ADDR={CODES_ADDR:#x}",
                     f"-DSTARTERS_ADDR={STARTERS_ADDR:#x}",
@@ -1218,10 +1350,13 @@ def main():
     print("egg moves in the relearner:", egg_relearner(data, syms, EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM))
     print("battle animations off on new games:", anim_default(data))
     print("instant HP bar:", instant_hp(data))
+    print("EXP rate:", exp_rate(data, syms, cm, splice))
     if os.environ.get("CM_NO_ANIMDEFAULT") == "1":
         out_rom = BUILD / "lazarus_cm_noanim.gba"
     if os.environ.get("CM_NO_INSTANTHP") == "1":
         out_rom = BUILD / "lazarus_cm_nohp.gba"
+    if os.environ.get("CM_NO_EXPRATE") == "1":
+        out_rom = BUILD / "lazarus_cm_noexprate.gba"
     out_rom.write_bytes(data)
     print(f"wrote {out_rom} sha1={hashlib.sha1(data).hexdigest()}")
 
