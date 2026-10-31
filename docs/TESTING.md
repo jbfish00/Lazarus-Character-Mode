@@ -3,7 +3,32 @@
 Four automated layers, mirroring (and exceeding) the Radical Red suite.
 Everything runs headless; no GUI or human input needed.
 
-## ⭐ CURRENT COUNTS (2026-09-04) — the per-layer numbers below are historical
+## ⭐ CURRENT COUNTS (2026-10-30)
+
+```
+python3 tools/tests/verify_artifacts.py             # 219 checks, ALL PASS (sections 1-24)
+bash    tools/tests/run_live_suite.sh               # LIVE SUITE: ALL PASS, 66 result lines (2026-10-30)
+python3 tools/tests/exprate_negative_test.py        # 7/7 (section 24, EXP rate)
+```
+The other `*_negative_test.py` files each pin their own case count (`EXPECT_CASES`); `run_live_suite.sh` runs several
+of them. Counts below this block are older.
+
+Live layers added since the 2026-09-04 block (all in `run_live_suite.sh`, each with a control that must FAIL):
+
+| layer | script | proves |
+|---|---|---|
+| PC second guard | `run_pc_guard_e2e.sh` | depositing the last on-roster mon is refused (red / misty / off + guard-absent control) |
+| link-trade sweep | `run_link_trade_sweep_e2e.sh` | the real trade ender sweeps before saving, wired and wireless |
+| 100% catch | `cm_sure_catch_test.lua` | on-roster caught 3/3, off-roster dodged, CM off misses, no-hook control |
+| relearner, any level + egg moves | `cm_relearn_test.lua` | 24 / 0 / 24 / 16 moves on the test ROMs |
+| Exp. Share, CM off | `cm_exp_share_give_test.lua`, `cm_exp_share_test.lua` | the Rotom Phone give sets 0x495; a bench mon gains EXP only with it |
+| overworld sprite | `run_ow_sprite_test.sh` | 5 characters + a no-hook control |
+| battle animations off | `cm_anim_default_test.lua` | the real intro stores 1; the `CM_NO_ANIMDEFAULT` control stores 0 |
+| instant HP bar | `cm_instant_hp_test.lua` | <= 4 bar frames an update; the `CM_NO_INSTANTHP` control animates |
+| EXP rate | `cm_exp_rate_test.lua` | Exp. Share battle, CM off: x1 35/18, x1.5 52/27, x2 70/36, x3 105/54, x0.5 17/9; `CM_NO_EXPRATE` fails x2, and its shim fails verify's compiled-code check |
+| EXP rate START row | `cm_exp_rate_ui_test.lua` | START > Exp. Rate: DDA -> x2, UA -> x0.5, B keeps; the ROM with the input handler's original bytes (fade to black) must FAIL "opened over the field" |
+
+## CURRENT COUNTS (2026-09-04) — historical
 
 Run everything with:
 
