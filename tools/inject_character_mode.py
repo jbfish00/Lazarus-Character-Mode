@@ -635,6 +635,26 @@ def egg_relearner(data, syms, count_fn, list_site, gmrm):
     return True
 
 
+# QoL C11/C16 (2026-11-07): the starter kit for every new game. Lazarus's rewritten NewGameInitData ends with
+# `bl 0x0818E8C4` at 0x08189842 -> an 8-byte veneer at GetNumberOfRelearnableMoves+0x20 (that function's entry is
+# replaced by egg_relearner, which uses +0x00..+0x13, so its body is dead; nothing branches in from outside) ->
+# CM_NewGameKit, which makes the original call first. Needs egg_relearner (else the body is live): the
+# CM_NO_EGGRELEARN control build and CM_NO_STARTKIT=1 (the kit's own control) leave the BL alone.
+KIT_BL_SITE, KIT_BL_ORIG_TARGET = 0x08189842, 0x0818E8C4
+KIT_VENEER_ADDR = 0x081C73D0 + 0x20
+
+
+def starter_kit(data, syms, relearner_on):
+    if os.environ.get("CM_NO_STARTKIT") == "1" or not relearner_on:
+        return False
+    s, v = KIT_BL_SITE - 0x08000000, KIT_VENEER_ADDR - 0x08000000
+    assert bytes(data[s:s + 4]) == thumb_bl(KIT_BL_SITE, KIT_BL_ORIG_TARGET), "NewGameInitData's last BL moved"
+    assert KIT_VENEER_ADDR % 4 == 0
+    data[v:v + 8] = struct.pack("<HHI", 0x4B00, 0x4718, syms["CM_NewGameKit"] | 1)            # ldr r3,[pc]; bx r3
+    data[s:s + 4] = thumb_bl(KIT_BL_SITE, KIT_VENEER_ADDR)
+    return True
+
+
 EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM = 0x081C73D0, 0x08181CBC, 0x081C71E8   # QoL 2026-10-17 (symmatch vs expansion; see the shim)
 FREE_TUTOR_GATE, FREE_TUTOR_BP_CONFIRM, FREE_TUTOR_TEXT = 0x82b3865, 0x8319d08, 0x9ff0000   # QoL 2026-10-17
 
@@ -1347,7 +1367,9 @@ def main():
     out_rom = BUILD / "lazarus_cm.gba"
     free = free_tutors(data, cm, FREE_TUTOR_GATE, FREE_TUTOR_BP_CONFIRM, FREE_TUTOR_TEXT)
     print("free tutors:", free)
-    print("egg moves in the relearner:", egg_relearner(data, syms, EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM))
+    _rel_on = egg_relearner(data, syms, EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM)
+    print("egg moves in the relearner:", _rel_on)
+    print("starter kit (QoL C11/C16) at new game:", starter_kit(data, syms, _rel_on))
     print("battle animations off on new games:", anim_default(data))
     print("instant HP bar:", instant_hp(data))
     print("EXP rate:", exp_rate(data, syms, cm, splice))

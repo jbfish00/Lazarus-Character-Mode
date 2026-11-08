@@ -254,6 +254,21 @@ for c in "lazarus_cm DDA 2 PASS" "lazarus_cm UA 4 PASS" "lazarus_cm B 0 PASS" "l
     fi
 done
 
+# QoL C11/C16 starter kit (2026-11-07): a cold-boot intro with CM never on. Shipped ROM -> granted; the
+# CM_NO_STARTKIT=1 build (BL untouched) -> none, and asked for "granted" it must FAIL.
+CM_NO_STARTKIT=1 python3 tools/inject_character_mode.py > build/kit_build.log 2>&1 && cp build/lazarus_cm.gba build/lazarus_cm_nokit.gba \
+  && python3 tools/inject_character_mode.py > build/kit_build.log 2>&1 || { echo "[FAIL] starter kit builds"; fail=1; }
+for c in "lazarus_cm granted 7 PASS" "lazarus_cm_nokit none 6 PASS" "lazarus_cm_nokit granted 7 FAIL"; do
+    set -- $c
+    MGBA_HEADLESS_DEBUGGER=1 EXPECT=$2 SHOT=build/live_kit_$1_$2.png CM_EXPECT_CHECKS=$3 timeout 600 "$MGBA" \
+        --script tools/mgba_scripts/cm_newgame_kit_test.lua build/$1.gba > build/live_kit_$1_$2.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: $4" build/live_kit_$1_$2.log; then
+        echo "[PASS] starter kit: $1 expect $2 is $4"
+    else
+        echo "[FAIL] starter kit: $1 expect $2 want $4 (see build/live_kit_$1_$2.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

@@ -228,7 +228,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 219  # +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 220  # +1: section 20, the starter kit veneer (QoL C11/C16, 2026-11-07); +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -311,7 +311,8 @@ def _free_tutor_regions(orig):
                    bytes(orig[g:g + 0x100]), re.S)
     bye = struct.unpack_from("<I", orig, g + 12)[0] - 0x08000000
     r = [(g, g + 16), (g + pm.start(2), g + pm.start(2) + 13), (FT_TEXT - 0x08000000, FT_TEXT - 0x08000000 + 0x100),
-         (EGG_COUNT_FN - 0x08000000, EGG_COUNT_FN - 0x08000000 + 20), (EGG_LIST_SITE - 0x08000000, EGG_LIST_SITE - 0x08000000 + 4)]
+         (EGG_COUNT_FN - 0x08000000, EGG_COUNT_FN - 0x08000000 + 20), (EGG_LIST_SITE - 0x08000000, EGG_LIST_SITE - 0x08000000 + 4),
+         (EGG_COUNT_FN + 0x20 - 0x08000000, EGG_COUNT_FN + 0x28 - 0x08000000), (0x189842, 0x189846)]   # QoL C11/C16 kit
     r += [(i + 2, i + 6) for i in list(range(g - 0x40, g + 0x100)) + list(range(bye, bye + 8))
           if orig[i] == 0x0F and orig[i + 1] == 0]
     r += [(m.start() + 3, m.start() + 5) for m in _FT_BP.finditer(bytes(orig))]
@@ -1652,6 +1653,14 @@ def main():
           and decode_bl(bytes(patched[_s:_s + 4]), EGG_LIST_SITE) == EGG_COUNT_FN + 8
           and struct.unpack_from("<I", patched, _c + 16)[0] == _es["CM_RelearnerMoves"] | 1
           and decode_bl(bytes(orig[_s:_s + 4]), EGG_LIST_SITE) == EGG_GMRM)
+
+    _k, _kv = 0x189842, EGG_COUNT_FN + 0x20 - 0x08000000
+    check("starter kit (QoL C11/C16 2026-11-07): NewGameInitData's last BL (base: bl 0x0818E8C4) -> veneer in the dead "
+          "GetNumberOfRelearnableMoves body (+0x20) -> CM_NewGameKit",
+          decode_bl(bytes(orig[_k:_k + 4]), 0x08189842) == 0x0818E8C4
+          and decode_bl(bytes(patched[_k:_k + 4]), 0x08189842) == EGG_COUNT_FN + 0x20
+          and bytes(patched[_kv:_kv + 4]) == bytes.fromhex("004b1847")
+          and struct.unpack_from("<I", patched, _kv + 4)[0] == _es["CM_NewGameKit"] | 1)
 
     print("== 21. early party-wide Exp. Share, CM on or off (native; 2026-10-21) ==")
     # The pre-gym-1 Rotom Phone scene gives it to every player: delay 5; additem 461 (Exp. Share), 1;

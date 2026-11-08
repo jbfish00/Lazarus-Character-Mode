@@ -1092,3 +1092,29 @@ void CM_ExpRateSet(void)
     if (row < 5)                        /* B (MULTI_B_PRESSED, 127) keeps the rate */
         *GetVarPointer(VAR_EXP_RATE) = sExpRateRowToValue[row];
 }
+
+/* ------------------------------------------------------------ starter kit (QoL C11 + C16, 2026-11-07)
+ * Every new game, Character Mode on or off: Running Shoes (FLAG_SYS_B_DASH 0x8C0, the id Lazarus's own scripts set at
+ * 0x08299DCD/0x08381DCE), the Mach Bike (707) + Rydel's FLAG_RECEIVED_BIKE (0x5A: his script at 0x082C14A6 sets it
+ * before giveitem 707, so he offers the swap instead of a second bike), and the Shiny (691) + Oval (690) Charms (the
+ * code asks the bag for both: CheckBagHasItem(691) at 0x081051C4 and 8 more, (690) at 0x080FC568/0x080FCE6A).
+ * Lazarus's rewritten NewGameInitData ends with `bl 0x0818E8C4` (0x08189842); that BL goes through a veneer to here,
+ * which makes the same call with the same arguments first. */
+#define LzCheckBagHasItem ((u8 (*)(u16, u16)) 0x0815CA85)
+#define LzAddBagItem      ((u8 (*)(u16, u16)) 0x0815CCD1)
+#define LzNewGameLastCall ((void (*)(u32, u32, u32, u32)) 0x0818E8C5)
+
+void CM_NewGameKit(u32 a, u32 b, u32 c, u32 d)
+{
+    static const u16 sCharms[2] = { 691, 690 };
+    u32 i;
+
+    LzNewGameLastCall(a, b, c, d);
+    FlagSet(0x8C0);
+    if (!FlagGet(0x5A) && !LzCheckBagHasItem(707, 1))
+        LzAddBagItem(707, 1);
+    FlagSet(0x5A);
+    for (i = 0; i < 2; i++)
+        if (!LzCheckBagHasItem(sCharms[i], 1))
+            LzAddBagItem(sCharms[i], 1);
+}
