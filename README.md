@@ -323,3 +323,6 @@ With Character Mode off, the desk works exactly as it always did.
 - Character rosters from **Bulbapedia**.
 - Character Mode concept and reference implementation: the Pokemon ROWE
   project; binary-port methodology proven on Pokemon Radical Red.
+
+## Starter kit (2026-11-07)
+Every new game (Character Mode on or off) starts with the Running Shoes, the Mach Bike (Rydel then offers the swap), the Shiny Charm and the Oval Charm. Build 2026-11-07: `build/lazarus_cm.gba` sha1 `ce03be5810735b5862ff4ff7504fa8c04429857e`, `build/lazarus_cm.bps` sha1 `831848d17ad866de76ffe60b8262f165779636d0` (round trip checked). The kit comes with a new game only; an existing save keeps what it has. On My Boy!, keep the old ROM and save, and load the new ROM under the same file name so the `.sav` carries over.
