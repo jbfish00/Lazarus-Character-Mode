@@ -326,3 +326,6 @@ With Character Mode off, the desk works exactly as it always did.
 
 ## Starter kit (2026-11-07)
 Every new game (Character Mode on or off) starts with the Running Shoes, the Mach Bike (Rydel then offers the swap), the Shiny Charm and the Oval Charm. Build 2026-11-07: `build/lazarus_cm.gba` sha1 `ce03be5810735b5862ff4ff7504fa8c04429857e`, `build/lazarus_cm.bps` sha1 `831848d17ad866de76ffe60b8262f165779636d0` (round trip checked). The kit comes with a new game only; an existing save keeps what it has. On My Boy!, keep the old ROM and save, and load the new ROM under the same file name so the `.sav` carries over.
+
+## Wild-intro roster hint (2026-11-08)
+With Character Mode on, a wild Pokémon off your character's roster says so in its intro ("Wild X appeared! / It is not on your roster."), so you know before you throw a ball that it can't be caught. On-roster Pokémon still say "destined for <NAME>!". Build 2026-11-08: `build/lazarus_cm.gba` sha1 `343f3f3a66d084155adb92525c708e73fd63e28e`, `build/lazarus_cm.bps` sha1 `072692a6aefc761ff7af9437ccbed5a151052522` (round trip checked). Save-compatible: on My Boy!, keep the old ROM and save, and load the new ROM under the same file name so the `.sav` carries over.

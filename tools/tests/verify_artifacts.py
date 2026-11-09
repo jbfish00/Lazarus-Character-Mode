@@ -228,7 +228,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 220  # +1: section 20, the starter kit veneer (QoL C11/C16, 2026-11-07); +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 222  # +2 off-roster intro record (QoL B9, 2026-11-08); +1: section 20, the starter kit veneer (QoL C11/C16, 2026-11-07); +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -451,7 +451,7 @@ def main():
         # encounter marker: the per-character intro strings, its own trampoline
         # (a different 22-byte scavenge run from the two above), and the single
         # BL inside BufferStringBattle that it retargets.
-        (0x09650000 - 0x08000000, 0x09650000 - 0x08000000 + NUM_CHARACTERS * 64),
+        (0x09650000 - 0x08000000, 0x09650000 - 0x08000000 + (NUM_CHARACTERS + 1) * 64),  # + B9 record
         (0x0880B6, 0x0880B6 + 4),
         *[(s, s + 4) for s in BL_SITES],
         *[(s, s + 4) for s in BL_SITES_WILD],
@@ -1269,8 +1269,8 @@ def main():
     _MK_BL, _MK_EXPAND, _MK_TRAMP = 0x0880B6, 0x08088928, MARKER_TRAMPOLINE_ADDR
     _MK_STRS = (0x08575304, 0x08575318)
     _mk = (HERE.parent / "character_mode" / "marker_strings.bin").read_bytes()
-    check("marker_strings.bin is NUM_CHARACTERS x 64",
-          len(_mk) == NUM_CHARACTERS * _MK_STRIDE, str(len(_mk)))
+    check("marker_strings.bin is (NUM_CHARACTERS + 1 off-roster record) x 64",
+          len(_mk) == (NUM_CHARACTERS + 1) * _MK_STRIDE, str(len(_mk)))
     check("marker strings in ROM == marker_strings.bin",
           bytes(patched[_MK_ADDR - 0x08000000:
                         _MK_ADDR - 0x08000000 + len(_mk)]) == _mk)
@@ -1295,9 +1295,17 @@ def main():
     # Its own 8-byte slot in the trampoline block, not the catch/wild ones.
     check("marker trampoline is clear of the catch/wild trampoline slots",
           not (TRAMPOLINE_ADDR <= _MK_TRAMP < TRAMPOLINE_ADDR + 16))
-    _bad = [i for i in range(NUM_CHARACTERS)
+    _bad = [i for i in range(NUM_CHARACTERS + 1)
             if 0xFF not in _mk[i * _MK_STRIDE:(i + 1) * _MK_STRIDE]]
     check("every marker slot is 0xFF-terminated", not _bad, str(len(_bad)))
+    # QoL B9 (2026-11-08): the shared off-roster record, and the shim's use of it.
+    _off_want = bytes.fromhex("d1dde0d800fd0600d5e4e4d9d5e6d9d8abfe"
+                              "c3e800dde700e2e3e800e3e200ede3e9e600e6e3e7e8d9e6adfbff")
+    check("the off-roster record reads 'Wild X appeared! / It is not on your roster.'",
+          _mk[NUM_CHARACTERS * _MK_STRIDE:NUM_CHARACTERS * _MK_STRIDE + len(_off_want)] == _off_want)
+    check("the shim loads the off-roster record's address (MARKER_ADDR + N*64)",
+          struct.pack("<I", _MK_ADDR + NUM_CHARACTERS * _MK_STRIDE)
+          in bytes(patched[SHIM_ADDR - 0x08000000:SHIM_ADDR - 0x08000000 + 0x2000]))
 
 
     print("== 15. roster display (roots, relocated callback table, desk entry, code) ==")
@@ -1496,7 +1504,7 @@ def main():
               _fp_bstride * _fp_nchars == len(bitmaps))
         check(f"shim compiled MARKER_STRIDE={_fp_mstride}: x{_fp_nchars} == "
               f"marker_strings.bin ({len(_fp_mk)} B)",
-              _fp_mstride * _fp_nchars == len(_fp_mk))
+              _fp_mstride * (_fp_nchars + 1) == len(_fp_mk))
         check(f"shim compiled TOBIAS_CHAR_ID={_fp_tobias} == manifest index of "
               f"Tobias ({_fp_tob}; 0 = trimmed from this roster)",
               _fp_tobias == _fp_tob)

@@ -269,6 +269,25 @@ for c in "lazarus_cm granted 7 PASS" "lazarus_cm_nokit none 6 PASS" "lazarus_cm_
     fi
 done
 
+# QoL B9 wild-intro roster hint (2026-11-08): from del_end.ss, walk into grass; the species is forced to
+# Hoppip (187: off Red's roster (1), on Erika's (12)) at the wild trampoline with CM off, and CM is set
+# just before the first battle string. The intro text is decoded from BattleStringExpandPlaceholders' dst.
+# Also the first live proof that the "destined for" marker reaches a real battle here.
+CM_NO_OFFROSTER=1 python3 tools/inject_character_mode.py > build/hint_build.log 2>&1 \
+  && python3 tools/inject_character_mode.py >> build/hint_build.log 2>&1 || { echo "[FAIL] intro hint builds"; fail=1; }
+for c in "lazarus_cm 1 1 offroster PASS" "lazarus_cm 1 12 marker PASS" "lazarus_cm 0 1 vanilla PASS" \
+         "lazarus_cm_nooffroster 1 1 vanilla PASS" "lazarus_cm_nooffroster 1 1 offroster FAIL"; do
+    set -- $c
+    MGBA_HEADLESS_DEBUGGER=1 CM_ON=$2 CM_CHAR=$3 FORCE_SPECIES=187 EXPECT=$4 CM_EXPECT_CHECKS=2 \
+        CM_SHOT=build/live_hint_$1_$3_$4.png timeout 400 "$MGBA" -t tools/savestates/del_end.ss \
+        --script tools/mgba_scripts/cm_intro_hint_test.lua build/$1.gba > build/live_hint_$1_$3_$4.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: $5" build/live_hint_$1_$3_$4.log; then
+        echo "[PASS] intro hint: $1 CM_ON=$2 char $3 expect $4 is $5"
+    else
+        echo "[FAIL] intro hint: $1 CM_ON=$2 char $3 expect $4 want $5 (see build/live_hint_$1_$3_$4.log)"; fail=1
+    fi
+done
+
 echo
 [ $fail -eq 0 ] && echo "LIVE SUITE: ALL PASS" || echo "LIVE SUITE: FAILURES"
 exit $fail

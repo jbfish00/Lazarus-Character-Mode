@@ -594,3 +594,14 @@ by N / 2. Every save, CM on or off. Code: `src/character_mode.c` "EXP rate", inj
 Evidence: verify §24 (6), `exprate_negative_test.py` 7/7, live `cm_exp_rate_test.lua` (x1 35/18, x1.5 52/27, x2 70/36,
 x3 105/54, x0.5 17/9; CM_NO_EXPRATE asked x2 FAILS) and `cm_exp_rate_ui_test.lua` (3 chooser cases + the fade control),
 all in `run_live_suite.sh`.
+
+## Wild-intro roster hint (QoL B9, 2026-11-08): ✅ LIVE
+
+`CM_BattleStringGated` (BufferStringBattle's BL `0x080880B6` -> marker trampoline `0x081DD62C`): with CM on and a valid
+wild species (0 < sp < NUM_SPECIES, the rule `CM_CatchOdds` refuses the ball by) NOT on the roster, both intro copies
+(`0x08575304`/`0x08575318`) become the shared record `MARKER_ADDR + NUM_CHARACTERS*64` = `0x09653B80`: "Wild X
+appeared! / It is not on your roster." `CM_NO_OFFROSTER=1` -> `build/lazarus_cm_nooffroster.gba` (control). Also the
+FIRST live proof that the 2026-08 "destined for" marker reaches a real battle here (Erika + Hoppip: "Wild Hoppip
+appeared, destined for ERIKA!"). Live: `tools/mgba_scripts/cm_intro_hint_test.lua` from `del_end.ss` (wild_hunt.lua's
+route into grass; species forced at the wild trampoline with CM off, CM set at the marker trampoline), 5 cases in
+`run_live_suite.sh`. verify **222**, live suite ALL PASS, checker guard 20/20.

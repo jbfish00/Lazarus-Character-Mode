@@ -222,7 +222,7 @@ EXPAND_STRING    = 0x08088928
 # different arms of the compiled switch; the shim matches both (see the note in
 # src/character_mode.c for why picking one was not safe).
 TEXT_WILD_APPEARED = (0x08575304, 0x08575318)
-MARKER_ADDR      = 0x09650000   # 238*64 = 15,232 B; verified 0xFF in the
+MARKER_ADDR      = 0x09650000   # (238+1)*64 = 15,296 B (+ the B9 off-roster line); verified 0xFF in the
                                 # original and clear of the sprite blob (ends
                                 # ~0x09646000) and the mugshot (0x09648000)
 MARKER_STRIDE    = 64
@@ -757,6 +757,7 @@ def main():
                     f"-DDBG_GIVE2_SPECIES={dbg_give2}",
                     f"-DWILDMONS_ADDR={WILDMONS_ADDR:#x}",
                     f"-DMARKER_ADDR={MARKER_ADDR:#x}",
+                    *(["-DCM_NO_OFFROSTER"] if os.environ.get("CM_NO_OFFROSTER") == "1" else []),
                     f"-DLEGENDARY_ADDR={LEGENDARY_ADDR:#x}",
                     f"-DLEGENDARY_STRIDE={legendary_stride}",
                     f"-DWILDMON_STRIDE={wildmon_stride}",
@@ -1205,9 +1206,11 @@ def main():
 
     # --- encounter marker: per-character intro strings + its trampoline ---
     marker_blob = (CM / "marker_strings.bin").read_bytes()
-    assert len(marker_blob) == NUM_CHARACTERS * MARKER_STRIDE, (
+    # + 1: the shared off-roster line (QoL B9, 2026-11-08) is record NUM_CHARACTERS.
+    assert len(marker_blob) == (NUM_CHARACTERS + 1) * MARKER_STRIDE, (
         f"marker_strings.bin is {len(marker_blob)} B, expected "
-        f"{NUM_CHARACTERS * MARKER_STRIDE} -- re-run emit_marker_strings.py")
+        f"{(NUM_CHARACTERS + 1) * MARKER_STRIDE} -- re-run emit_marker_strings.py")
+    assert MARKER_ADDR + len(marker_blob) <= BITMAPS_ADDR
     splice(MARKER_ADDR, marker_blob, "encounter marker strings")
     assert MARKER_TRAMPOLINE_ADDR % 4 == 0
     splice(MARKER_TRAMPOLINE_ADDR,
@@ -1379,6 +1382,8 @@ def main():
         out_rom = BUILD / "lazarus_cm_nohp.gba"
     if os.environ.get("CM_NO_EXPRATE") == "1":
         out_rom = BUILD / "lazarus_cm_noexprate.gba"
+    if os.environ.get("CM_NO_OFFROSTER") == "1":           # QoL B9 control
+        out_rom = BUILD / "lazarus_cm_nooffroster.gba"
     out_rom.write_bytes(data)
     print(f"wrote {out_rom} sha1={hashlib.sha1(data).hexdigest()}")
 
