@@ -228,7 +228,7 @@ EGG_TAIL_ADDR = 0x09670000
 PC_TAIL_ADDR = 0x09671000
 PC_TAIL_SPACING = 0x20
 
-EXPECT_CHECKS = 222  # +2 off-roster intro record (QoL B9, 2026-11-08); +1: section 20, the starter kit veneer (QoL C11/C16, 2026-11-07); +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
+EXPECT_CHECKS = 224  # +2 off-roster intro record (QoL B9, 2026-11-08); +1: section 20, the starter kit veneer (QoL C11/C16, 2026-11-07); +6: section 24, EXP rate (2026-10-29); +1: section 23, instant HP bar (2026-10-28); +1: section 23, battle animations off on new games (2026-10-28); +5: section 22, the overworld sprite (2026-10-22); +2: section 21, the native Exp. Share give + share test intact, CM off too (2026-10-21); +3: section 20, free tutors + egg relearner (2026-10-17); +1: section 19 off-roster refused (2026-10-09); +6: section 19, 100% roster catch (2026-10-09); +3: section 15, the roster header + hint (2026-10-02); +7: section 18, the link-trade sweep (2026-09-30); +9: section 17, the trampoline block + PC second guard (2026-09-29); +7: section 16, the build fingerprint; +1: section 13 reads the compiled guard (2026-09-28); +23: section 15, the roster display; +1 roster_display.c takes NUM_CHARACTERS (2026-09-27)
                      # +10: the PC-exit sweep, 5 checks x 2 sites (2026-09-06)
 
 
@@ -500,7 +500,7 @@ def main():
         # sStartMenuItems literals, the builder tail and the input handler's compare block (rewritten in place)
         (EXPRATE_VENEER_ADDR - 0x08000000, EXPRATE_VENEER_ADDR - 0x08000000 + 8),
         (EXPRATE_BL_SITE - 0x08000000, EXPRATE_BL_SITE - 0x08000000 + 4),
-        (EXPRATE_ADDR - 0x08000000, EXPRATE_ADDR - 0x08000000 + 0x180),
+        (EXPRATE_ADDR - 0x08000000, EXPRATE_ADDR - 0x08000000 + 0x200),   # table + strings + the Extras script (2026-11-11)
         *[(a - 0x08000000, a - 0x08000000 + 4) for a in START_ITEMS_LITS],
         (START_BUILD_TAIL - 0x08000000, START_BUILD_TAIL - 0x08000000 + 28),
         (START_INPUT_SITE - 0x08000000, START_INPUT_SITE - 0x08000000 + 56),
@@ -1782,10 +1782,10 @@ def main():
     _cm_enc, _cm_dec = load_charmap()
     _txt = "".join(_cm_dec.get(b, "?") for b in patched[_R(_t16):_R(_t16) + 12].split(b"\xff")[0])
     check("START: both sStartMenuItems readers point at the copy, whose first 16 rows are the base table verbatim and "
-          f"whose row 16 is 'Exp. Rate' -> CM_StartMenuExpRate (text '{_txt}')",
+          f"whose row 16 is 'Extras' -> CM_StartMenuExpRate (text '{_txt}')",
           all(struct.unpack_from("<I", orig, _R(a))[0] == START_ITEMS for a in START_ITEMS_LITS)
           and _lits == [EXPRATE_ADDR] * 2 and _tab[:16 * 8] == orig[_R(START_ITEMS):_R(START_ITEMS) + 16 * 8]
-          and _txt == "Exp. Rate" and _f16 == _sy["CM_StartMenuExpRate"] | 1)
+          and _txt == "Extras" and _f16 == _sy["CM_StartMenuExpRate"] | 1)
     check("START: BuildNormalStartMenu's tail appends 4, 5, 6, 16 (base: 4, 5, 6; bytes pinned)",
           bytes(orig[_R(START_BUILD_TAIL):_R(START_BUILD_TAIL) + 28])
           == bytes.fromhex("04220521e2545a1c1206120ea1549a1c1206120e013103332b70a154")
@@ -1798,14 +1798,31 @@ def main():
           and bytes(patched[_R(START_INPUT_SITE):_R(START_INPUT_SITE) + 56]) == bytes.fromhex(
               "3178695c1029e7d02a4a9342e4d02a4a9342e1d0294a9342ded0294a9342dbd0284a9342d8d00021012029f71ff9d3e7"
               "c046c046c046c046"))
-    _sc = patched[_R(EXPRATE_ADDR + 0x100):_R(EXPRATE_ADDR + 0x100) + 0x40]
-    check("the chooser script: lockall; callnative CM_ExpRatePrep; message; waitmessage; dynmultichoice (initial = "
+    # 2026-11-11: the row's script is the Extras chooser; the rate chooser is its first branch (same bytes, minus lockall)
+    _xs = EXPRATE_ADDR + 0x100
+    _xh = patched[_R(_xs):_R(_xs) + 0x60]
+    _a_rate = struct.unpack_from("<I", _xh, 6)[0]
+    _a_heal, _a_pc = struct.unpack_from("<I", _xh, 52)[0], struct.unpack_from("<I", _xh, 63)[0]
+    check("the Extras script: lockall; checkflag 0x860; goto_if unset -> rate; dynmultichoice (3 rows); VAR_RESULT 0 -> "
+          "rate, 1 -> heal, 2 -> PC; releaseall; end",
+          _xh[:6] == bytes.fromhex("692b60080600") and _xh[10] == 0xE3 and _xh[20:22] == bytes([0xFF, 3])
+          and _xh[34:41] == bytes.fromhex("210d8000000601") and struct.unpack_from("<I", _xh, 41)[0] == _a_rate
+          and _xh[45:52] == bytes.fromhex("210d8001000601") and _xh[56:63] == bytes.fromhex("210d8002000601")
+          and _xh[67:69] == bytes([0x6B, 0x02]) and _a_rate == _xs + 69 and _a_rate < _a_heal < _a_pc < _xs + 0x100)
+    _sc = b"\x69" + bytes(patched[_R(_a_rate):_R(_a_rate) + 0x40])
+    check("the chooser branch: callnative CM_ExpRatePrep; message; waitmessage; dynmultichoice (initial = "
           "VAR_0x8000, 5 rows); callnative CM_ExpRateSet; closemessage; releaseall; end",
-          _sc[0] == 0x69 and _sc[1] == 0x23 and struct.unpack_from("<I", _sc, 2)[0] == _sy["CM_ExpRatePrep"] | 1
+          _sc[1] == 0x23 and struct.unpack_from("<I", _sc, 2)[0] == _sy["CM_ExpRatePrep"] | 1
           and _sc[6] == 0x67 and _sc[11] == 0x66 and _sc[12] == 0xE3
           and struct.unpack_from("<H", _sc, 20)[0] == 0x8000 and _sc[22:24] == bytes([0xFF, 5])
           and _sc[44] == 0x23 and struct.unpack_from("<I", _sc, 45)[0] == _sy["CM_ExpRateSet"] | 1
-          and _sc[49:53] == bytes([0x68, 0x6B, 0x02, 0xFF]))
+          and _sc[49:52] == bytes([0x68, 0x6B, 0x02]) and _a_heal == _a_rate + 51)
+    _hl, _pcs = bytes(patched[_R(_a_heal):_R(_a_heal) + 13]), bytes(patched[_R(_a_pc):_R(_a_pc) + 12])
+    check("heal branch: special 0 (HealPlayerParty); message; waitmessage; waitbuttonpress; closemessage; releaseall; end. "
+          "PC branch: special 0x3F; waitstate; callnative CM_SweepPartyToPCNative; releaseall; end",
+          _hl[:4] == bytes.fromhex("25000067") and _hl[8:13] == bytes.fromhex("666d686b02") and _a_pc == _a_heal + 13
+          and _pcs[:5] == bytes.fromhex("253f002723") and struct.unpack_from("<I", _pcs, 5)[0] == _sy["CM_SweepPartyToPCNative"] | 1
+          and _pcs[9:11] == bytes([0x6B, 0x02]) and patched[_R(_a_pc) + 11] == 0xFF)
 
     if assert_tally(checks_run, EXPECT_CHECKS, "verify_artifacts"):
         return 1

@@ -254,6 +254,24 @@ for c in "lazarus_cm DDA 2 PASS" "lazarus_cm UA 4 PASS" "lazarus_cm B 0 PASS" "l
     fi
 done
 
+# Extras (QoL round 2 item 3, 2026-11-11): START > Extras = Exp. Rate / Heal party / PC. Heal, PC, cancel; with
+# FLAG_SYS_POKEMON_GET clear the row opens the rate chooser at once; the CM_NO_EXTRAS build (rate chooser only) asked
+# for the heal must FAIL on the heal assert.
+CM_NO_EXTRAS=1 python3 tools/inject_character_mode.py > build/ex_ctl_build.log 2>&1 && cp build/lazarus_cm.gba build/lazarus_cm_noextras.gba \
+  && python3 tools/inject_character_mode.py > build/ex_build.log 2>&1 || { echo "[FAIL] Extras builds"; fail=1; }
+for c in "lazarus_cm heal DA 1 0 0 0 PASS" "lazarus_cm pc DDA 0 1 0 0 PASS" "lazarus_cm cancel B 0 0 0 0 PASS" \
+         "lazarus_cm nomon DA 0 0 1 1 PASS" "lazarus_cm_noextras heal DA 1 0 1 0 FAIL"; do
+    set -- $c
+    MGBA_HEADLESS_DEBUGGER=1 KEYS=$3 WANT_HEAL=$4 WANT_PC=$5 WANT_RATE=$6 NO_MON_FLAG=$7 CM_EXPECT_CHECKS=6 timeout 110 "$MGBA" -t tools/savestates/cm_red_active.ss \
+        --script tools/mgba_scripts/cm_extras_test.lua build/$1.gba > build/live_extras_$1_$2.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: $8" build/live_extras_$1_$2.log \
+       && { [ "$8" = PASS ] || grep -aq "FAIL lead healed" build/live_extras_$1_$2.log; }; then
+        echo "[PASS] Extras: $1 $2 (keys $3) is $8"
+    else
+        echo "[FAIL] Extras: $1 $2 (keys $3) want $8 (see build/live_extras_$1_$2.log)"; fail=1
+    fi
+done
+
 # QoL C11/C16 starter kit (2026-11-07): a cold-boot intro with CM never on. Shipped ROM -> granted; the
 # CM_NO_STARTKIT=1 build (BL untouched) -> none, and asked for "granted" it must FAIL.
 CM_NO_STARTKIT=1 python3 tools/inject_character_mode.py > build/kit_build.log 2>&1 && cp build/lazarus_cm.gba build/lazarus_cm_nokit.gba \

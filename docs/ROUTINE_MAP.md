@@ -595,6 +595,18 @@ Evidence: verify §24 (6), `exprate_negative_test.py` 7/7, live `cm_exp_rate_tes
 x3 105/54, x0.5 17/9; CM_NO_EXPRATE asked x2 FAILS) and `cm_exp_rate_ui_test.lua` (3 chooser cases + the fade control),
 all in `run_live_suite.sh`.
 
+## Extras: heal + PC anywhere (QoL round 2 item 3, 2026-11-11): ✅ LIVE
+
+User ruling: a START row, not a key item; every save, CM on or off; no heal limit. Row 16 ("Exp. Rate" until now) is
+"Extras" and its script at `0x0967C100` (injector `exp_rate()`) is script-only:
+`lockall; checkflag 0x860; goto_if unset -> rate; dynmultichoice (Exp. Rate / Heal party / PC); VAR_RESULT 0 -> rate,
+1 -> heal, 2 -> pc; releaseall; end`. rate = the old chooser (unchanged bytes, minus its lockall). heal =
+`special 0` (HealPlayerParty), message, waitmessage, waitbuttonpress, closemessage. pc = `special 0x3F; waitstate;
+callnative CM_SweepPartyToPCNative` (the same sweep the two vanilla PC scripts got). `CM_NO_EXTRAS=1` builds the
+control (`lockall; goto rate`). The block now ends before `EXPRATE_ADDR + 0x200`.
+Evidence: verify §24 (+2 checks, 224 total), `exprate_negative_test.py` 7/7, live `cm_extras_test.lua` x5 in
+`run_live_suite.sh` (heal, PC, cancel, no-Pokemon, control asked for the heal fails).
+
 ## Wild-intro roster hint (QoL B9, 2026-11-08): ✅ LIVE
 
 `CM_BattleStringGated` (BufferStringBattle's BL `0x080880B6` -> marker trampoline `0x081DD62C`): with CM on and a valid

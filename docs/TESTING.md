@@ -26,7 +26,8 @@ Live layers added since the 2026-09-04 block (all in `run_live_suite.sh`, each w
 | battle animations off | `cm_anim_default_test.lua` | the real intro stores 1; the `CM_NO_ANIMDEFAULT` control stores 0 |
 | instant HP bar | `cm_instant_hp_test.lua` | <= 4 bar frames an update; the `CM_NO_INSTANTHP` control animates |
 | EXP rate | `cm_exp_rate_test.lua` | Exp. Share battle, CM off: x1 35/18, x1.5 52/27, x2 70/36, x3 105/54, x0.5 17/9; `CM_NO_EXPRATE` fails x2, and its shim fails verify's compiled-code check |
-| EXP rate START row | `cm_exp_rate_ui_test.lua` | START > Exp. Rate: DDA -> x2, UA -> x0.5, B keeps; the ROM with the input handler's original bytes (fade to black) must FAIL "opened over the field" |
+| Extras: heal + PC anywhere | `cm_extras_test.lua` | START > Extras: Heal party (lead at 1 HP + poison -> full, no status), PC (`gSpecials[0x3F]` runs once), B; with FLAG_SYS_POKEMON_GET clear the row opens the rate chooser at once; the `CM_NO_EXTRAS` build asked for the heal must FAIL on the heal assert. Needs `MGBA_HEADLESS_DEBUGGER=1` (breakpoint) |
+| EXP rate START row | `cm_exp_rate_ui_test.lua` | START > Extras > Exp. Rate: DDA -> x2, UA -> x0.5, B keeps; the ROM with the input handler's original bytes (fade to black) must FAIL "opened over the field" |
 
 ## CURRENT COUNTS (2026-09-04) — historical
 
