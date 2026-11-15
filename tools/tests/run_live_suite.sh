@@ -213,6 +213,20 @@ for c in "lazarus_cm 1" "lazarus_cm_nohp 0" "lazarus_cm_nohp 1"; do
     fi
 done
 
+# 2026-11-14 (user: bars low and red at battle start): a low-max-HP foe hit by Pound (it survives) has its bar drawn at
+# floor(hp*48/max) on the shipped ROM and on the CM_NO_INSTANTHP control; the 10-28 patch (CM_OLD_HPBAR) draws it short
+CM_OLD_HPBAR=1 python3 tools/inject_character_mode.py > build/hp_old_build.log 2>&1 || { echo "[FAIL] old HP-bar build"; fail=1; }
+for c in "lazarus_cm 1 1" "lazarus_cm_oldhp 1 0" "lazarus_cm_nohp 0 1"; do
+    set -- $c
+    WANT_INSTANT=$2 WANT_DRAWN=$3 CM_EXPECT_CHECKS=3 MGBA_HEADLESS_DEBUGGER=1 timeout 200 "$MGBA" -t tools/savestates/battle_menu.ss \
+        --script tools/mgba_scripts/cm_instant_hp_test.lua build/$1.gba > build/live_hpdrawn_$1.log 2>&1 || true
+    if grep -aq "HARNESS RESULT: PASS" build/live_hpdrawn_$1.log; then
+        echo "[PASS] HP bar drawn at its value: $1 WANT_DRAWN=$3"
+    else
+        echo "[FAIL] HP bar drawn at its value: $1 WANT_DRAWN=$3 (see build/live_hpdrawn_$1.log)"; fail=1
+    fi
+done
+
 # EXP rate (QoL, user 2026-10-29): the Exp. Share battle (CM off) at every rate gives x1 * N / 2 to the battler and
 # the bench mon (pinned below); the CM_NO_EXPRATE control ignores the rate, so asked for x2 it must FAIL, and its shim
 # fails verify_artifacts' compiled-code check. START > Exp. Rate: three chooser cases, and the same ROM with the input

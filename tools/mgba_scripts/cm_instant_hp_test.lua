@@ -16,9 +16,25 @@ H.breakpoint("MoveBattleBar", 0x0807D5A8, function()
     local bars = emu:read32(emu:read32(0x02000864) + 12)
     if emu:read32(bars + (emu:readRegister("r0") & 0xFF) * 20 + 16) == 0xFFFF8000 then updates = updates + 1 end
 end)
+-- WANT_DRAWN=1|0 (2026-11-14, user: bars low and red at battle start): the lead's Attack is 1 instead of 999, so the
+-- low-level foe (max HP < 48: the fixed-point branch) stays alive and its bar is redrawn (measured: at full HP, Pound
+-- does not land from this state). MoveBattleBarGraphically's
+-- inlined CalcBarFilledPixels result (0x0807D80E: r5 = filled pixels; bar struct = sl + r8) is logged per battler; the
+-- foe's last drawn bar must be floor(hp * 48 / max) pixels (1 if that is 0 with hp > 0). The 10-28 patch draws <= 1.
+local DRAWN = os.getenv("WANT_DRAWN"); if DRAWN == "" then DRAWN = nil end
+local lastPx, lastMax = {}, {}
+if DRAWN then
+    H.breakpoint("HpBarFilled", 0x0807D80E, function()
+        local b = emu:readRegister("r10") + emu:readRegister("r8")
+        local battler = emu:readRegister("r8") // 20
+        lastPx[battler] = emu:readRegister("r5") & 0xFF
+        lastMax[battler] = emu:read32(b + 4)
+    end)
+end
 H.onFrame(function(f)
     if f == 5 then
-        emu:write16(GBATTLEMONS + 0x02, 999); emu:write16(GBATTLEMONS + 0x08, 999)
+        if DRAWN then emu:write16(GBATTLEMONS + 0x02, 1)                   -- lead Attack 1: Pound leaves the foe alive
+        else emu:write16(GBATTLEMONS + 0x02, 999); emu:write16(GBATTLEMONS + 0x08, 999) end
         emu:write16(GBATTLEMONS + 0x60 + 0x06, 1)
         hpBefore = emu:read16(GBATTLEMONS + 0x60 + 0x2A)
     end
@@ -28,6 +44,17 @@ H.onFrame(function(f)
         H.log(("HP bar: %d frames of MoveBattleBar calls over %d updates; foe hp %d -> %d"):format(
             frames, updates, hpBefore, emu:read16(GBATTLEMONS + 0x60 + 0x2A)))
         H.assertTrue("the foe's bar drained (it started above 0 and the bar moved)", hpBefore > 0 and updates > 0)
+        if DRAWN then
+            local hp, mx = emu:read16(GBATTLEMONS + 0x60 + 0x2A), lastMax[1] or 0
+            local want = mx > 0 and (hp * 48) // mx or -1
+            if want == 0 and hp > 0 then want = 1 end
+            H.log(("foe bar: hp %d / %d drawn %s px, want %d; lead hp %d drawn %s px"):format(hp, mx, tostring(lastPx[1]), want,
+                emu:read16(GBATTLEMONS + 0x2A), tostring(lastPx[0])))
+            H.assertTrue("the foe has max HP < 48 and is alive (its bar was redrawn)", mx > 0 and mx < 48 and hp > 0)
+            if DRAWN == "1" then H.assertEq("the foe's bar is drawn at its HP", lastPx[1], want)
+            else H.assertTrue("the foe's bar is drawn short (old patch)", lastPx[1] ~= nil and lastPx[1] < want) end
+        end
+        if DRAWN then H.finish(); return end            -- no drain in this mode: the speed layers are the other cases
         if WANT == 1 then
             H.assertTrue("instant HP bar: at most 4 frames per update", frames <= 4 * updates)
         else

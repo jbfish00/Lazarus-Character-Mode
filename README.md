@@ -105,7 +105,7 @@ While Character Mode is on:
 - **HMs** are already badge-only in Lazarus, so any party Pokémon can use them.
 - **Battle animations off on new games** (Character Mode on or off, 2026-10-28): Options turns them back on; an
   existing save keeps its own setting.
-- **Instant HP bar** (every save, 2026-10-28): the HP bar jumps straight to its new value in battle.
+- **Instant HP bar** (every save, 2026-10-28; fixed 2026-11-14): the HP bar jumps straight to its new value in battle; a Pokémon with under 48 max HP no longer starts a battle with a nearly empty red bar.
 - **Heal + PC anywhere** (every save, Character Mode on or off, 2026-11-11): START > **Extras** (the last row) has
   *Heal party* (a free full heal, any time outside battle) and *PC* (the Pokémon storage system) once you have a
   Pokémon, next to *Exp. Rate*.
@@ -332,3 +332,6 @@ Every new game (Character Mode on or off) starts with the Running Shoes, the Mac
 
 ## Wild-intro roster hint (2026-11-08)
 With Character Mode on, a wild Pokémon off your character's roster says so in its intro ("Wild X appeared! / It is not on your roster."), so you know before you throw a ball that it can't be caught. On-roster Pokémon still say "destined for <NAME>!". Build 2026-11-08: `build/lazarus_cm.gba` sha1 `343f3f3a66d084155adb92525c708e73fd63e28e`, `build/lazarus_cm.bps` sha1 `072692a6aefc761ff7af9437ccbed5a151052522` (round trip checked). Save-compatible: on My Boy!, keep the old ROM and save, and load the new ROM under the same file name so the `.sav` carries over.
+
+### Fix: instant HP bar drew low-max-HP bars red (2026-11-14)
+The 2026-10-28 instant HP bar drew any Pokémon with under 48 max HP (most early-game Pokémon) as a nearly empty red bar at the start of a battle, and after every hit. The bar is now drawn at its real value and is still instant. Build 2026-11-14: `build/lazarus_cm.gba` sha1 `9bde6d8e8766607a40de214fd85c2215c7b6dbee`, `build/lazarus_cm.bps` sha1 `2ddc39c04ca2d438f3696355abe9c224ef2d9ab2` (round trip checked; differs from the old patch in 5 bytes). Save-compatible: on My Boy!, keep the old ROM and save, and load the new ROM under the same file name so the `.sav` carries over.

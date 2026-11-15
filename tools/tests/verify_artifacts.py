@@ -495,7 +495,7 @@ def main():
         *[(o, o + 4) for o, _old, _new in _OW[1]],
         (owp.R(owp.GET_INFO), owp.R(owp.GET_INFO) + 8),
         (0x189612, 0x189616),   # QoL A3 (2026-10-28): SetDefaultOptions' two shifts (section 23 pins the bytes)
-        (0x7D5E8, 0x7D5EE), (0x7D5FA, 0x7D5FC),   # QoL A3 instant HP bar: toAdd 255 + branch, scale 0 (section 23)
+        (0x7D5E8, 0x7D5EE), (0x7D9BA, 0x7D9BE),   # QoL A3 instant HP bar: toAdd 255 + branch; the fixed-point step (2026-11-14) (section 23)
         # EXP rate (section 24): veneer, getexp BL, data block (table + strings, script at +0x100), the two
         # sStartMenuItems literals, the builder tail and the input handler's compare block (rewritten in place)
         (EXPRATE_VENEER_ADDR - 0x08000000, EXPRATE_VENEER_ADDR - 0x08000000 + 8),
@@ -1754,10 +1754,11 @@ def main():
           bytes(orig[_a3:_a3 + 24]) == bytes.fromhex("10b5e5f7b9f902220c4c2068838a1b0b1b03134383820422")
           and bytes(patched[_a3:_a3 + 24]) == bytes.fromhex("10b5e5f7b9f902220c4c2068838a8023db00134383820422"))
     _hp = 0x7D5E8
-    check("instant HP bar: MoveBattleBar's toAdd = 255 (`movs r0,#255 ; b` past the maxHP/24 division) and scale 0 "
-          "(`movs r2,#0`) (base bytes pinned)",
+    check("instant HP bar (fixed 2026-11-14): MoveBattleBar's toAdd = 255 (`movs r0,#255 ; b` past the maxHP/24 "
+          "division), scale stays 6, CalcNewBarValue's fixed-point step (max HP < 48) is a whole bar (base bytes pinned)",
           bytes(orig[_hp:_hp + 20]) == bytes.fromhex("0120172e05dd18213000cef199ff0004000c0622")
-          and bytes(patched[_hp:_hp + 20]) == bytes.fromhex("ff2006e0c04618213000cef199ff0004000c0022"))
+          and bytes(patched[_hp:_hp + 20]) == bytes.fromhex("ff2006e0c04618213000cef199ff0004000c0622")
+          and bytes(orig[0x7D9BA:0x7D9BE]) == bytes.fromhex("cef1b5fd") and bytes(patched[0x7D9BA:0x7D9BE]) == bytes.fromhex("00000000"))
 
     print("== 24. EXP rate: START > Exp. Rate, Cmd_getexp scales the award (QoL, 2026-10-29) ==")
     _sy = _elf_syms("character_mode.elf")
