@@ -437,9 +437,26 @@ __attribute__((naked)) void CM_CatchOddsStub(void)
         "3: .word 0x080a725b\n\t");   /* Cmd_handleballthrow's epilogue */
 }
 
+/* True when any party slot holds a Pokemon. Reads the slots, not gPlayerPartyCount: a scripted loaner battle
+ * can blank gPlayerParty (SavePlayerParty + ZeroPlayerPartyMons or a native memcpy) and leave the count stale;
+ * boxing the loaner then starts the battle with an empty party (Gaia's Regigigas hang, 2026-11-19; the same
+ * gate shape is fixed here 2026-11-20). */
+static int cmPartyHasMon(void)
+{
+    int i;
+
+#ifdef CM_OLD_GIFTGATE
+    return 1;
+#endif
+    for (i = 0; i < 6; i++)
+        if (GetMonData(gPlayerParty + i * MON_SIZE, MON_DATA_SPECIES, 0))
+            return 1;
+    return 0;
+}
+
 u8 CM_GiveMonToPlayerGated(void *mon)
 {
-    if (gateActive() && gPlayerPartyCount != 0
+    if (gateActive() && gPlayerPartyCount != 0 && cmPartyHasMon()
      && !GetMonData(mon, MON_DATA_IS_EGG, 0)) {
         u32 species = GetMonData(mon, MON_DATA_SPECIES, 0);
         if (!onRoster(*GetVarPointer(VAR_CM_CHAR), species))

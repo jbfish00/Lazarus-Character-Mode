@@ -785,6 +785,7 @@ def main():
     elf = BUILD / "character_mode.elf"
     binf = BUILD / "character_mode.bin"
     subprocess.run(["arm-none-eabi-gcc", "-c", "-mthumb", "-mcpu=arm7tdmi",
+                    *(["-DCM_OLD_GIFTGATE"] if os.environ.get("CM_OLD_GIFTGATE") == "1" else []),   # control (2026-11-20): count-only gift gate
                     *(["-DCM_NO_ANYLEVEL"] if os.environ.get("CM_NO_ANYLEVEL") == "1" else []),   # test control (QoL A2)
                     *(["-DCM_TEST_NO_EGG"] if os.environ.get("CM_TEST_NO_EGG") == "1" else []),   # test only (QoL A2)
                     *(["-DCM_NO_EXPRATE"] if os.environ.get("CM_NO_EXPRATE") == "1" else []),     # control (EXP rate)

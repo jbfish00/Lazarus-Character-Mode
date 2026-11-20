@@ -51,7 +51,7 @@ import re
 # recomputed from the data the checks iterate: such a total drifts in lockstep
 # with what it is meant to pin and therefore cannot fail. Bump it in the same
 # commit that adds or removes a check. See tools/tests/cm_tally.py.
-EXPECT_CHECKS = 38   # +4: the activation party sweep (2026-09-02)
+EXPECT_CHECKS = 39   # +1 blanked party with a stale count (loaner battle, 2026-11-20); +4: the activation party sweep (2026-09-02)
 import struct
 import subprocess
 import sys
@@ -189,6 +189,9 @@ def gdb_script(cases, gate_entry_thumb, sweep_cases, sweep_entry_thumb,
             f'set *(unsigned char*){FLAG_BYTE:#x} = {FLAG_MASK if c["flag"] else 0:#x}',
             f'set *(unsigned short*){VAR_ADDR:#x} = {c["char_id"]}',
             f'set *(unsigned char*){PARTY_COUNT:#x} = {c["party"]}',
+            # party slots (2026-11-20: the gate reads them, not just the count): slot 0 holds a mon when the
+            # count says the party is non-empty, unless the case blanks it (a loaner cutscene's shape)
+            f'python gdb.selected_inferior().write_memory({PLAYER_PARTY:#x}, bytes.fromhex("{((build_mon(c["species"]) if c["party"] and not c.get("blank") else bytes(MON_SIZE)) + bytes(5 * MON_SIZE)).hex()}"))',
             f'set $r0 = {MON_ADDR:#x}',
             'set $sp = 0x03007F00',
             f'set $lr = {gate_entry_thumb:#x}',  # never returned to; a BP hits first
@@ -197,6 +200,7 @@ def gdb_script(cases, gate_entry_thumb, sweep_cases, sweep_entry_thumb,
             "continue",
             'printf "STOPPED_AT=%08x\\n", $pc',
         ]
+    lines += [f'python gdb.selected_inferior().write_memory({PLAYER_PARTY:#x}, bytes({6 * MON_SIZE}))']
     # trade-gate cases: CM_TradeCheck is void; run it with lr parked on the
     # GIVEMON breakpoint, then read gSpecialVar_Result. All runs after the
     # give cases start from Thumb context, so $pc can be set directly.
@@ -359,6 +363,8 @@ def main():
          "char_id": red_id, "party": 1, "species": pikachu, "expect": GIVEMON},
         {"name": f"Red + {sp_name}({other_sp}) -> PC (off roster)", "flag": 1,
          "char_id": red_id, "party": 1, "species": other_sp, "expect": COPYPC},
+        {"name": f"Red + {sp_name}({other_sp}), count 1 but every slot blank -> give (loaner battle)", "flag": 1,
+         "char_id": red_id, "party": 1, "blank": True, "species": other_sp, "expect": GIVEMON},
         {"name": "char 0 (unset) -> give", "flag": 1,
          "char_id": 0, "party": 1, "species": other_sp, "expect": GIVEMON},
         {"name": f"Red + {sp_name} EGG -> give (eggs exempt)", "flag": 1,
@@ -533,12 +539,12 @@ def main():
         {"name": "CM on, on-roster, SECOND string copy -> marker",
          "flag": 1, "char_id": red0 + 1, "species": red_on, "src": TEXT_WILD_B,
          "expect": marker_for(red0)},
-        # Off-roster: unmarked. This is the case the live e2e cannot make
-        # deterministic (a 10% override could turn it on-roster), which is
-        # exactly why it belongs here.
-        {"name": "CM on, OFF-roster mon -> vanilla string",
+        # Off-roster: since QoL B9 (2026-11-08, 4054603) the shared record after the N character records, "A wild X
+        # appeared! / It is not on your roster." (this case still expected the vanilla string until 2026-11-20). The
+        # live e2e cannot make it deterministic (a 10% override could turn it on-roster), which is why it is here.
+        {"name": "CM on, OFF-roster mon -> the 'not on your roster' record",
          "flag": 1, "char_id": red0 + 1, "species": red_off, "src": TEXT_WILD_A,
-         "expect": TEXT_WILD_A},
+         "expect": MARKER_ADDR + NUM_CHARACTERS * MARKER_STRIDE},
         {"name": "CM off -> vanilla string",
          "flag": 0, "char_id": red0 + 1, "species": red_on, "src": TEXT_WILD_A,
          "expect": TEXT_WILD_A},

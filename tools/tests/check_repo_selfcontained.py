@@ -89,6 +89,11 @@ ALLOWED_SIBLING = {
     "tools/character_mode/emit_characters.py":
         "COMMENT only -- attribution prose ('adapted from Unbound's'). No path "
         "is opened.",
+    "tools/character_mode/lazarus_ow_player.py":
+        "COMMENT only -- attribution prose ('Seaglass's design (../../Seaglass-"
+        "Character-Mode docs/ROUTINE_MAP.md ...)'). No path is opened; ROOT is "
+        "this repo (added 2026-11-20: the 2026-10-23 OW sprite merge never ran "
+        "this checker).",
     "tools/mgba_scripts/headless_catch_trace.lua":
         "COMMENT only -- 'HOW TO RUN (from the Seaglass repo root)'. No path is "
         "opened by the script itself.",
