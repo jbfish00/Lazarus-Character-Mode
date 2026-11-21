@@ -4,7 +4,7 @@ An opt-in game mode where you play as an iconic Pokemon character — a
 protagonist, rival, gym leader, Elite Four member, champion, villain, or
 anime cast member — and are restricted to catching and keeping only that
 character's canon roster (as documented on Bulbapedia, expanded to full
-evolution families). 123 characters, Generations 1 through 9.
+evolution families). 116 characters, Generations 1 through 9.
 
 Ported from the original Character Mode built for Pokemon ROWE, following
 the Radical Red port.
@@ -159,16 +159,14 @@ With Character Mode off, the desk works exactly as it always did.
 | `Blaine` | Blaine | Gym Leader | Growlithe |
 | `Blue` | Blue | Champion | Aerodactyl |
 | `Brock` | Brock | Gym Leader | Onix |
-| `Bruno` | Bruno | Elite Four | Grimer |
 | `Erika` | Erika | Gym Leader | Bellsprout |
 | `Gary` | Gary | Anime | Doduo |
 | `Giovanni` | Giovanni | Villain | Cubone |
 | `James` | James | Anime | Aron |
 | `Jessie` | Jessie | Anime | Ekans |
-| `Koga` | Koga | Elite Four | Chinchou |
+| `Koga` | Koga | Elite Four | Ekans |
 | `Lance` | Lance | Champion | Dratini |
 | `Leaf` | Leaf | Protagonist | Eevee |
-| `Lorelei` | Lorelei | Elite Four | Lapras |
 | `LtSurge` | Lt. Surge | Gym Leader | Pikachu |
 | `Misty` | Misty | Gym Leader | Buizel |
 | `Oak` | Oak | Professor | Bellsprout |
@@ -180,11 +178,8 @@ With Character Mode off, the desk works exactly as it always did.
 
 | Type this code | Character | Role | Starter Pokemon |
 |---|---|---|---|
-| `Archer` | Archer | Villain | Houndour |
-| `Ariana` | Ariana | Villain | Ekans |
 | `Bugsy` | Bugsy | Gym Leader | Scyther |
 | `Chuck` | Chuck | Gym Leader | Poliwag |
-| `Clair` | Clair | Gym Leader | Aerodactyl |
 | `Elm` | Elm | Professor | Chikorita |
 | `Ethan` | Ethan | Protagonist | Cyndaquil |
 | `Falkner` | Falkner | Gym Leader | Hoothoot |
@@ -196,8 +191,6 @@ With Character Mode off, the desk works exactly as it always did.
 | `Morty` | Morty | Gym Leader | Gastly |
 | `Pryce` | Pryce | Gym Leader | Swinub |
 | `Silver` | Silver | Rival | Totodile |
-| `Whitney` | Whitney | Gym Leader | Aipom |
-| `Will` | Will | Elite Four | Natu |
 
 ### Generation 3
 
