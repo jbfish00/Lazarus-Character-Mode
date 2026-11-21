@@ -49,6 +49,10 @@ STRIDE = 196
 CODE_LEN = 11
 
 
+EEVEELUTIONS = {"Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Sylveon"}
+EEVEE_ROW = "Eevee (any evolution)"   # Eevee's evolutions are one doc row (user 2026-11-20; emit_roster_docs.py)
+
+
 def read(path):
     with open(path, encoding="utf-8") as f:
         return f.read()
@@ -184,6 +188,11 @@ def main():
         rom_finals[rec["character"]] = {
             index.donor[c]["name"] for c in index.finals_for_names(allowed)}
 
+    # Eevee's evolutions are one "Eevee (any evolution)" doc row (user 2026-11-20).
+    for _c, _f in rom_finals.items():
+        if set(_f) & EEVEELUTIONS:
+            rom_finals[_c] = (set(_f) - EEVEELUTIONS) | {EEVEE_ROW}
+
     doc = parse_doc(read(os.path.join(ROOT, "ROSTERS.md")))
 
     # --- 0. the parse itself worked ---------------------------------------
@@ -226,6 +235,13 @@ def main():
         allowed_norm = {normalize(x) for x in rom_allowed[char]}
         for mon in listed:
             bare = re.sub(r"[ᵃᵍ]", "", mon)
+            if bare == EEVEE_ROW:
+                if not (allowed_norm & {normalize(x) for x in EEVEELUTIONS}):
+                    fails.append("%s: doc lists %s, but its in-ROM roster allows no Eevee evolution" % (char, bare))
+                continue
+            if bare in EEVEELUTIONS:
+                fails.append("%s: doc lists %s on its own row; Eevee's evolutions are one '%s' row" % (char, bare, EEVEE_ROW))
+                continue
             if normalize(bare) not in allowed_norm:
                 fails.append("%s: doc lists %s, which its in-ROM bitmap does "
                              "not allow" % (char, bare))

@@ -20,7 +20,7 @@ the Radical Red port.
 
 **Your code** is the character's name with spaces and punctuation removed —
 `Cynthia`, `LtSurge`, `Red`. Case does not matter.
-📋 **Full list: [Character codes](#character-codes)** (123 selectable).
+📋 **Full list: [Character codes](#character-codes)** (116 selectable).
 
 **You will know it worked:** a confirmation message naming your character —
 with their portrait beside it — and their signature starter at Lv. 5.
@@ -112,7 +112,7 @@ While Character Mode is on:
 - **EXP rate** (every save, Character Mode on or off, 2026-10-30): START > **Extras** > *Exp. Rate* sets battle
   EXP to x0.5, x1, x1.5, x2 or x3; the current rate is preselected and B keeps it. It multiplies what the game already
   pays (after the Lucky Egg and Exp. Share), and an existing save starts at x1.
-- **Your overworld sprite becomes the character** (walking and running) for all 123 selectable characters: 117 use
+- **Your overworld sprite becomes the character** (walking and running) for all 116 selectable characters: 110 use
   a character sheet, and Ethan, Lyra, Calem, Serena, Elio and Selene wear Lazarus's own Johto/Kalos/Alolan Fashion
   outfits. Tested live 2026-10-22.
 
@@ -136,7 +136,7 @@ With Character Mode off, the desk works exactly as it always did.
 - Sycamore keeps Caterpie as his starter: Gible's family is not in Lazarus.
 - A character
   portrait is shown when you select one, for the 179 characters art is
-  staged for (105 of the 123 selectable).
+  staged for (98 of the 116 selectable).
 - Some characters' canon rosters include Pokemon that are not obtainable
   in Lazarus's curated dex; their rosters were validated against the
   official Encounters guide so every character has obtainable Pokemon,
@@ -331,3 +331,10 @@ The 2026-10-28 instant HP bar drew any Pokémon with under 48 max HP (most early
 
 ### Fix: a gift into an emptied party is never boxed (2026-11-20)
 The roster check on gifts trusted the party count. A cutscene that empties the party for a loaner battle without updating that count (the shape that froze Gaia's Regigigas battle) would have sent an off-roster loaner to the PC and started the battle with no Pokémon. The check now looks at the party slots themselves. Build 2026-11-20: `build/lazarus_cm.gba` sha1 `66475e59f347bd037912b7c047ecd2174f7ac38c`, `build/lazarus_cm.bps` sha1 `65d920a1da36e18a0a0bf74a112253f766029f1a` (round trip checked). `shim_unit_test.py` 39/39 (new case: count 1, every slot blank -> give; the `CM_OLD_GIFTGATE=1` build fails exactly that case), live suite ALL PASS, every checker and negative test pass. Save-compatible: on My Boy!, keep the old ROM and save, and load the new ROM under the same file name so the `.sav` carries over.
+
+### Roster change: the Pokémon Stadium games no longer count (2026-11-21)
+A Pokémon that a character used only in *Pokémon Stadium* or *Pokémon Stadium 2* is no longer on that character's
+roster. Anything they also have in a main-series game, the anime or the manga stays, and a whole evolution family stays
+if any member does. 28 characters lose 171 families in all (Kanto and Johto gym leaders, the Elite Four, the rivals and
+Team Rocket's executives). In this game that leaves Archer, Ariana, Bruno, Clair, Lorelei, Whitney, Will with fewer than six fully-evolved Pokémon, so they are now hidden from the picker (the slot stays, so a save that already uses one keeps working). The roster docs now show Eevee's evolutions as one "Eevee (any evolution)" entry; all of
+them are still allowed in the game. Build 2026-11-21: `build/lazarus_cm.gba` sha1 `b80504101f0772964d54250fd84a0c904b64b0a1`, `build/lazarus_cm.bps` sha1 `9876c03a932dd697d434d5e39a105dc2bfbe85e2` (round trip checked; live suite, every checker, negative test and guard pass).

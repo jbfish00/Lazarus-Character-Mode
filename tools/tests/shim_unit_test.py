@@ -417,44 +417,48 @@ def main():
     wildmons = (ROOT / "tools" / "character_mode" / "wildmons.bin").read_bytes()
     assert len(wildmons) % NUM_CHARACTERS == 0
     wildmon_stride = len(wildmons) // NUM_CHARACTERS
-    red_wild_species = set()
-    base = red0 * wildmon_stride
-    i = 0
-    while i + 4 <= wildmon_stride:
-        raw, lo, hi = struct.unpack_from("<HBB", wildmons, base + i)
-        if raw == 0:
-            break
-        red_wild_species.add(raw & 0x7FFF)
-        i += 4
-    assert red_wild_species, "Red's wildmons table must not be empty"
-
-    # Red's 1% legendary pool (game_plans/legendary_encounters.md). Same entry
-    # format, separate blob -- an override may legitimately come from either.
+    # The 1% legendary pool (game_plans/legendary_encounters.md). Same entry format, separate blob -- an
+    # override may legitimately come from either.
     legendaries = (ROOT / "tools" / "character_mode" / "legendaries.bin").read_bytes()
     legendary_stride = len(legendaries) // len(chars)
-    red_legendary_species = set()
-    _b = red0 * legendary_stride
-    _i = 0
-    while _i + 4 <= legendary_stride:
-        _raw, _lo, _hi = struct.unpack_from("<HBB", legendaries, _b + _i)
-        if _raw == 0:
-            break
-        red_legendary_species.add(_raw & 0x7FFF)
-        _i += 4
+
+    def pool(blob, stride, ci0):
+        out, b, k = set(), ci0 * stride, 0
+        while k + 4 <= stride:
+            raw, _lo, _hi = struct.unpack_from("<HBB", blob, b + k)
+            if raw == 0:
+                break
+            out.add(raw & 0x7FFF)
+            k += 4
+        return out
+
+    # The wild trials need a character with BOTH pools (else the legendary assertions are vacuous) whose catch
+    # roster excludes the input species. Red, while he qualifies; since the 2026-11-20 Stadium rule his only
+    # legendaries in Lazarus's dex (the Johto beasts) were Stadium-only, so the first offered character that
+    # does is chosen from the shipped data instead.
+    def qualifies(ci0):
+        return (not chars[ci0].get("hidden") and pool(wildmons, wildmon_stride, ci0)
+                and pool(legendaries, legendary_stride, ci0) and not allows(ci0, other_sp))
+    wild0 = red0 if qualifies(red0) else next(i for i in range(len(chars)) if qualifies(i))
+    wild_id = wild0 + 1
+    red_wild_species = pool(wildmons, wildmon_stride, wild0)      # names kept: "red_" = the wild-trial character
+    red_legendary_species = pool(legendaries, legendary_stride, wild0)
+    assert red_wild_species, "the wild character's wildmons table must not be empty"
     assert red_legendary_species, \
-        "Red must have a legendary pool, or the positive assertion below is vacuous"
-    assert not (red_wild_species & set(chars[red0]["roster_species_ids"][chars[red0]["starter_count"]:])), \
-        "Red's wildmons table must never contain a legendary roster id"
-    print(f"Red's wild-override pool: {len(red_wild_species)} species")
+        "the wild character must have a legendary pool, or the positive assertion below is vacuous"
+    assert not (red_wild_species & set(chars[wild0]["roster_species_ids"][chars[wild0]["starter_count"]:])), \
+        "the wildmons table must never contain a legendary roster id"
+    print(f"wild trials as {chars[wild0]['character']}: wild-override pool {len(red_wild_species)} species, "
+          f"legendary pool {len(red_legendary_species)}")
 
     WILD_TRIALS_OFF = 20    # CM off: deterministic, a handful of trials suffices
     WILD_TRIALS_ON = 200    # CM on: enough for a ~10% rate estimate with a loose band
     wild_input_species = other_sp  # off-Red's-catch-roster, so an override is unambiguous
     wild_input_level = 30
     wild_cases = (
-        [{"flag": 0, "char_id": red_id, "species": wild_input_species,
+        [{"flag": 0, "char_id": wild_id, "species": wild_input_species,
           "level": wild_input_level} for _ in range(WILD_TRIALS_OFF)]
-        + [{"flag": 1, "char_id": red_id, "species": wild_input_species,
+        + [{"flag": 1, "char_id": wild_id, "species": wild_input_species,
             "level": wild_input_level} for _ in range(WILD_TRIALS_ON)]
     )
 
