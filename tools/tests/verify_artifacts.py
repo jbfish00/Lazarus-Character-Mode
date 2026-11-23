@@ -427,6 +427,13 @@ def main():
         _send += 32
 
     _OW = owp.build(bytes(orig), json.loads(owp.CHAR_MANIFEST.read_text())["characters"])
+    # move best-version (2026-11-23): the exact bytes of each applied move_changes.json row (literal geometry, not the
+    # injector's) + the new effect-array block after the free-tutor text; tools/tests/check_move_best.py checks values
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import movepatch
+    _mg = dict(stride=52, pri=(20, 0), effptr=36, neff=(20, 18))
+    _mb = [movepatch.touched_bytes("exp", 0x8CFAC8, _c["hack_move_id"], _c["field"], _mg)
+           for _c in movepatch.plan(json.load(open(Path(__file__).resolve().parents[1] / "character_mode" / "move_changes.json")), "exp")[0]]
     intended = [
         (_s, _send),
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
@@ -486,6 +493,7 @@ def main():
          ROSTER_NAMES_ADDR - 0x08000000 + NUM_CHARACTERS * ROSTER_NAME_STRIDE),
         *[(r, r + 4) for r in DESK_BG_PTR_OFFS],
         *_free_tutor_regions(orig),
+        *[(_r.start, _r.stop) for _r in _mb], (0x09FF0100 - 0x08000000, 0x09FF0400 - 0x08000000),
         # overworld sprite (2026-10-22): the hook unit, the planner's data
         # (replayed against the base ROM; section 22 checks the CONTENT against
         # the source art), the palette-table literals and the entry trampoline.

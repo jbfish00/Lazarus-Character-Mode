@@ -698,6 +698,10 @@ def starter_kit(data, syms, relearner_on):
 
 EGG_COUNT_FN, EGG_LIST_SITE, EGG_GMRM = 0x081C73D0, 0x08181CBC, 0x081C71E8   # QoL 2026-10-17 (symmatch vs expansion; see the shim)
 FREE_TUTOR_GATE, FREE_TUTOR_BP_CONFIRM, FREE_TUTOR_TEXT = 0x82b3865, 0x8319d08, 0x9ff0000   # QoL 2026-10-17
+# Move best-version (2026-11-23): the live gMovesInfo (260 literal refs), 52-byte MoveInfo; priority nibble = byte 20 low,
+# additionalEffects pointer at +36; new effect arrays go in the free-tutor text block after the text (+0x100, 0x300 B).
+MOVE_TABLE = 0x088cfac8
+MOVE_GEOM = dict(stride=52, pri=(20, 0), effptr=36, neff=(20, 18), alloc=(FREE_TUTOR_TEXT + 0x100, 0x300))
 
 
 def main():
@@ -1428,6 +1432,20 @@ def main():
         out_rom = BUILD / "lazarus_cm_noexprate.gba"
     if os.environ.get("CM_NO_OFFROSTER") == "1":           # QoL B9 control
         out_rom = BUILD / "lazarus_cm_nooffroster.gba"
+    # Move "best version" (user 2026-11-23: raise every move to its best value), cheap tier: numbers + type + priority +
+    # never-miss (expansion: accuracy 0 always hits) + secondary chance (a move whose chance changes is repointed at an
+    # existing additionalEffects array with the new bytes, else at a new one after the free-tutor text; arrays are shared
+    # between moves, so none is edited in place). Last step, so the 0xFF check sees every other splice. Each edit asserts
+    # the value it replaces. CM_NO_MOVEBEST=1 builds the control (lazarus_cm_nomovebest.gba).
+    if os.environ.get("CM_NO_MOVEBEST") == "1":
+        out_rom = BUILD / "lazarus_cm_nomovebest.gba"
+    else:
+        sys.path.insert(0, str(HERE))
+        import movepatch
+        assert bytes(data).count(struct.pack("<I", MOVE_TABLE)) >= 250, "move table literal refs"
+        _mb = movepatch.apply(data, json.load((ROOT / "tools/character_mode/move_changes.json").open()), MOVE_TABLE - 0x08000000,
+                              "exp", **MOVE_GEOM)
+        print(f"move best-version: {_mb['applied']} applied, {_mb['deferred']} deferred, new effect arrays {_mb['new_effect_arrays']}")
     out_rom.write_bytes(data)
     print(f"wrote {out_rom} sha1={hashlib.sha1(data).hexdigest()}")
 
