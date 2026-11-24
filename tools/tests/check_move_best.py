@@ -16,7 +16,7 @@ import movepatch
 BASE = ROOT / "rom" / "lazarus-v2.gba"
 TABLE = 0x088CFAC8 - 0x08000000            # live gMovesInfo (260 literal refs)
 GEOM = dict(stride=52, pri=(20, 0), effptr=36, neff=(20, 18))
-EXPECT = (545, 0)                 # (applied, deferred), pinned 2026-11-23
+EXPECT = (545 + 46, 0)   # (applied, deferred), pinned 2026-11-23 (cheap + medium flags/target)
 SL = json.load((ROOT / "tools/character_mode/move_changes.json").open())
 N = max(c["hack_move_id"] for c in SL["changes"])
 
@@ -45,13 +45,17 @@ def main():
         ch = next(x for x in todo if x["field"] == "chance")
         p = struct.unpack_from("<I", built, TABLE + GEOM["stride"] * ch["hack_move_id"] + GEOM["effptr"])[0] - 0x08000000
         t3 = bytearray(built); t3[p] ^= 0x01                                         # the repointed array's effect id
+        cm = next(x for x in todo if x.get("tier") == "medium" and x["field"] != "target")   # a medium flag bit too
+        fb = SL["geom"]["flagbits"][cm["field"]]
+        t4 = bytearray(built); o = TABLE + GEOM["stride"] * cm["hack_move_id"] + fb[0]; t4[o] ^= 1 << fb[1]
         ok = 0
         for name, t in [(f"an applied edit reverted ({c['move']} pp)", t1), ("a stray move-table byte", t2),
-                        (f"{ch['move']}'s repointed effect array corrupted", t3), ("the unpatched base ROM's table", bytearray(base))]:
+                        (f"{ch['move']}'s repointed effect array corrupted", t3), ("the unpatched base ROM's table", bytearray(base)),
+                        (f"a medium flag edit reverted ({cm['move']} {cm['field']})", t4)]:
             f = check(base, t)[0]
             print("caught" if f else "MISSED", name, len(f)); ok += bool(f)
-        print(f"negative controls: {ok}/4")
-        rc |= ok != 4
+        print(f"negative controls: {ok}/5")
+        rc |= ok != 5
     sys.exit(rc)
 
 

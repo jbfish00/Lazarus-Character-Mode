@@ -4380,8 +4380,452 @@
    "from": 15,
    "to": 16,
    "why": "raise"
+  },
+  {
+   "hack_move_id": 14,
+   "move": "Swords Dance",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 14,
+   "move": "Swords Dance",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 18,
+   "move": "Whirlwind",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 46,
+   "move": "Roar",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 50,
+   "move": "Disable",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 57,
+   "move": "Surf",
+   "field": "target",
+   "from": 32,
+   "to": 8,
+   "why": "card: allAdjacentFoes",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 68,
+   "move": "Counter",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 102,
+   "move": "Mimic",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 119,
+   "move": "Mirror Move",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 119,
+   "move": "Mirror Move",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 180,
+   "move": "Spite",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 182,
+   "move": "Protect",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 182,
+   "move": "Protect",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 191,
+   "move": "Spikes",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 193,
+   "move": "Foresight",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 227,
+   "move": "Encore",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 259,
+   "move": "Torment",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 267,
+   "move": "Nature Power",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 267,
+   "move": "Nature Power",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 269,
+   "move": "Taunt",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 269,
+   "move": "Taunt",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 273,
+   "move": "Wish",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 278,
+   "move": "Recycle",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 286,
+   "move": "Imprison",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 289,
+   "move": "Snatch",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 289,
+   "move": "Snatch",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 298,
+   "move": "Teeter Dance",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 316,
+   "move": "Odor Sleuth",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 357,
+   "move": "Miracle Eye",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 361,
+   "move": "Healing Wish",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 364,
+   "move": "Feint",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 373,
+   "move": "Embargo",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 377,
+   "move": "Heal Block",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 379,
+   "move": "Power Trick",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 381,
+   "move": "Lucky Chant",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 390,
+   "move": "Toxic Spikes",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 392,
+   "move": "Aqua Ring",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 393,
+   "move": "Magnet Rise",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 432,
+   "move": "Defog",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 446,
+   "move": "Stealth Rock",
+   "field": "reflectable",
+   "from": 1,
+   "to": 0,
+   "why": "-reflectable (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 461,
+   "move": "Lunar Dance",
+   "field": "snatch",
+   "from": 1,
+   "to": 0,
+   "why": "-snatch (card)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 601,
+   "move": "Geomancy",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 601,
+   "move": "Geomancy",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 607,
+   "move": "Hold Hands",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 841,
+   "move": "Dragon Cheer",
+   "field": "protect",
+   "from": 1,
+   "to": 0,
+   "why": "-protect (never)",
+   "tier": "medium"
+  },
+  {
+   "hack_move_id": 841,
+   "move": "Dragon Cheer",
+   "field": "mirror",
+   "from": 1,
+   "to": 0,
+   "why": "-mirror (never)",
+   "tier": "medium"
   }
  ],
  "hack": "lazarus",
- "source": "game_plans/move_ability_best_2026-11-22/APPLY_MANIFEST.json (user: raise every move to best, 2026-11-23)"
+ "source": "game_plans/move_ability_best_2026-11-22/APPLY_MANIFEST.json (user: raise every move to best, 2026-11-23)",
+ "geom": {
+  "flagbits": {
+   "protect": [
+    22,
+    5,
+    1
+   ],
+   "reflectable": [
+    22,
+    6,
+    0
+   ],
+   "snatch": [
+    22,
+    7,
+    0
+   ],
+   "mirror": [
+    26,
+    1,
+    1
+   ]
+  },
+  "tgt": [
+   12,
+   7,
+   9
+  ]
+ },
+ "source_medium": "game_plans/move_ability_best_2026-11-22/medium/MEDIUM_MANIFEST.json (flags/target, rules RULES.md, 2026-11-23)"
 }

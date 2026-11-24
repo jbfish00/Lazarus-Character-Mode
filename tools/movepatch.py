@@ -1,4 +1,5 @@
-"""Move-table "best version" patcher (cheap tier: power / accuracy / PP / secondary chance / priority / type).
+"""Move-table "best version" patcher (cheap tier: power / accuracy / PP / secondary chance / priority / type; medium tier
+2026-11-23: the whole flags byte and the target in the g3 / cfru / gen4 layouts, from medium/MEDIUM_MANIFEST.json).
 
 Source of the edits: game_plans/move_ability_best_2026-11-22/APPLY_MANIFEST.json (user rulings 2026-11-22/23: raise every
 move to its best value in every hack). Each hack repo keeps its own slice as tools/character_mode/move_changes.json so the
@@ -22,14 +23,52 @@ GBA = 0x08000000
 LAYOUTS = {
     # Gen III BattleMove (vanilla FR/EM/RS): effect, power, type, acc, pp, chance, target, priority s8, flags, pad x3
     "g3": dict(stride=12, fields={"power": (1, "B"), "type": (2, "B"), "accuracy": (3, "B"), "pp": (4, "B"),
-                                  "chance": (5, "B"), "priority": (7, "b")}, never=None),
+                                  "chance": (5, "B"), "priority": (7, "b"),
+                                  "target": (6, "B"), "flags": (8, "B")}, never=None),
     # CFRU (Radical Red, Unbound): same record; accuracy 0 = always hits (CFRU src/accuracy_calc.c AccuracyCalcHelper)
     "cfru": dict(stride=12, fields={"power": (1, "B"), "type": (2, "B"), "accuracy": (3, "B"), "pp": (4, "B"),
-                                    "chance": (5, "B"), "priority": (7, "b")}, never=0),
+                                    "chance": (5, "B"), "priority": (7, "b"),
+                                    "target": (6, "B"), "flags": (8, "B")}, never=0),
     # R.O.W.E. 2.1.9.1, 56-byte record: effect u16, power, type, acc, pp, chance, target, priority s8, ...
     # accuracy 0 = always hits (Aerial Ace is acc 0 with the plain-hit effect; old ROWE source AccuracyCalcHelper)
     "rowe": dict(stride=56, fields={"power": (2, "B"), "type": (3, "B"), "accuracy": (4, "B"), "pp": (5, "B"),
-                                    "chance": (6, "B"), "priority": (8, "b")}, never=0),
+                                    "chance": (6, "B"), "priority": (8, "b"), "target": (7, "B"),
+                                    "protect": ("bit", 12, 1, 0), "reflectable": ("bit", 12, 2, 0), "snatch": ("bit", 12, 3, 0), "mirror": ("bit", 12, 4, 0)}, never=0),
+    # Gen IV 16-byte move record (Platinum pl_waza_tbl, HGSS a/0/1/1, hg-engine): effect u16, category, power, type, acc,
+    # pp, chance, target u16, priority s8, flags, contest x2, pad. accuracy 0 = can't miss (pokeheartgold
+    # BattleSystem_CheckMoveHit and hg-engine other_battle_calculators.c both return before the miss flag).
+    "gen4": dict(stride=16, fields={"power": (3, "B"), "type": (4, "B"), "accuracy": (5, "B"), "pp": (6, "B"),
+                                    "chance": (7, "B"), "priority": (10, "b"),
+                                    "target": (8, "<H"), "flags": (11, "B")}, never=0),
+    # Origin HG extra/new_move_data.narc, 40 bytes: type, ?, category, power, acc (101 = never misses), pp, priority s8, ...,
+    # status chance +10, flinch +15, stat changes: stat ids +21..23, chances +27..29 (intake/originhg_upstream_docs romdata.py)
+    "origin40": dict(stride=40, fields={"power": (3, "B"), "type": (0, "B"), "accuracy": (4, "B"), "pp": (5, "B"),
+                                        "priority": (6, "b"), "chance": "multi",
+                                    "target": (20, "B"), "protect": ("bit", 32, 3, 0), "reflectable": ("bit", 32, 4, 0), "snatch": ("bit", 32, 5, 0), "mirror": ("bit", 32, 6, 0)}, never=101,
+                     chance_slots=dict(status=[10], flinch=15, stats=[(21, 27), (22, 28), (23, 29)])),
+    # Gen V a/0/2/1, 36 bytes: type, effect category, category, power, acc (101 = never misses), pp, priority s8, hits,
+    # condition u16 +8, status chance +10, flinch +15, effect u16 +16, stat ids +21..23, stages +24..26, chances +27..29
+    # (read off the records 2026-11-23: Bite flinch 0x1E at +15, Steel Wing Def/+1/10% at +21/+24/+27)
+    "gen5": dict(stride=36, fields={"power": (3, "B"), "type": (0, "B"), "accuracy": (4, "B"), "pp": (5, "B"),
+                                    "priority": (6, "b"), "chance": "multi",
+                                    "target": (20, "B"), "protect": ("bit", 32, 3, 0), "reflectable": ("bit", 32, 4, 0), "snatch": ("bit", 32, 5, 0), "mirror": ("bit", 32, 6, 0)}, never=101,
+                 chance_slots=dict(status=[10], flinch=15, stats=[(21, 27), (22, 28), (23, 29)])),
+    # Elite Redux 24-byte BattleMove: u32 flags, effect u16 +4, target, argument, ..., power +10, type +11, type2 +12,
+    # acc +13, pp +14, chance +15, priority s8 +16, split +17. accuracy 0 = hits (battle_script_commands.c: moveAcc == 0 ->
+    # ACCURACY_HITS_IF_POSSIBLE). Only the primary type is edited.
+    "er": dict(stride=24, fields={"power": (10, "B"), "type": (11, "B"), "accuracy": (13, "B"), "pp": (14, "B"),
+                                  "chance": (15, "B"), "priority": (16, "b"),
+                                    "target": (6, "B"), "protect": ("bit", 0, 1, 0), "reflectable": ("bit", 0, 2, 0), "snatch": ("bit", 0, 3, 0), "mirror": ("bit", 0, 4, 0)}, never=0),
+    # pokecrystal / Prism, 7 bytes: anim, effect, power, type, acc (percent in Prism), pp, chance (percent). Never-miss and
+    # priority are the move's EFFECT here (deferred / not a field).
+    # The type byte's top 2 bits are the category (Prism's split: Swords Dance 0x81 = status | Fighting): mask 0x3F.
+    "gbc7": dict(stride=7, fields={"power": (2, "B"), "type": (3, "B", 0x3F), "accuracy": (4, "B"), "pp": (5, "B"),
+                                   "chance": (6, "B")}, never=None),
+    # Polished Crystal / Crystal Inheritance, 8 bytes: anim, effect, power, type, acc (percent), pp, chance (percent),
+    # category. Never-miss is the EFFECT here (Aerial Ace = EFFECT_ALWAYS_HIT, acc 100): deferred. Priority is not in the
+    # record (MovePriorities list; the CI tool edits it).
+    "gbc8": dict(stride=8, fields={"power": (2, "B"), "type": (3, "B"), "accuracy": (4, "B"), "pp": (5, "B"),
+                                   "chance": (6, "B")}, never=None),
     # pokeemerald-expansion MoveInfo: +10 u16 type:5/category:2/power:9, +12 u16 accuracy:7/target:9, +14 pp, priority:4
     # in a nibble found per ROM (geom pri), chance in the additionalEffects arrays (geom effptr). accuracy 0 = always hits
     # (expansion battle_util.c: GetMoveAccuracy(move) == 0 -> effect = TRUE).
@@ -46,7 +85,13 @@ def type_ids(type_map):
     return inv
 
 
-def plan(slice_, layout):
+def slice_geom(slice_, geom):
+    """per-ROM geometry the slice carries (medium tier: expansion flagbits / tgt), under the caller's own."""
+    return dict(slice_.get("geom", {}), **geom)
+
+
+def plan(slice_, layout, **geom):
+    geom = slice_geom(slice_, geom)
     """Split the slice's changes into (to_apply, deferred, type ids, never-miss encoding)."""
     L = LAYOUTS[layout]
     never = L["never"]
@@ -54,7 +99,7 @@ def plan(slice_, layout):
     apply_, deferred = [], []
     for c in slice_["changes"]:
         f = c["field"]
-        if f not in L["fields"]:
+        if f not in L["fields"] and not (layout == "exp" and (f in geom.get("flagbits", {}) or (f == "target" and "tgt" in geom))):
             deferred.append(dict(c, reason="field not in layout")); continue
         if f == "accuracy" and c["to"] == 101 and never is None:
             deferred.append(dict(c, reason="never-miss is effect-bound here (medium tier)")); continue
@@ -100,11 +145,34 @@ def _eff(rom, r, geom):
     return a, n, idx
 
 
+def _slots(layout, rom, r):
+    """Chance byte offsets in use: status, flinch, and each stat change that names a stat."""
+    cs = LAYOUTS[layout]["chance_slots"]
+    return cs["status"] + [cs["flinch"]] + [c for st, c in cs["stats"] if rom[r + st]]
+
+
+def _chance_targets(layout, rom, r):
+    """Which chance bytes a raise edits: the non-flinch slots holding the current max (Fangs: the status, not the
+    flinch; ruling Q3 2026-11-23), or the flinch alone when it is the move's only chance."""
+    cs = LAYOUTS[layout]["chance_slots"]
+    cur = max([rom[r + o] for o in _slots(layout, rom, r)] or [0])
+    t = [o for o in cs["status"] + [c for st, c in cs["stats"] if rom[r + st]] if rom[r + o] == cur and cur]
+    return t or ([cs["flinch"]] if rom[r + cs["flinch"]] == cur and cur else [])
+
+
 def get(rom, layout, table_off, mid, field, geom):
     r = table_off + _stride(layout, geom) * mid
     if layout != "exp":
-        off, fmt = LAYOUTS[layout]["fields"][field]
-        return struct.unpack_from(fmt, rom, r + off)[0]
+        if LAYOUTS[layout]["fields"][field] == "multi":
+            ch = [rom[r + o] for o in _slots(layout, rom, r)]
+            ch = [c for c in ch if c]
+            return max(ch) if ch else None
+        spec = LAYOUTS[layout]["fields"][field]
+        if spec[0] == "bit":                       # one flag bit; value 1 = the flag applies (inv: stored inverted)
+            return ((rom[r + spec[1]] >> spec[2]) & 1) ^ spec[3]
+        off, fmt = spec[:2]
+        v = struct.unpack_from(fmt, rom, r + off)[0]
+        return v & LAYOUTS[layout]["fields"][field][2] if len(LAYOUTS[layout]["fields"][field]) > 2 else v
     if field == "power":
         return _bits(rom, r + 10, 7, 9)
     if field == "type":
@@ -120,13 +188,31 @@ def get(rom, layout, table_off, mid, field, geom):
     if field == "chance":
         e = _eff(rom, r, geom)
         return None if e is None or e[2] is None else rom[e[0] + 4 * e[2] + 3]
+    if field in geom.get("flagbits", {}):
+        b, bit, inv = geom["flagbits"][field]
+        return ((rom[r + b] >> bit) & 1) ^ inv
+    if field == "target" and "tgt" in geom:
+        b, lo, n = geom["tgt"]
+        return _bits(rom, r + b, lo, n)
     raise KeyError(field)
 
 
 def put(rom, layout, table_off, mid, field, v, geom, arrays=None):
     r = table_off + _stride(layout, geom) * mid
     if layout != "exp":
-        off, fmt = LAYOUTS[layout]["fields"][field]
+        if LAYOUTS[layout]["fields"][field] == "multi":
+            for o in _chance_targets(layout, rom, r):
+                rom[r + o] = v
+            return
+        spec = LAYOUTS[layout]["fields"][field]
+        if spec[0] == "bit":
+            assert v in (0, 1)
+            rom[r + spec[1]] = (rom[r + spec[1]] & ~(1 << spec[2]) & 0xFF) | ((v ^ spec[3]) << spec[2])
+            return
+        off, fmt = spec[:2]
+        if len(spec) > 2:
+            assert v & ~spec[2] == 0, "value %r does not fit mask %#x" % (v, spec[2])
+            v |= rom[r + off] & ~spec[2] & 0xFF
         struct.pack_into(fmt, rom, r + off, v)
     elif field == "power":
         _putbits(rom, r + 10, 7, 9, v)
@@ -146,6 +232,13 @@ def put(rom, layout, table_off, mid, field, v, geom, arrays=None):
         new = bytearray(rom[a:a + 4 * n])
         new[4 * idx + 3] = v
         struct.pack_into("<I", rom, r + geom["effptr"], arrays(bytes(new)))
+    elif field in geom.get("flagbits", {}):
+        b, bit, inv = geom["flagbits"][field]
+        assert v in (0, 1)
+        rom[r + b] = (rom[r + b] & ~(1 << bit) & 0xFF) | ((v ^ inv) << bit)
+    elif field == "target" and "tgt" in geom:
+        b, lo, n = geom["tgt"]
+        _putbits(rom, r + b, lo, n, v)
     else:
         raise KeyError(field)
 
@@ -180,12 +273,15 @@ def _array_pool(rom, table_off, n_moves, geom):
 
 
 def apply(rom, slice_, table_off, layout, **geom):
-    todo, deferred, tids, never = plan(slice_, layout)
+    geom = slice_geom(slice_, geom)
+    todo, deferred, tids, never = plan(slice_, layout, **geom)
     n_moves = max(c["hack_move_id"] for c in slice_["changes"])
     arrays, state = _array_pool(rom, table_off, n_moves, geom) if layout == "exp" else (None, {})
     for c in todo:
         cur = get(rom, layout, table_off, c["hack_move_id"], c["field"], geom)
         old, new = enc(c, tids, never, "from"), enc(c, tids, never, "to")
+        if c["field"] == "type" and slice_["type_map"].get(str(cur)) == c["from"]:
+            old = cur          # a hack-custom type id voted to the same name (Prism's extra types)
         assert cur == old, "move %d %s %s: ROM has %r, manifest says %r (wrong table or stale manifest)" % (
             c["hack_move_id"], c["move"], c["field"], cur, old)
         put(rom, layout, table_off, c["hack_move_id"], c["field"], new, geom, arrays)
@@ -200,8 +296,18 @@ def apply(rom, slice_, table_off, layout, **geom):
 def touched_bytes(layout, table_off, mid, field, geom):
     r = table_off + _stride(layout, geom) * mid
     if layout != "exp":
-        off, fmt = LAYOUTS[layout]["fields"][field]
+        if LAYOUTS[layout]["fields"][field] == "multi":
+            cs = LAYOUTS[layout]["chance_slots"]
+            return [r + o for o in cs["status"] + [cs["flinch"]] + [c for _, c in cs["stats"]]]
+        spec = LAYOUTS[layout]["fields"][field]
+        if spec[0] == "bit":
+            return range(r + spec[1], r + spec[1] + 1)
+        off, fmt = spec[:2]
         return range(r + off, r + off + struct.calcsize(fmt))
+    if field in geom.get("flagbits", {}):
+        return range(r + geom["flagbits"][field][0], r + geom["flagbits"][field][0] + 1)
+    if field == "target" and "tgt" in geom:
+        return range(r + geom["tgt"][0], r + geom["tgt"][0] + 2)
     pb = geom.get("pri", (0, 0))[0]
     ep = geom.get("effptr", 0)
     return {"power": range(r + 10, r + 12), "type": range(r + 10, r + 12), "accuracy": range(r + 12, r + 14),
@@ -213,8 +319,9 @@ def verify(base, built, slice_, table_off, layout, n_moves, **geom):
     an edited effect array differs from the base one only in that chance, and no other byte of the move table changed
     (bit-packed fields: the other bits of a touched halfword are checked by reading the neighbouring fields too).
     Returns a list of failures (empty = pass)."""
+    geom = slice_geom(slice_, geom)
     S = _stride(layout, geom)
-    todo, deferred, tids, never = plan(slice_, layout)
+    todo, deferred, tids, never = plan(slice_, layout, **geom)
     bad = []
     touched = set()
     edited = {}
@@ -223,6 +330,8 @@ def verify(base, built, slice_, table_off, layout, n_moves, **geom):
             continue
         exp = enc(c, tids, never, want)
         got = get(built, layout, table_off, c["hack_move_id"], c["field"], geom)
+        if c["field"] == "type" and want == "from" and slice_["type_map"].get(str(got)) == c["from"]:
+            exp = got
         if got != exp:
             bad.append("move %d %s %s: %r, want %r (%s)" % (c["hack_move_id"], c["move"], c["field"], got, exp, want))
         touched.update(touched_bytes(layout, table_off, c["hack_move_id"], c["field"], geom))
@@ -234,6 +343,8 @@ def verify(base, built, slice_, table_off, layout, n_moves, **geom):
                 if f not in fs and get(built, layout, table_off, mid, f, geom) != get(base, layout, table_off, mid, f, geom):
                     bad.append("move %d: %s changed without a manifest row" % (mid, f))
             for o, lo, n, what in ((r + 10, 5, 2, "category"), (r + 12, 7, 9, "target")):
+                if what == "target" and "target" in fs:
+                    continue
                 if _bits(built, o, lo, n) != _bits(base, o, lo, n):
                     bad.append("move %d: %s bits changed" % (mid, what))
             pb, hi = geom["pri"]
@@ -248,6 +359,21 @@ def verify(base, built, slice_, table_off, layout, n_moves, **geom):
                     b1[4 * i1 + 3] = 0
                 if (n0, i0, bytes(b0)) != (n1, i1, bytes(b1)):
                     bad.append("move %d: effect array changed beyond its chance" % mid)
+    for mid, fs in edited.items():                  # a flag-bit edit may change only its own bit
+        r = table_off + S * mid
+        bits = {}
+        for f in fs:
+            spec = geom.get("flagbits", {}).get(f) if layout == "exp" else LAYOUTS[layout]["fields"].get(f)
+            if spec and (layout == "exp" or spec[0] == "bit"):
+                b, bit = (spec[0], spec[1]) if layout == "exp" else (spec[1], spec[2])
+                bits.setdefault(b, set()).add(bit)
+        whole = {LAYOUTS[layout]["fields"]["flags"][0] for f in fs if f == "flags"} if layout != "exp" else set()
+        for b, bs in bits.items():
+            if b in whole:
+                continue
+            keep = 0xFF & ~sum(1 << x for x in bs)
+            if (built[r + b] & keep) != (base[r + b] & keep):
+                bad.append("move %d: other bits of flag byte +%d changed" % (mid, b))
     for o in range(table_off, table_off + S * (n_moves + 1)):
         if o not in touched and base[o] != built[o]:
             bad.append("untouched move-table byte %#x changed %02x -> %02x" % (o, base[o], built[o]))

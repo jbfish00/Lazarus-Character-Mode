@@ -432,8 +432,9 @@ def main():
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     import movepatch
     _mg = dict(stride=52, pri=(20, 0), effptr=36, neff=(20, 18))
-    _mb = [movepatch.touched_bytes("exp", 0x8CFAC8, _c["hack_move_id"], _c["field"], _mg)
-           for _c in movepatch.plan(json.load(open(Path(__file__).resolve().parents[1] / "character_mode" / "move_changes.json")), "exp")[0]]
+    _sl = json.load(open(Path(__file__).resolve().parents[1] / "character_mode" / "move_changes.json"))
+    _mb = [movepatch.touched_bytes("exp", 0x8CFAC8, _c["hack_move_id"], _c["field"], movepatch.slice_geom(_sl, _mg))
+           for _c in movepatch.plan(_sl, "exp")[0]]   # medium tier: the slice carries flagbits / tgt
     intended = [
         (_s, _send),
         (BITMAPS_ADDR - 0x08000000, BITMAPS_ADDR - 0x08000000 + len(bitmaps)),
