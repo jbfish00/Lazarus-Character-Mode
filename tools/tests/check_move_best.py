@@ -5,7 +5,8 @@ usage: python3 tools/tests/check_move_best.py [rom] [--no-tamper]
 Pass = every applied row of tools/character_mode/move_changes.json reads its new value (secondary chances through the
 move's additionalEffects pointer), an edited effect array differs from the base one only in that chance, no other bit of
 an edited record and no other byte of the move table changed, and the counts equal the pinned EXPECT.
-Controls (always run): a reverted edit, a stray table byte, a corrupted effect id in a repointed array, the base ROM."""
+Controls (always run): a reverted edit, a stray table byte, a corrupted effect id in a repointed array, the base ROM,
+a reverted medium flag, a reverted crit +2 row, the bit just above a crit field (alwaysCriticalHit)."""
 import json, struct, sys
 from pathlib import Path
 
@@ -16,7 +17,7 @@ import movepatch
 BASE = ROOT / "rom" / "lazarus-v2.gba"
 TABLE = 0x088CFAC8 - 0x08000000            # live gMovesInfo (260 literal refs)
 GEOM = dict(stride=52, pri=(20, 0), effptr=36, neff=(20, 18))
-EXPECT = (545 + 46, 0)   # (applied, deferred), pinned 2026-11-23 (cheap + medium flags/target)
+EXPECT = (545 + 46 + 25, 0)   # (applied, deferred), pinned 2026-11-23 (cheap + medium flags/target) + 2026-11-24 crit +2
 SL = json.load((ROOT / "tools/character_mode/move_changes.json").open())
 N = max(c["hack_move_id"] for c in SL["changes"])
 
@@ -48,14 +49,21 @@ def main():
         cm = next(x for x in todo if x.get("tier") == "medium" and x["field"] != "target")   # a medium flag bit too
         fb = SL["geom"]["flagbits"][cm["field"]]
         t4 = bytearray(built); o = TABLE + GEOM["stride"] * cm["hack_move_id"] + fb[0]; t4[o] ^= 1 << fb[1]
+        cc = next(x for x in todo if x["field"] == "crit")                                # a crit +2 row too
+        cb, clo, cn = SL["geom"]["crit"]
+        t5 = bytearray(built); o = TABLE + GEOM["stride"] * cc["hack_move_id"] + cb
+        struct.pack_into("<I", t5, o, struct.unpack_from("<I", built, o)[0] & ~(((1 << cn) - 1) << clo) | (cc["from"] << clo))
+        t6 = bytearray(built); o = TABLE + GEOM["stride"] * cc["hack_move_id"] + cb
+        struct.pack_into("<I", t6, o, struct.unpack_from("<I", built, o)[0] ^ (1 << (clo + cn)))   # the bit above the field
         ok = 0
         for name, t in [(f"an applied edit reverted ({c['move']} pp)", t1), ("a stray move-table byte", t2),
                         (f"{ch['move']}'s repointed effect array corrupted", t3), ("the unpatched base ROM's table", bytearray(base)),
-                        (f"a medium flag edit reverted ({cm['move']} {cm['field']})", t4)]:
+                        (f"a medium flag edit reverted ({cm['move']} {cm['field']})", t4),
+                        (f"a crit +2 edit reverted ({cc['move']})", t5), (f"the bit above {cc['move']}'s crit stage", t6)]:
             f = check(base, t)[0]
             print("caught" if f else "MISSED", name, len(f)); ok += bool(f)
-        print(f"negative controls: {ok}/5")
-        rc |= ok != 5
+        print(f"negative controls: {ok}/7")
+        rc |= ok != 7
     sys.exit(rc)
 
 

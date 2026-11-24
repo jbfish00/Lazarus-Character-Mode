@@ -99,7 +99,8 @@ def plan(slice_, layout, **geom):
     apply_, deferred = [], []
     for c in slice_["changes"]:
         f = c["field"]
-        if f not in L["fields"] and not (layout == "exp" and (f in geom.get("flagbits", {}) or (f == "target" and "tgt" in geom))):
+        if f not in L["fields"] and not (layout == "exp" and (f in geom.get("flagbits", {}) or (f == "target" and "tgt" in geom)
+                                                             or (f == "crit" and "crit" in geom))):
             deferred.append(dict(c, reason="field not in layout")); continue
         if f == "accuracy" and c["to"] == 101 and never is None:
             deferred.append(dict(c, reason="never-miss is effect-bound here (medium tier)")); continue
@@ -130,6 +131,22 @@ def _putbits(rom, o, lo, n, v):
     w = struct.unpack_from("<H", rom, o)[0]
     assert 0 <= v < (1 << n), "value %r does not fit %d bits" % (v, n)
     struct.pack_into("<H", rom, o, (w & ~(((1 << n) - 1) << lo)) | (v << lo))
+
+
+def _bits32(rom, o, lo, n):
+    return (struct.unpack_from("<I", rom, o)[0] >> lo) & ((1 << n) - 1)
+
+
+def _putbits32(rom, o, lo, n, v):
+    w = struct.unpack_from("<I", rom, o)[0]
+    assert 0 <= v < (1 << n), "value %r does not fit %d bits" % (v, n)
+    struct.pack_into("<I", rom, o, (w & ~(((1 << n) - 1) << lo)) | (v << lo))
+
+
+def _crit_bytes(r, geom):
+    """file offsets of the bytes the crit-stage bit field spans (geom crit = (u32 offset, low bit, width))"""
+    b, lo, n = geom["crit"]
+    return range(r + b + lo // 8, r + b + (lo + n - 1) // 8 + 1)
 
 
 def _eff(rom, r, geom):
@@ -194,6 +211,8 @@ def get(rom, layout, table_off, mid, field, geom):
     if field == "target" and "tgt" in geom:
         b, lo, n = geom["tgt"]
         return _bits(rom, r + b, lo, n)
+    if field == "crit" and "crit" in geom:          # criticalHitStage (crit +2 tier, 2026-11-24)
+        return _bits32(rom, r + geom["crit"][0], geom["crit"][1], geom["crit"][2])
     raise KeyError(field)
 
 
@@ -239,6 +258,8 @@ def put(rom, layout, table_off, mid, field, v, geom, arrays=None):
     elif field == "target" and "tgt" in geom:
         b, lo, n = geom["tgt"]
         _putbits(rom, r + b, lo, n, v)
+    elif field == "crit" and "crit" in geom:
+        _putbits32(rom, r + geom["crit"][0], geom["crit"][1], geom["crit"][2], v)
     else:
         raise KeyError(field)
 
@@ -308,6 +329,8 @@ def touched_bytes(layout, table_off, mid, field, geom):
         return range(r + geom["flagbits"][field][0], r + geom["flagbits"][field][0] + 1)
     if field == "target" and "tgt" in geom:
         return range(r + geom["tgt"][0], r + geom["tgt"][0] + 2)
+    if field == "crit" and "crit" in geom:
+        return _crit_bytes(r, geom)
     pb = geom.get("pri", (0, 0))[0]
     ep = geom.get("effptr", 0)
     return {"power": range(r + 10, r + 12), "type": range(r + 10, r + 12), "accuracy": range(r + 12, r + 14),
@@ -350,6 +373,16 @@ def verify(base, built, slice_, table_off, layout, n_moves, **geom):
             pb, hi = geom["pri"]
             if (built[r + pb] & (0x0F if hi else 0xF0)) != (base[r + pb] & (0x0F if hi else 0xF0)):
                 bad.append("move %d: the other nibble of the priority byte changed" % mid)
+            if "crit" in fs:
+                cb, clo, cn = geom["crit"]
+                mask = ((1 << cn) - 1) << clo
+                for f in fs:                        # flag bits edited in the same word are checked by their own rows
+                    fb = geom.get("flagbits", {}).get(f)
+                    if fb and cb <= fb[0] < cb + 4:
+                        mask |= 1 << (8 * (fb[0] - cb) + fb[1])
+                w0, w1 = struct.unpack_from("<I", base, r + cb)[0], struct.unpack_from("<I", built, r + cb)[0]
+                if (w0 ^ w1) & ~mask & 0xFFFFFFFF:
+                    bad.append("move %d: other bits of the crit-stage word +%d changed" % (mid, cb))
             if "chance" in fs:
                 a0, n0, i0 = _eff(base, r, geom)
                 a1, n1, i1 = _eff(built, r, geom)
@@ -367,6 +400,11 @@ def verify(base, built, slice_, table_off, layout, n_moves, **geom):
             if spec and (layout == "exp" or spec[0] == "bit"):
                 b, bit = (spec[0], spec[1]) if layout == "exp" else (spec[1], spec[2])
                 bits.setdefault(b, set()).add(bit)
+        if layout == "exp" and "crit" in fs:        # crit-stage bits sharing a flag byte belong to the crit row
+            cb, clo, cn = geom["crit"]
+            for k in range(clo, clo + cn):
+                if cb + k // 8 in bits:
+                    bits[cb + k // 8].add(k % 8)
         whole = {LAYOUTS[layout]["fields"]["flags"][0] for f in fs if f == "flags"} if layout != "exp" else set()
         for b, bs in bits.items():
             if b in whole:

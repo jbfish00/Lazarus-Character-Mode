@@ -4794,6 +4794,231 @@
    "to": 0,
    "why": "-mirror (never)",
    "tier": "medium"
+  },
+  {
+   "hack_move_id": 2,
+   "move": "Karate Chop",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 13,
+   "move": "Razor Wind",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 75,
+   "move": "Razor Leaf",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 143,
+   "move": "Sky Attack",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 152,
+   "move": "Crabhammer",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 163,
+   "move": "Slash",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 177,
+   "move": "Aeroblast",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 238,
+   "move": "Cross Chop",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 299,
+   "move": "Blaze Kick",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 314,
+   "move": "Air Cutter",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 342,
+   "move": "Poison Tail",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 348,
+   "move": "Leaf Blade",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 400,
+   "move": "Night Slash",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 421,
+   "move": "Shadow Claw",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 427,
+   "move": "Psycho Cut",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 440,
+   "move": "Cross Poison",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 444,
+   "move": "Stone Edge",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 454,
+   "move": "Attack Order",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 460,
+   "move": "Spacial Rend",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 529,
+   "move": "Drill Run",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 691,
+   "move": "Snipe Shot",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 768,
+   "move": "Esper Wing",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 771,
+   "move": "Triple Arrows",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 821,
+   "move": "Aqua Cutter",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
+  },
+  {
+   "hack_move_id": 832,
+   "move": "Ivy Cudgel",
+   "field": "crit",
+   "from": 1,
+   "to": 2,
+   "why": "crit +2 (critRatio 3: high crit in some gen)",
+   "tier": "crit"
   }
  ],
  "hack": "lazarus",
@@ -4825,7 +5050,13 @@
    12,
    7,
    9
+  ],
+  "crit": [
+   20,
+   15,
+   2
   ]
  },
- "source_medium": "game_plans/move_ability_best_2026-11-22/medium/MEDIUM_MANIFEST.json (flags/target, rules RULES.md, 2026-11-23)"
+ "source_medium": "game_plans/move_ability_best_2026-11-22/medium/MEDIUM_MANIFEST.json (flags/target, rules RULES.md, 2026-11-23)",
+ "source_crit": "game_plans/move_ability_best_2026-11-22/medium/CRIT_MANIFEST.json (crit +2, RULES.md 2026-11-24)"
 }
