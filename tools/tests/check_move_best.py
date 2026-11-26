@@ -34,6 +34,18 @@ def main():
     a = [x for x in sys.argv[1:] if not x.startswith("--")]
     built = bytearray(Path(a[0] if a else ROOT / "build" / "lazarus_cm.gba").read_bytes())
     base = BASE.read_bytes()
+    # Behaviour cards (2026-11-25) own a few move-table bits (Double-Edge recoil, Minimize punish, ignoresSubstitute on
+    # sound moves); tests/check_behaviour_exp.py checks them. When the built ROM carries them they are folded into the
+    # base here, so they don't read as stray move-table bytes; a CM_NO_BEHAVIOUR build is checked against the raw base.
+    _bc = json.load((ROOT / "tools/character_mode/behaviour_cards.json").open())["edits"]
+    _tb = [e for e in _bc if e["kind"] == "data"]
+    if _tb and all(built[int(e["addr"], 16) - 0x08000000:][:len(e["to"]) // 2].hex() == e["to"] for e in _tb):
+        base = bytearray(base)
+        for e in _tb:
+            o = int(e["addr"], 16) - 0x08000000
+            assert TABLE <= o < TABLE + 0x10000 and base[o:o + len(e["from"]) // 2].hex() == e["from"], e
+            base[o:o + len(e["to"]) // 2] = bytes.fromhex(e["to"])
+        base = bytes(base)
     bad, todo = check(base, built)
     for b in bad[:20]:
         print("FAIL", b)

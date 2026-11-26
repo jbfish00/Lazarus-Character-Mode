@@ -1,0 +1,488 @@
+{
+ "hack": "lazarus",
+ "engine": "pokeemerald-expansion binary (ref 1.9.4)",
+ "generator": "game_plans/move_ability_best_2026-11-22/behaviour_all/gba/make_exp.py",
+ "block": "0x9e01000",
+ "edits": [
+  {
+   "card": "Double-Edge (Gen I)",
+   "kind": "data",
+   "addr": "0x088d0294",
+   "from": "1002",
+   "to": "9001",
+   "why": "recoil 33 -> 25 %"
+  },
+  {
+   "card": "Astonish (Gen III)",
+   "kind": "data",
+   "addr": "0x088d39d8",
+   "from": "00",
+   "to": "10",
+   "why": "minimizeDoubleDamage set"
+  },
+  {
+   "card": "Extrasensory (Gen III)",
+   "kind": "data",
+   "addr": "0x088d3d18",
+   "from": "00",
+   "to": "10",
+   "why": "minimizeDoubleDamage set"
+  },
+  {
+   "card": "Needle Arm (Gen III)",
+   "kind": "data",
+   "addr": "0x088d3838",
+   "from": "00",
+   "to": "10",
+   "why": "minimizeDoubleDamage set"
+  },
+  {
+   "card": "Phantom Force (Gen VI)",
+   "kind": "data",
+   "addr": "0x088d6dd8",
+   "from": "00",
+   "to": "10",
+   "why": "minimizeDoubleDamage set"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d0405",
+   "from": "20",
+   "to": "00",
+   "why": "growl: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d0439",
+   "from": "20",
+   "to": "00",
+   "why": "roar: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d046d",
+   "from": "20",
+   "to": "00",
+   "why": "sing: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d04a1",
+   "from": "20",
+   "to": "00",
+   "why": "supersonic: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d0fcd",
+   "from": "20",
+   "to": "00",
+   "why": "screech: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d1e05",
+   "from": "20",
+   "to": "00",
+   "why": "snore: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d227d",
+   "from": "20",
+   "to": "00",
+   "why": "perishsong: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d268d",
+   "from": "20",
+   "to": "00",
+   "why": "healbell: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d2e45",
+   "from": "20",
+   "to": "00",
+   "why": "uproar: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d38a1",
+   "from": "20",
+   "to": "00",
+   "why": "hypervoice: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d3bad",
+   "from": "20",
+   "to": "00",
+   "why": "metalsound: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d3be1",
+   "from": "20",
+   "to": "00",
+   "why": "grasswhistle: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d4d25",
+   "from": "20",
+   "to": "00",
+   "why": "bugbuzz: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d55e1",
+   "from": "20",
+   "to": "00",
+   "why": "chatter: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d5fa1",
+   "from": "20",
+   "to": "00",
+   "why": "round: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d5fd5",
+   "from": "20",
+   "to": "00",
+   "why": "echoedvoice: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d69fd",
+   "from": "20",
+   "to": "00",
+   "why": "relicsong: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d6b9d",
+   "from": "20",
+   "to": "00",
+   "why": "snarl: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d6e41",
+   "from": "20",
+   "to": "00",
+   "why": "nobleroar: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d6f79",
+   "from": "20",
+   "to": "00",
+   "why": "disarmingvoice: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d6fad",
+   "from": "20",
+   "to": "00",
+   "why": "partingshot: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d71e9",
+   "from": "20",
+   "to": "00",
+   "why": "boomburst: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d72b9",
+   "from": "20",
+   "to": "00",
+   "why": "confide: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d7a3d",
+   "from": "20",
+   "to": "00",
+   "why": "sparklingaria: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d7fb9",
+   "from": "20",
+   "to": "00",
+   "why": "clangingscales: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d8be9",
+   "from": "20",
+   "to": "00",
+   "why": "overdrive: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d9409",
+   "from": "20",
+   "to": "00",
+   "why": "eeriespell: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088d9d2d",
+   "from": "20",
+   "to": "00",
+   "why": "torchsong: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088da5e9",
+   "from": "20",
+   "to": "00",
+   "why": "alluringvoice: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Substitute (Gen II-V)",
+   "kind": "data",
+   "addr": "0x088da685",
+   "from": "20",
+   "to": "00",
+   "why": "psychicnoise: sound move, ignoresSubstitute cleared"
+  },
+  {
+   "card": "Cute Charm (Gen III)",
+   "kind": "imm",
+   "addr": "0x080c4d68",
+   "from": "6421",
+   "to": "6921",
+   "why": "RandomWeightedArray sum 100 -> 105 with weights {70,30}: 35/105 = 1/3"
+  },
+  {
+   "card": "Flame Body (Gen III)",
+   "kind": "imm",
+   "addr": "0x080c45a4",
+   "from": "6421",
+   "to": "6921",
+   "why": "RandomWeightedArray sum 100 -> 105 with weights {70,30}: 35/105 = 1/3"
+  },
+  {
+   "card": "Poison Point (Gen III)",
+   "kind": "imm",
+   "addr": "0x080c45c4",
+   "from": "6421",
+   "to": "6921",
+   "why": "RandomWeightedArray sum 100 -> 105 with weights {70,30}: 35/105 = 1/3"
+  },
+  {
+   "card": "Static (Gen III)",
+   "kind": "imm",
+   "addr": "0x080c4e1e",
+   "from": "6421",
+   "to": "6921",
+   "why": "RandomWeightedArray sum 100 -> 105 with weights {70,30}: 35/105 = 1/3"
+  },
+  {
+   "card": "Aerilate / Pixilate / Refrigerate (Gen VI)",
+   "kind": "repoint",
+   "addr": "0x080ce176",
+   "from": "c34b",
+   "to": "c14b",
+   "why": "ldr of the -ate multiplier now loads 0x14cc (1.3) at 0x80ce47c"
+  },
+  {
+   "card": "Protect / Detect / Endure (Gen IV)",
+   "kind": "blob",
+   "addr": "0x09e01000",
+   "from": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+   "to": "ffffff7fff3fff1fff1fff1fff1fff1fff1fff1fff1fff1fff1fff1fff1fff1f",
+   "why": "16-entry success table, 1/8 floor"
+  },
+  {
+   "card": "Protect / Detect / Endure (Gen IV)",
+   "kind": "repoint",
+   "addr": "0x080a11b0",
+   "from": "f4e25708",
+   "to": "0010e009",
+   "why": "sProtectSuccessRates literal"
+  },
+  {
+   "card": "Protect / Detect / Endure (Gen IV)",
+   "kind": "repoint",
+   "addr": "0x080aa6f4",
+   "from": "f4e25708",
+   "to": "0010e009",
+   "why": "sProtectSuccessRates literal"
+  },
+  {
+   "card": "Parental Bond (Gen VI)",
+   "kind": "imm",
+   "addr": "0x080ccbca",
+   "from": "c023",
+   "to": "8023",
+   "why": "second-hit add-on 3072 -> 2048"
+  },
+  {
+   "card": "Parental Bond (Gen VI)",
+   "kind": "imm",
+   "addr": "0x080ccbd4",
+   "from": "db00",
+   "to": "1b01",
+   "why": "base 1024 -> 2048 (lsls #3 -> #4)"
+  },
+  {
+   "card": "High Jump Kick / Jump Kick (Gen I)",
+   "kind": "inplace",
+   "addr": "0x080a1722",
+   "from": "c003000c",
+   "to": "01200120",
+   "why": "maxHP/2 -> 1 (lsls #15; lsrs #16 -> movs r0,#1 x2)"
+  },
+  {
+   "card": "Transistor (Gen VIII)",
+   "kind": "inplace",
+   "addr": "0x080ce2e2",
+   "from": "4fe5",
+   "to": "2ce7",
+   "why": "Electric: b.n after-switch -> the 1.5x block at 0x80ce13e"
+  },
+  {
+   "card": "Brick Break (Gen III)",
+   "kind": "imm",
+   "addr": "0x080a719c",
+   "from": "2920",
+   "to": "0020",
+   "why": "NO_EFFECT mask 41 -> 0: never fails"
+  },
+  {
+   "card": "Payback (Gen IV)",
+   "kind": "inplace",
+   "addr": "0x080cc800",
+   "from": "00d0",
+   "to": "c046",
+   "why": "isFirstTurn == 2 (switched in) no longer cancels the doubling"
+  },
+  {
+   "card": "Gale Wings (Gen VI)",
+   "kind": "inplace",
+   "addr": "0x08086088",
+   "from": "41d0",
+   "to": "41e0",
+   "why": "hp == maxHP test: beq -> b (always on to the Flying check)"
+  },
+  {
+   "card": "Intimidate (Gen VII)",
+   "kind": "script",
+   "addr": "0x08289f8a",
+   "from": "1fa02808",
+   "to": "8e9f2808",
+   "why": "jumpifability (Inner Focus/Scrappy/Own Tempo/Oblivious)[0] -> falls through"
+  },
+  {
+   "card": "Intimidate (Gen VII)",
+   "kind": "script",
+   "addr": "0x08289f92",
+   "from": "1fa02808",
+   "to": "969f2808",
+   "why": "jumpifability (Inner Focus/Scrappy/Own Tempo/Oblivious)[1] -> falls through"
+  },
+  {
+   "card": "Intimidate (Gen VII)",
+   "kind": "script",
+   "addr": "0x08289f9a",
+   "from": "1fa02808",
+   "to": "9e9f2808",
+   "why": "jumpifability (Inner Focus/Scrappy/Own Tempo/Oblivious)[2] -> falls through"
+  },
+  {
+   "card": "Intimidate (Gen VII)",
+   "kind": "script",
+   "addr": "0x08289fa2",
+   "from": "1fa02808",
+   "to": "a69f2808",
+   "why": "jumpifability (Inner Focus/Scrappy/Own Tempo/Oblivious)[3] -> falls through"
+  },
+  {
+   "card": "Leaf Guard (Gen IV)",
+   "kind": "script",
+   "addr": "0x08286a2f",
+   "from": "6c6a2808",
+   "to": "336a2808",
+   "why": "jumpifleafguardprotected -> falls through to trysetrest"
+  },
+  {
+   "card": "Parting Shot (Gen VI)",
+   "kind": "script",
+   "addr": "0x08284edd",
+   "from": "4e812808",
+   "to": "e14e2808",
+   "why": "jumpifstat SpAtk == -6 -> CantLowerMultipleStats now falls through (Gen VII bail removed)"
+  },
+  {
+   "card": "Heal Bell / Soundproof (Gen V)",
+   "kind": "inplace",
+   "addr": "0x080a4822",
+   "from": "dde7",
+   "to": "d6e7",
+   "why": "party loop: Soundproof skip -> heal"
+  },
+  {
+   "card": "Heal Bell / Soundproof (Gen V)",
+   "kind": "inplace",
+   "addr": "0x080a4832",
+   "from": "05d0",
+   "to": "c046",
+   "why": "active partner: Soundproof branch -> nop (cured)"
+  },
+  {
+   "card": "Protean / Libero (Gen VI-VIII)",
+   "kind": "inplace",
+   "addr": "0x0809053c",
+   "from": "da70",
+   "to": "c046",
+   "why": "usedProteanLibero store -> nop"
+  },
+  {
+   "card": "Disguise (Gen VII)",
+   "kind": "script",
+   "addr": "0x08289762",
+   "from": "3f972808",
+   "to": "66972808",
+   "why": "jump to the HP-loss script -> the return after it"
+  }
+ ]
+}

@@ -1446,6 +1446,17 @@ def main():
         _mb = movepatch.apply(data, json.load((ROOT / "tools/character_mode/move_changes.json").open()), MOVE_TABLE - 0x08000000,
                               "exp", **MOVE_GEOM)
         print(f"move best-version: {_mb['applied']} applied, {_mb['deferred']} deferred, new effect arrays {_mb['new_effect_arrays']}")
+    # Move/ability behaviour cards (item 1, 2026-11-25): tools/character_mode/behaviour_cards.json, written by the workspace
+    # generator game_plans/move_ability_best_2026-11-22/behaviour_all/gba/make_exp.py from the base ROM. Every edit asserts
+    # the bytes it replaces (tools/bpatch.py). After move best-version, so the two never overlap unnoticed.
+    # CM_NO_BEHAVIOUR=1 builds the control (lazarus_cm_nobeh.gba).
+    if os.environ.get("CM_NO_BEHAVIOUR") == "1":
+        out_rom = BUILD / "lazarus_cm_nobeh.gba"
+    else:
+        sys.path.insert(0, str(HERE))
+        import bpatch
+        _bc = bpatch.apply(data, bpatch.load(ROOT / "tools/character_mode/behaviour_cards.json"))
+        print(f"behaviour cards: {sum(_bc.values())} edits, {len(_bc)} cards")
     out_rom.write_bytes(data)
     print(f"wrote {out_rom} sha1={hashlib.sha1(data).hexdigest()}")
 

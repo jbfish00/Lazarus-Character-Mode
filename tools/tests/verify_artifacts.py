@@ -495,6 +495,10 @@ def main():
         *[(r, r + 4) for r in DESK_BG_PTR_OFFS],
         *_free_tutor_regions(orig),
         *[(_r.start, _r.stop) for _r in _mb], (0x09FF0100 - 0x08000000, 0x09FF0400 - 0x08000000),
+        # behaviour cards (2026-11-25): the exact bytes of each tools/character_mode/behaviour_cards.json edit;
+        # tools/tests/check_behaviour.py checks their values against the CM_NO_BEHAVIOUR control and decodes them
+        *[(int(_e["addr"], 16) - 0x08000000, int(_e["addr"], 16) - 0x08000000 + len(_e["to"]) // 2)
+          for _e in json.load(open(Path(__file__).resolve().parents[1] / "character_mode" / "behaviour_cards.json"))["edits"]],
         # overworld sprite (2026-10-22): the hook unit, the planner's data
         # (replayed against the base ROM; section 22 checks the CONTENT against
         # the source art), the palette-table literals and the entry trampoline.
